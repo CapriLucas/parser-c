@@ -1,1 +1,70 @@
-Octal
+036252	Es una constante octal
+
+15421254021542	Es una constante decimal
+
+0X2415Ac15	Es una constante hexadecimal
+
+XX02415	No es una constante reconocida
+
+0.1541212	No es una constante reconocida
+
+0x6565	Es una constante hexadecimal
+
+15	Es una constante decimal
+
+36456	Es una constante decimal
+
+asfkdjk	No es una constante reconocida
+
+0xx15245	No es una constante reconocida
+
+2	Es una constante decimal
+
+154	Es una constante decimal
+
+0	Es una constante octal
+
+  qqqqq	No es una constante reconocida
+
+ 0xq2656	No es una constante reconocida
+
+0xdd	Es una constante hexadecimal
+
+600	Es una constante decimal
+
+12	Es una constante decimal
+
+012	Es una constante octal
+
+0	Es una constante octal
+
+0x33	Es una constante hexadecimal
+
+243s	No es una constante reconocida
+
+cc	No es una constante reconocida
+
+a	No es una constante reconocida
+
+3das	No es una constante reconocida
+
+hola	No es una constante reconocida
+
+0xx	No es una constante reconocida
+
+0xx3	No es una constante reconocida
+
+0Xp	No es una constante reconocida
+
+0X9	Es una constante hexadecimal
+
+1	Es una constante decimal
+
+9	Es una constante decimal
+
+12	Es una constante decimal
+
+t	No es una constante reconocida
+
+0x4	Es una constante hexadecimal
+
