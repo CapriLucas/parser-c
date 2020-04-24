@@ -137,8 +137,8 @@ int main()
     printf("Reconocimiento exitoso. \n");
     printf("-------------------------------- \n");
     printf("Archivo de salida creado correctamente!");
-    FILE *e = fopen("Entrada.txt", "r");
-    FILE *s = fopen("Salida.txt", "w");
+    FILE *e = fopen("entrada.txt", "r");
+    FILE *s = fopen("salida.txt", "w");
     //Rellenamos la matriz con los valores de la tabla del automata
     //       0   [1-7] [8-9]  [xX] [a-fA-F] Otro caso
 

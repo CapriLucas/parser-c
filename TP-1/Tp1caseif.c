@@ -185,8 +185,8 @@ char clasificar(char c, int pos, char tipo)
 int main()
 {
     printf("Inicio de programa \n");
-    FILE *e = fopen("Entrada.txt", "r");
-    FILE *s = fopen("Salida.txt", "w");
+    FILE *e = fopen("entrada.txt", "r");
+    FILE *s = fopen("salida.txt", "w");
     char cLeido;
     char tipo = 'N';
     int pos = 0;
