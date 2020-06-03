@@ -146,11 +146,12 @@ struct elemento insertarDatosTT(struct elemento ta, int est, char *elem)
 
 void iniciarTabla(char *rechazo)
 {
-    for (int i = 0; i < 4; i++)
+	int i,j,k;
+    for (i = 0; i < 4; i++)
     {
-        for (int j = 0; j < 6; j++)
+        for (j = 0; j < 6; j++)
         {
-            for (int k = 0; k < 2; k++)
+            for ( k = 0; k < 2; k++)
             {
                 tabla[i][j][k] = insertarDatosTT(tabla[i][j][k], 3, rechazo);
             }
@@ -183,9 +184,10 @@ void imprimirTablaTransicion()
     printf("(Estado /|                    Caracter                               |\n");
     printf("CimaPila)|    0    |  [1-9]  |{+,-,*,/}|    (    |    )    |Otro Caso|\n");
 
-    for (int k = 0; k < 2; k++)
+int i,j,k;
+    for (k = 0; k < 2; k++)
     {
-        for (int i = 0; i < 2; i++)
+        for (i = 0; i < 2; i++)
         {
             if (k == 0)
             {
@@ -195,7 +197,7 @@ void imprimirTablaTransicion()
             {
                 printf(" (Q%d,R)  |", i);
             }
-            for (int j = 0; j < 6; j++)
+            for (j = 0; j < 6; j++)
             {
                 if (j == 3 && i == 0)
                 {
@@ -209,9 +211,9 @@ void imprimirTablaTransicion()
             printf("\n");
         }
     }
-    for (int i = 2; i < 4; i++)
+    for (i = 2; i < 4; i++)
     {
-        for (int k = 1; k >= 0; k--)
+        for ( k = 1; k >= 0; k--)
         {
             if (k == 0)
             {
@@ -221,7 +223,7 @@ void imprimirTablaTransicion()
             {
                 printf(" (Q%d,R)  |", i);
             }
-            for (int j = 0; j < 6; j++)
+            for (j = 0; j < 6; j++)
             {
                 printf(" (Q%d,%s)  |", tabla[i][j][k].estado, tabla[i][j][k].elementoPila);
             }
@@ -304,6 +306,7 @@ struct elemento devolverElementos(char caracter, int estado, int posElemento)
 void pushearSegunEstadocimaPila(char caracter, int estado, int posElemento)
 {
     int i = 0;
+    int j;
     switch (caracter)
     {
     case '0':
@@ -327,7 +330,8 @@ void pushearSegunEstadocimaPila(char caracter, int estado, int posElemento)
         push(tabla[estado][2][posElemento].elementoPila[i]);
         break;
     case '(':
-        for (int j = length(tabla[estado][3][posElemento].elementoPila) - 1; j >= 0; j--)
+    	
+        for (j = length(tabla[estado][3][posElemento].elementoPila) - 1; j >= 0; j--)
         {
             push(tabla[estado][3][posElemento].elementoPila[j]);
         }
@@ -352,7 +356,8 @@ void imprimirLoQueDeberiaIr()
 {
     char c[6] = "01+()s";
     struct elemento aux;
-    for (int i = 0; i < 6; i++)
+    int i;
+    for (i = 0; i < 6; i++)
     {
         aux = devolverElementos(c[i], errorEn.estado, errorEn.elemPila);
         if (aux.estado != 3)
