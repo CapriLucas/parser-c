@@ -7,7 +7,7 @@ int acum = 0;
 
 //Categorías léxicas de C a reconocer:
 //      Constantes (Entera decimal, entera octal, entera hexadecimal, real, caracter) x
-//      Literal cadena 
+//      Literal cadena x
 //      Palabras reservadas (distinguir entre tipo de dato, estructuras de control y otros) 
 //      Identificadores x
 //      Caracteres de puntuación y operadores de C.
@@ -37,10 +37,16 @@ int acum = 0;
 //Cosas para hacer:
 //Puede simplificarse la CREAL ? queda muy largo si no se puede, esta bien
 //Buscar palabras reservadas asegurarse que no se puedan escribir como identificador ya que varias paginas dicen
-//  algo diferente, y agregarlos a la regla.
+//  algo diferente, y agregarlos a la regla, investigar como clasificarlos.
 //Buscar caracteres de operacion (COP) y puntuacion (CPU), agregarlos a la regla.
-//Crear la regla de LITERALCADENA
 //Luego ordenar la prioridad de reglas
+//Probar reglas una vez completadas
+//crear listas para recorrer y cumplir lo pedido 
+//poner opciones en el main para mostrar las listas segun la opcion elegida(tipo menu)
+//crear la entrada por consola de la opcion elegida y mostrarla 
+
+
+
 
 %}
 
@@ -48,12 +54,18 @@ CEDECIMAL 	[1-9][0-9]*
 CEOCTAL		0[0-7]*
 CEHEXA		0[xX][A-Fa-f0-9]+
 CREAL	    [0-9]*"."[0-9]+([eE]([\+\-]?)[0-9]+)?[FfLl]?|[0-9]+"."([eE][\+\-]?[0-9]+)?[FfLl]?|[0-9]+([eE][\+\-]?[0-9]+)[FfLl]?
-CARACTER    '.'
+CARACTER    "'"."'"
+
+LITERALCADENA  \"(\\.|[^\\"])*\"
+
+PRESERVADA	while|do|if|else|for|int|char|return|case
+
 ID       	[a-zA-Z_][a-zA-Z0-9_]*
-PRESERVADA	while|do|if|else|for|int|char|return|case|switch
+
+COP        "++"|"*"|"+"|"&"|"!"|"sizeof"|"/"
+CPU        "("|")"|"{"|"}"
+
 COMENTARIOS "//"(.)*\n|"/*"(.|\n)*"*/"
-COP        \+\+|\*|\+|&|!|sizeof|\/
-CPU        \(|\)|\{|\}
 
 %%
 
@@ -67,8 +79,8 @@ CPU        \(|\)|\{|\}
 {COP}         {printf("La cadena %s representa un caracter de operacion\n", yytext);}
 {CPU}         {printf("La cadena %s representa un caracter de puntuacion\n", yytext);}
 {ID}          {printf("La cadena %s representa un identificador\n", yytext);}
-
-
+{LITERALCADENA} {printf("La cadena %s representa un literal cadena\n", yytext);}
+. {printf("La cadena %s representa un caracter no reconocido\n", yytext);}
 %%
 
 
@@ -77,5 +89,6 @@ int main(){
     yyin = fopen("entrada.txt","r");
     yyout = fopen("salida.txt","w");
     yylex();
+    imprimirOpciones();
     return 0;
     }
