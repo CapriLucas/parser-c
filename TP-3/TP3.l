@@ -1,7 +1,7 @@
 %option noyywrap
 %{
 
-#include <stdio.h>
+#include<stdio.h>
 #include "funcionesTP3.h"
 int acum = 0;
 int valor= 0;
@@ -45,19 +45,20 @@ int valor= 0;
 //Cosas para hacer:
 //Puede simplificarse la CREAL ? queda muy largo si no se puede, esta bien
 //Buscar palabras reservadas asegurarse que no se puedan escribir como identificador ya que varias paginas dicen --(Agregue mas palabras reservadas )
-//  algo diferente, y agregarlos a la regla, investigar como clasificarlos.     ----(Hice una clasificacion pero tal vez puede simplifacarse o reordenarse)
-//Buscar caracteres de operacion (COP) y puntuacion (CPU), agregarlos a la regla.    --- (Agregue mas caracteres en ambas reglas aunque me faltan en CPU)
+//  algo diferente, y agregarlos a la regla, investigar como clasificarlos.
+//Buscar caracteres de operacion (COP) y puntuacion (CPU), agregarlos a la regla.
 //Luego ordenar la prioridad de reglas
-//Probar reglas una vez completadas
+//Probar reglas una vez completadas y armar palabras para reconocer en el txt y luego en el .c
 //crear listas para recorrer y cumplir lo pedido 
 //poner opciones en el main para mostrar las listas segun la opcion elegida(tipo menu)
 //crear la entrada por consola de la opcion elegida y mostrarla 
-
+//Adicional: Probar directiva parece que ya esta, investigar distintas directivas puede que alguna no entre 
+//en la que hice
 
 
 
 %}
-/* DIRECTIVA #[.]*  no funciona bien porque me toma caracter por caracter despues del #, tal vez sea por el orden de las reglas
+DIRECTIVA "#include"[ ]*(\".*".h"\"|"<".*".h>") 
 CEDECIMAL 	[1-9][0-9]* 
 CEOCTAL		0[0-7]*
 CEHEXA		0[xX][A-Fa-f0-9]+
@@ -100,17 +101,25 @@ COMENTARIOS "//"(.)*\n|"/*"(.|\n)*"*/"
 
 int main(){
     
-    yyin = fopen("entrada.c","r");
+    yyin = fopen("entrada.txt","r");
     yylex();
     imprimirOpciones();
     return 0;
-    }
+}
 
+    //Comentarios y dudas
 
-    /*No deberia ser un archivo .c como entrada? ademas tengo duda con el archivo de salida, no es innecesario? porque en la consigna dice
-    generar por pantalla solamente, ademas, estariamos haciendo 2 veces lo mismo (puede ser que no eh, ojo por ahi estoy mal yo ajaj)
-    agregue arriba el enunciado donde lo dice
-    */
+    //No deberia ser un archivo .c como entrada? 
+    //Si solo use el txt para ir probando antes de mandarlo al .c ya que no me andara hinchando con los errores
+    //lo vuelvo a poner para hacer una pre prueba en el txt y luego el mismo en .c
+    
+    //ademas tengo duda con el archivo de salida, no es innecesario? 
+    //Es como decis no es necesario, pensaba en usarlo como un reporte final para que quede mas
+    //presentable con todos los reportes en la salida.txt si llegamos seria bueno ponerlo a demas de por consola
+    // que lo pensaba como un menu de opciones 
 
-    /*Agregue la regla de las directivas, puede que este mal porque detecta caracter por caracter, o tal vez haya que ordenar todas las reglas
-    y recien ahi funcione? */
+    //(Hice una clasificacion pero tal vez puede simplifacarse o reordenarse) sobre palabras reservadas
+    //bien, alguien que la revise y vea si puede agregar mas dado que por internet rondaban entre 32 y 40
+    //como dije en las cosas por hacer que las revisen si no pueden usarse como identificador entonces esas van
+
+    
