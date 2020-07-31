@@ -2,9 +2,13 @@
 %{
 
 #include<stdio.h>
+#include<math.h> 
+#include<stdlib.h>
+#include<string.h>
 #include "funcionesTP3.h"
 int acum = 0;
 int valor= 0;
+
 
 //Implementar en C un programa que permita reconocer en un archivo.c de entrada todas las 
 //categorías léxicas de C y comentarios. El mismo deberá  dar como salida en pantalla un 
@@ -49,7 +53,13 @@ int valor= 0;
 //Buscar caracteres de operacion (COP) y puntuacion (CPU), agregarlos a la regla.
 //Luego ordenar la prioridad de reglas
 //Probar reglas una vez completadas y armar palabras para reconocer en el txt y luego en el .c
-//crear listas para recorrer y cumplir lo pedido 
+//crear listas para recorrer y cumplir lo pedido:
+//Listado de id falta ordenar alfabeticamente, no repetir ids, y contar la cant de veces que aparece
+//Listado de lt falta obviar las comillas dado que las comillas las toma como caracteres, por ejemplo,
+//  "hola" yyleng retorna 6, en realidad tendria que devolver 4-> hacer una funcion que obvie las comillas
+// Listado de pr x 
+
+
 //poner opciones en el main para mostrar las listas segun la opcion elegida(tipo menu)
 //crear la entrada por consola de la opcion elegida y mostrarla 
 //Adicional: Probar directiva parece que ya esta, investigar distintas directivas puede que alguna no entre 
@@ -88,14 +98,21 @@ COMENTARIOS "//"(.)*\n|"/*"(.|\n)*"*/"
 {CREAL}       {printf("La cadena %s representa una constante real\n", yytext);}
 {COMENTARIOS} {printf("La cadena %s representa un comentario\n", yytext);} 
 {CARACTER}    {acum= acum+1; printf("La cadena %s representa un caracter\n", yytext);}
-{PRESERVADA_DATO}  {printf("La cadena %s representa una palabra reservada para representar un tipo de dato\n", yytext);}
+{PRESERVADA_DATO}  {printf("La cadena %s representa una palabra reservada para representar un tipo de dato\n", yytext);
+                    char *palabra=(char *)malloc(sizeof(char *));
+                    strcpy(palabra,yytext);  pr =agregarALista2(pr,palabra);}
 {PRESERVADA_CONDIC}  {printf("La cadena %s representa una palabra reservada para representar una sentencia condicional\n", yytext);}
 {PRESERVADA_ITERATIVA}  {printf("La cadena %s representa una palabra reservada para representar una sentecia iterativa\n", yytext);}
 {COP}         {printf("La cadena %s representa un caracter de operacion\n", yytext);}
 {CPU}         {printf("La cadena %s representa un caracter de puntuacion\n", yytext);}
-{ID}          {printf("La cadena %s representa un identificador\n", yytext);}
-{LITERALCADENA} {printf("La cadena %s representa un literal cadena de %d caracteres\n", yytext, yyleng);}
+{ID}          {printf("La cadena %s representa un identificador\n", yytext);
+               char *palabra=(char *)malloc(sizeof(char *));
+               strcpy(palabra,yytext);  id =agregarALista(id,palabra,1);}
+{LITERALCADENA} {printf("La cadena %s representa un literal cadena de %d caracteres\n", yytext,yyleng);
+                 char *palabra=(char *)malloc(100*sizeof(char));
+                 strcpy(palabra,yytext);  lt =agregarALista(lt,palabra,yyleng);}
 . {printf("La cadena %s representa un caracter no reconocido\n", yytext);}
+       
 %%
 
 
@@ -122,9 +139,40 @@ int main(){
     //bien, alguien que la revise y vea si puede agregar mas dado que por internet rondaban entre 32 y 40
     //como dije en las cosas por hacer que las revisen si no pueden usarse como identificador entonces esas van
 
-    //Agregue un menu de opciones con la funcion de mostrar en todos los casos para probarlo (despues cambiar en cada opcion)
-    //Agregue las directivas que faltan. Son muchisimas, y creo que el tp pide solo #define y #include (esta anda bien por lo que probe)
-    //A las funciones de lista le saque los // en cada linea para probar el menu, si hay que comentarlas usemos  /* */ porque sino linea por linea
-    //es un bardo  
 
+    //Agregue un menu de opciones con la funcion de mostrar todos los casos para probarlo
+    //Esta genial el menu :O, le modifique un par de cosas, obvio funciona ahora pero da siempre la lista de id
+    // mas adelante hay que modificarlo cuando tengamos las listas, ponele algo de minuscula hay mucha mayuscula jaja
+    /* Algo asi solo a los que tienen nro
+     1)Listado de identificadores encontrados y su cantidad de veces
+    */
+
+    //Agregue las directivas que faltan. Son muchisimas, y creo que el tp pide solo #define y #include
+    //Entonces solo esas, faltaria la de define nada mas 
+
+    // si hay que comentarlas usemos  /* */ porque sino linea por linea es un bardo  
+    // si lo tendre en cuanta para el prox commit es que usaba teclas de acceso rapido por eso y me comenta
+    // todo asi cuando selecciono y le doy con "crtl }" 
+
+    //Lo de hex a dec da mal hay que verlo 
     
+    //En la lista de pr se puede simplificar porque las acciones en las reglas de pr son iguales
+    //Opciones
+    //1) quiza lo ponemos todo en una definicion de pr y luego en la lista o acciones lo clasificamos
+    //2) ya que esta clasificado en definiciones quizas lo unificamos en una regla con un "|" 
+    // no recuerdo si se puede, y como queda una sola regla no repetimos acciones
+
+    //Dato:
+    //%{
+    // DEFINICIONES Y DECLARACIONES DE C
+    // }%
+
+    // DEFINICIONES (NOMBRE EXR) -> Se definen nombres para las ERX
+
+    // %%
+
+    // REGLAS (ERX - CÓDIGO C) -> Conocido como PATRÓN/ACCIÓN
+
+    // %%
+
+    // CÓDIGO C DE USUARIO -> Código C que ejecuta el analizador léxico
