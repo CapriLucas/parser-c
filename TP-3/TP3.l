@@ -122,4 +122,9 @@ int main(){
     //bien, alguien que la revise y vea si puede agregar mas dado que por internet rondaban entre 32 y 40
     //como dije en las cosas por hacer que las revisen si no pueden usarse como identificador entonces esas van
 
+    //Agregue un menu de opciones con la funcion de mostrar en todos los casos para probarlo (despues cambiar en cada opcion)
+    //Agregue las directivas que faltan. Son muchisimas, y creo que el tp pide solo #define y #include (esta anda bien por lo que probe)
+    //A las funciones de lista le saque los // en cada linea para probar el menu, si hay que comentarlas usemos  /* */ porque sino linea por linea
+    //es un bardo  
+
     

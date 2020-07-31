@@ -1,1 +1,54 @@
 #include <stdio.h>
+#include<string.h>
+#include<math.h>
+#include"xdxd.h"
+
+#define CURSOR(top, bottom) (((top) << 8) | (bottom))
+
+#define EXAMPLE_H
+
+#if defined(CREDIT)
+
+#elif defined(DEBIT)
+    debit();
+#else
+    printerror();
+#endif
+
+#ifndef test
+
+#error C++ compiler required.
+
+#pragma pack(push, 1) - packing is now 1
+
+#import "progid:my.prog.id" lcid("0") version("4.0)
+
+#line 10
+
+#undef WIDTH
+
+#using "using_assembly_B.dll"
+
+
+********Encontre todas estas directivas, son muchisimas, pero por lo que entiendo solo nos piden #define e #include (esta funciona bien)
+
+
+
+//123123
+/*asd */?'2"wsd" ""sad\""
+
+"sakdhasjdh"
+
+while 
+
+do
+
+for
+
+for
+
+36
+032
+0x25125
+0xa65a
+
