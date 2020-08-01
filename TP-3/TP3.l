@@ -46,6 +46,7 @@ int valor= 0;
 //Desafío opcional
 //  Adicionar al analizador léxico el reconocimiento de las directivas del precompilador #Include #Define.
 
+
 //Cosas para hacer:
 //Puede simplificarse la CREAL ? queda muy largo si no se puede, esta bien
 //Buscar palabras reservadas asegurarse que no se puedan escribir como identificador ya que varias paginas dicen --(Agregue mas palabras reservadas )
@@ -54,17 +55,23 @@ int valor= 0;
 //Luego ordenar la prioridad de reglas
 //Probar reglas una vez completadas y armar palabras para reconocer en el txt y luego en el .c
 //crear listas para recorrer y cumplir lo pedido:
-//Listado de id falta ordenar alfabeticamente, no repetir ids, y contar la cant de veces que aparece
-//Listado de lt falta obviar las comillas dado que las comillas las toma como caracteres, por ejemplo,
-//  "hola" yyleng retorna 6, en realidad tendria que devolver 4-> hacer una funcion que obvie las comillas
-// Listado de pr x 
-
-
+/*  Listado de id falta ordenar alfabeticamente
+    Listado de lt falta obviar las comillas dado que las comillas las toma como caracteres, por ejemplo,
+      "hola" yyleng retorna 6, en realidad tendria que devolver 4-> hacer una funcion que obvie las comillas
+    Listado de pr falta decidir cosas
+    Listado de constantes:oct falta una funcion para pasar de oct a dec
+                     hex falta una funcion para pasar de hex a dec
+                     dec falta una funcion que sume todos los valores de la lista
+                     real faltaria una funcion o dos que devuelvan la parte mantisa y entera de un creal
+                     car nada
+    Listado de cop y cpu ok
+    Listado de comentarios: solo separar los de linea de los de multiple
+    Listado de car no reconocidos falta lo de ver en que linea fueron encontrados, que alguien vea los videos
+      habia hecho algo el profe
+ */
+//tratar de hacer en una funcion o mas funciones  que abarquen las acciones de algunas reglas que se repiten
 //poner opciones en el main para mostrar las listas segun la opcion elegida(tipo menu)
-//crear la entrada por consola de la opcion elegida y mostrarla 
-//Adicional: Probar directiva parece que ya esta, investigar distintas directivas puede que alguna no entre 
-//en la que hice
-
+//Adicional: Probar directiva parece que ya esta, faltaria la de define nada mas
 
 
 %}
@@ -94,7 +101,7 @@ COMENTARIOS "//"(.)*\n|"/*"(.|\n)*"*/"
 {DIRECTIVA}   {printf("La cadena %s representa una directiva al compilador\n", yytext);}
 {CEDECIMAL}   {acum = acum + atoi(yytext); printf("El valor acumulado es %d\n", acum);}
 {CEOCTAL}     {printf("La cadena %s representa una constante entera octal\n", yytext);}
-{CEHEXA}      {valor=strtol(yytext, NULL, 16);printf("La cadena %s representa una constante entera hexadecimal\n y su valor en decimal es %d", yytext),valor;} 
+{CEHEXA}      {valor=strtol(yytext, NULL, 16);printf("La cadena %s representa una constante entera hexadecimal y su valor en decimal es %d\n", yytext),valor;} 
 {CREAL}       {printf("La cadena %s representa una constante real\n", yytext);}
 {COMENTARIOS} {printf("La cadena %s representa un comentario\n", yytext);} 
 {CARACTER}    {acum= acum+1; printf("La cadena %s representa un caracter\n", yytext);}
@@ -103,14 +110,16 @@ COMENTARIOS "//"(.)*\n|"/*"(.|\n)*"*/"
                     strcpy(palabra,yytext);  pr =agregarALista2(pr,palabra);}
 {PRESERVADA_CONDIC}  {printf("La cadena %s representa una palabra reservada para representar una sentencia condicional\n", yytext);}
 {PRESERVADA_ITERATIVA}  {printf("La cadena %s representa una palabra reservada para representar una sentecia iterativa\n", yytext);}
-{COP}         {printf("La cadena %s representa un caracter de operacion\n", yytext);}
-{CPU}         {printf("La cadena %s representa un caracter de puntuacion\n", yytext);}
+{COP}         {printf("La cadena %s representa un caracter de operacion\n", yytext);
+                cop = verificarCadena(cop,yytext);}
+{CPU}         {printf("La cadena %s representa un caracter de puntuacion\n", yytext);
+                cpu = verificarCadena(cpu,yytext);}
 {ID}          {printf("La cadena %s representa un identificador\n", yytext);
-               char *palabra=(char *)malloc(sizeof(char *));
-               strcpy(palabra,yytext);  id =agregarALista(id,palabra,1);}
+              id =verificarCadena(id,yytext);
+              }
 {LITERALCADENA} {printf("La cadena %s representa un literal cadena de %d caracteres\n", yytext,yyleng);
-                 char *palabra=(char *)malloc(100*sizeof(char));
-                 strcpy(palabra,yytext);  lt =agregarALista(lt,palabra,yyleng);}
+                 lt =verificarCadena2(lt,yytext,yyleng);}
+[ \t\n]+          
 . {printf("La cadena %s representa un caracter no reconocido\n", yytext);}
        
 %%
@@ -156,11 +165,11 @@ int main(){
 
     //Lo de hex a dec da mal hay que verlo 
     
-    //En la lista de pr se puede simplificar porque las acciones en las reglas de pr son iguales
-    //Opciones
-    //1) quiza lo ponemos todo en una definicion de pr y luego en la lista o acciones lo clasificamos
-    //2) ya que esta clasificado en definiciones quizas lo unificamos en una regla con un "|" 
-    // no recuerdo si se puede, y como queda una sola regla no repetimos acciones
+/*     En la lista de pr se puede simplificar porque las acciones en las reglas de pr son iguales
+        Opciones
+        1) quiza lo ponemos todo en una definicion de pr y luego en la lista o acciones lo clasificamos
+        2) ya que esta clasificado en definiciones quizas lo unificamos en una regla con un "|" 
+        no recuerdo si se puede, y como queda una sola regla no repetimos acciones */
 
     //Dato:
     //%{

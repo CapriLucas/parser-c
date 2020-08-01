@@ -1,7 +1,7 @@
 #include <stdio.h>
-asd,da,as?"hola"+"mundo"do while kk int
-//123123
-/*asd */ ?'2"wsd" ""sad\"" "sak134"
+asd,da,asd?"hola"+"mundo"do while kkasd int,asd,da,da lalaa
+//123123 sad
+/*asd */ ?'2"wsd" ""sad\"" "sak134" (12++3+)
 while 
 
 do

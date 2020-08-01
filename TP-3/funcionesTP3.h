@@ -26,9 +26,27 @@ struct Nodo2
      char *cadena;
      struct Nodo2 *sig;
 };
-struct Nodo1* id=NULL;
-struct Nodo1* lt=NULL;
-struct Nodo2* pr=NULL;
+struct Nodo3
+{
+     double mantisa;
+     int entera;
+     char *cadena;
+     struct Nodo3 *sig;
+};
+struct Nodo1 *id = NULL;
+struct Nodo1 *lt = NULL;
+struct Nodo2 *pr = NULL;
+struct Nodo1 *coct = NULL;
+struct Nodo1 *chex = NULL;
+struct Nodo1 *cdec = NULL;
+struct Nodo3 *cre = NULL;
+struct Nodo1 *ccar = NULL;
+struct Nodo1 *cop = NULL;
+struct Nodo1 *cpu = NULL;
+struct Nodo2 *coml = NULL;
+struct Nodo2 *comml = NULL;
+struct Nodo1 *ccarno = NULL;
+
 struct Nodo1 *agregarALista(struct Nodo1 *puntero, char *cadenaNueva, int numero)
 {
      struct Nodo1 *nuevo = (struct Nodo1 *)malloc(sizeof(struct Nodo1));
@@ -37,7 +55,6 @@ struct Nodo1 *agregarALista(struct Nodo1 *puntero, char *cadenaNueva, int numero
      nuevo->sig = NULL;
      if (puntero != NULL)
      {
-
           struct Nodo1 *aux = puntero;
           while (aux->sig != NULL)
           {
@@ -74,6 +91,67 @@ struct Nodo2 *agregarALista2(struct Nodo2 *puntero, char *cadenaNueva)
      }
      return puntero;
 }
+
+struct Nodo3 *agregarALista3(struct Nodo3 *puntero, char *cadenaNueva, int ent, double mant)
+{
+     struct Nodo3 *nuevo = (struct Nodo3 *)malloc(sizeof(struct Nodo3));
+     nuevo->mantisa = mant;
+     nuevo->entera = ent;
+     nuevo->cadena = cadenaNueva;
+     nuevo->sig = NULL;
+     if (puntero != NULL)
+     {
+          struct Nodo3 *aux = puntero;
+          while (aux->sig != NULL)
+          {
+               aux = aux->sig;
+          }
+          aux->sig = nuevo;
+     }
+     else
+     {
+          puntero = nuevo;
+     }
+     return puntero;
+}
+
+struct Nodo1 *buscarCadena(struct Nodo1 *puntero, char *cad)
+{
+     struct Nodo1 *aux = puntero;
+     while (aux != NULL && strcmp(aux->cadena, cad) != 0)
+     {
+          aux = aux->sig;
+     }
+     return aux;
+}
+
+struct Nodo1 *verificarCadena(struct Nodo1 *punt, char *cadena)
+{
+     char *palabra = (char *)malloc(100*sizeof(char *));
+     strcpy(palabra, cadena);
+     struct Nodo1 *cadbus = buscarCadena(punt, palabra);
+     if (cadbus == NULL)
+     {
+          punt = agregarALista(punt, palabra, 1);
+     }
+     else
+     {
+          cadbus->nro++;
+     }
+     return punt;
+}
+struct Nodo1 *verificarCadena2(struct Nodo1 *punt, char *cadena,int cant)
+{
+     char *palabra = (char *)malloc(100*sizeof(char *));
+     strcpy(palabra, cadena);
+     struct Nodo1 *cadbus = buscarCadena(punt, palabra);
+     if (cadbus == NULL)
+     {
+          punt = agregarALista(punt, palabra, cant);
+     }
+     return punt;
+}
+
 void mostrarLista1(struct Nodo1 *ident)
 {
      struct Nodo1 *aux = ident;
@@ -89,6 +167,15 @@ void mostrarLista2(struct Nodo2 *ident)
      while (aux != NULL)
      {
           printf("%s\n", aux->cadena);
+          aux = aux->sig;
+     }
+}
+void mostrarLista3(struct Nodo3 *ident)
+{
+     struct Nodo3 *aux = ident;
+     while (aux != NULL)
+     {
+          printf("%s %d %f\n", aux->cadena, aux->entera, aux->mantisa);
           aux = aux->sig;
      }
 }
@@ -136,7 +223,7 @@ void imprimirOpciones()
                printf("\nUSTED INGRESO LA OPCION 2: GENERAR LISTA DE LITERALES CADENA.\n");
                printf("-------------------------------------------------------------------------\n\n");
                printf("LISTA DE LITERALES CADENA:\n");
-               mostrarLista1(id);
+               mostrarLista1(lt);
                break;
 
           case 3:
@@ -144,7 +231,7 @@ void imprimirOpciones()
                printf("\nUSTED INGRESO LA OPCION 3: GENERAR LISTA DE PALABRAS RESERVADAS.\n");
                printf("-------------------------------------------------------------------------\n\n");
                printf("LISTA DE PALABRAS RESERVADAS:\n");
-               mostrarLista1(id);
+               mostrarLista2(pr);
                break;
 
           case 4:
@@ -192,7 +279,7 @@ void imprimirOpciones()
                printf("\nUSTED INGRESO LA OPCION 9: GENERAR LISTA DE CARACTERES DE PUNTUACION.\n");
                printf("-------------------------------------------------------------------------\n\n");
                printf("LISTA DE CARACTERES DE PUNTUACION:\n");
-               mostrarLista1(id);
+               mostrarLista1(cop);
                break;
 
           case 10:
@@ -200,7 +287,7 @@ void imprimirOpciones()
                printf("\nUSTED INGRESO LA OPCION 10: GENERAR LISTA DE CARACTERES DE OPERACION.\n");
                printf("-------------------------------------------------------------------------\n\n");
                printf("LISTA DE CARACTERES DE OPERACION:\n");
-               mostrarLista1(id);
+               mostrarLista1(cpu);
                break;
 
           case 11:
