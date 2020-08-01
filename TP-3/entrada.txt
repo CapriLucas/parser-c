@@ -4,6 +4,8 @@ asd,da,asd?"hola"+"mundo"do while kkasd int,asd,da,da lalaa
 /*asd */ ?'2"wsd" ""sad\"" "sak134" (12++3+)
 while 
 
+#define WIDTH       80
+#define WIDTH     0X265
 do
 
 for
@@ -14,3 +16,5 @@ for
 032
 0x25125
 0xa65a
+
+sizeof
