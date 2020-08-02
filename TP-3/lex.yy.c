@@ -928,85 +928,94 @@ YY_RULE_SETUP
 case 2:
 YY_RULE_SETUP
 #line 105 "TP3.l"
-{acum = acum + atoi(yytext); printf("El valor acumulado es %d\n", acum);}
+{acum = acum + atoi(yytext); printf("El valor acumulado es %d\n", acum);
+                        cdec = verificarCadena(cdec,yytext);}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 107 "TP3.l"
-{printf("La cadena %s representa una constante entera octal\n", yytext);}
+#line 108 "TP3.l"
+{printf("La cadena %s representa una constante entera octal\n", yytext);
+                        int oct=(int)strtol(yytext, NULL, 0);
+                        //int oct =OctalADecimal(atoi(yytext));
+                        coct = verificarCadena2(coct,yytext,oct);
+                        }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 109 "TP3.l"
-{valor=strtol(yytext, NULL, 16);printf("La cadena %s representa una constante entera hexadecimal y su valor en decimal es %d\n", yytext),valor;} 
+#line 114 "TP3.l"
+{printf("La cadena %s representa una constante entera hexadecimal\n", yytext);
+                        int hex=(int)strtol(yytext, NULL, 0);
+                        chex = verificarCadena2(chex,yytext,hex);
+} 
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 111 "TP3.l"
-{printf("La cadena %s representa una constante real\n", yytext);}
+#line 119 "TP3.l"
+{printf("La cadena %s representa una constante real\n", yytext);
+                        }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 113 "TP3.l"
-{acum= acum+1; printf("La cadena %s representa un caracter\n", yytext);}
+#line 122 "TP3.l"
+{acum= acum+1; printf("La cadena %s representa un caracter\n", yytext);
+                        ccar = verificarCadena3(ccar,yytext);}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 115 "TP3.l"
+#line 125 "TP3.l"
 {printf("La cadena %s representa un comentario de multiples lineas\n", yytext);} 
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 117 "TP3.l"
+#line 127 "TP3.l"
 {printf("La cadena %s representa un comentario simple\n", yytext);} 
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 119 "TP3.l"
+#line 129 "TP3.l"
 {printf("La cadena %s representa una palabra reservada para representar un tipo de dato\n", yytext);
-                        char *palabra=(char *)malloc(sizeof(char *));
-                        strcpy(palabra,yytext);  pr =agregarALista2(pr,palabra);}
+                        pr = verificarCadena3(pr,yytext);}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 123 "TP3.l"
+#line 132 "TP3.l"
 {printf("La cadena %s representa un caracter de operacion\n", yytext);
                           cop = verificarCadena(cop,yytext);}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 126 "TP3.l"
+#line 135 "TP3.l"
 {printf("La cadena %s representa un caracter de puntuacion\n", yytext);
                           cpu = verificarCadena(cpu,yytext);}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 129 "TP3.l"
+#line 138 "TP3.l"
 {printf("La cadena %s representa un identificador\n", yytext);
                           id =verificarCadena(id,yytext);}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 132 "TP3.l"
+#line 141 "TP3.l"
 {printf("La cadena %s representa un literal cadena de %d caracteres\n", yytext,yyleng);
                           lt =verificarCadena2(lt,yytext,yyleng);}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 135 "TP3.l"
+#line 144 "TP3.l"
 
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 136 "TP3.l"
+#line 145 "TP3.l"
 {printf("La cadena %s representa un caracter no reconocido\n", yytext);}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 138 "TP3.l"
+#line 147 "TP3.l"
 ECHO;
 	YY_BREAK
-#line 1010 "lex.yy.c"
+#line 1019 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1892,7 +1901,7 @@ int main()
 	return 0;
 	}
 #endif
-#line 138 "TP3.l"
+#line 147 "TP3.l"
 
 
 
@@ -1900,6 +1909,8 @@ int main(){
     
     yyin = fopen("entrada.txt","r");
     yylex();
+    //int x = 0xf;
+    //printf("%d",x);
     imprimirOpciones();
     return 0;
 }

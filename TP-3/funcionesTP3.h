@@ -27,7 +27,7 @@ struct Nodo1 *coct = NULL;
 struct Nodo1 *chex = NULL;
 struct Nodo1 *cdec = NULL;
 struct Nodo3 *cre = NULL;
-struct Nodo1 *ccar = NULL;
+struct Nodo2 *ccar = NULL;
 struct Nodo1 *cop = NULL;
 struct Nodo1 *cpu = NULL;
 struct Nodo2 *coml = NULL;
@@ -111,10 +111,30 @@ struct Nodo1 *buscarCadena(struct Nodo1 *puntero, char *cad)
      }
      return aux;
 }
+struct Nodo2 *buscarCadena2(struct Nodo2 *puntero, char *cad)
+{
+     struct Nodo2 *aux = puntero;
+     while (aux != NULL && strcmp(aux->cadena, cad) != 0)
+     {
+          aux = aux->sig;
+     }
+     return aux;
+}
 
+int sumarDecimales(struct Nodo1 *dec)
+{
+     struct Nodo1 *aux = dec;
+     int total = 0;
+     while (aux != NULL)
+     {
+          total = total + atoi(aux->cadena);
+          aux = aux->sig;
+     }
+     return total;
+}
 struct Nodo1 *verificarCadena(struct Nodo1 *punt, char *cadena)
 {
-     char *palabra = (char *)malloc(100*sizeof(char *));
+     char *palabra = (char *)malloc(100 * sizeof(char *));
      strcpy(palabra, cadena);
      struct Nodo1 *cadbus = buscarCadena(punt, palabra);
      if (cadbus == NULL)
@@ -127,14 +147,25 @@ struct Nodo1 *verificarCadena(struct Nodo1 *punt, char *cadena)
      }
      return punt;
 }
-struct Nodo1 *verificarCadena2(struct Nodo1 *punt, char *cadena,int cant)
+struct Nodo1 *verificarCadena2(struct Nodo1 *punt, char *cadena, int cant)
 {
-     char *palabra = (char *)malloc(100*sizeof(char *));
+     char *palabra = (char *)malloc(100 * sizeof(char *));
      strcpy(palabra, cadena);
      struct Nodo1 *cadbus = buscarCadena(punt, palabra);
      if (cadbus == NULL)
      {
           punt = agregarALista(punt, palabra, cant);
+     }
+     return punt;
+}
+struct Nodo2 *verificarCadena3(struct Nodo2 *punt, char *cadena)
+{
+     char *palabra = (char *)malloc(100 * sizeof(char *));
+     strcpy(palabra, cadena);
+     struct Nodo2 *cadbus = buscarCadena2(punt, palabra);
+     if (cadbus == NULL)
+     {
+          punt = agregarALista2(punt, palabra);
      }
      return punt;
 }
@@ -151,10 +182,12 @@ void mostrarLista1(struct Nodo1 *ident)
 void mostrarLista2(struct Nodo2 *ident)
 {
      struct Nodo2 *aux = ident;
+     int i = 1;
      while (aux != NULL)
      {
-          printf("%s\n", aux->cadena);
+          printf("%d --- %s\n", i, aux->cadena);
           aux = aux->sig;
+          i++;
      }
 }
 void mostrarLista3(struct Nodo3 *ident)
@@ -167,65 +200,64 @@ void mostrarLista3(struct Nodo3 *ident)
      }
 }
 
-
- int sumarElementosLista(struct Nodo1* cdec){
- int suma=0;
- while(cdec!=NULL){
-      suma=suma+cdec->nro;
-      cdec=cdec->sig;
- }
- return suma;
+int sumarElementosLista(struct Nodo1 *cdec)
+{
+     int suma = 0;
+     while (cdec != NULL)
+     {
+          suma = suma + cdec->nro;
+          cdec = cdec->sig;
+     }
+     return suma;
 }
 
-long long HexadecimalADecimal(char hexadecimal[40]){
-    long long numeroDecimal, pos;
-    int i = 0, val, len;
+long long HexadecimalADecimal(char hexadecimal[40])
+{
+     long long numeroDecimal, pos;
+     int i = 0, val, len;
 
-    numeroDecimal = 0;
-    pos = 1;
+     numeroDecimal = 0;
+     pos = 1;
 
-    len = strlen(hexadecimal);
-    len--;
+     len = strlen(hexadecimal);
+     len--;
 
-    for(i=0; hexadecimal[i]!='\0'; i++)
-    {
- 
-        if(hexadecimal[i]>='0' && hexadecimal[i]<='9')
-        {
-            val = hexadecimal[i] - 48;
-        }
-        else if(hexadecimal[i]>='a' && hexadecimal[i]<='f')
-        {
-            val = hexadecimal[i] - 97 + 10;
-        }
-        else if(hexadecimal[i]>='A' && hexadecimal[i]<='F')
-        {
-            val = hexadecimal[i] - 65 + 10;
-        }
+     for (i = 0; hexadecimal[i] != '\0'; i++)
+     {
 
-        numeroDecimal += val * pow(16, len);
-        len--;
-    }
-    
-return numeroDecimal;
+          if (hexadecimal[i] >= '0' && hexadecimal[i] <= '9')
+          {
+               val = hexadecimal[i] - 48;
+          }
+          else if (hexadecimal[i] >= 'a' && hexadecimal[i] <= 'f')
+          {
+               val = hexadecimal[i] - 97 + 10;
+          }
+          else if (hexadecimal[i] >= 'A' && hexadecimal[i] <= 'F')
+          {
+               val = hexadecimal[i] - 65 + 10;
+          }
+
+          numeroDecimal += val * pow(16, len);
+          len--;
+     }
+
+     return numeroDecimal;
 }
 
-
-long long OctalADecimal(int numeroOctal){
-    int numeroDecimal = 0, i = 0;
-    while(numeroOctal != 0)
-    {
-        numeroDecimal += (numeroOctal%10) * pow(8,i);
-        ++i;
-        numeroOctal/=10;
-    }
-    i = 1;
-    return numeroDecimal;
+int OctalADecimal(int numeroOctal)
+{
+     int numeroDecimal = 0, i = 0;
+       printf("%d\n",numeroOctal);
+     while (numeroOctal != 0)
+     {
+          numeroDecimal += (numeroOctal%10) * (int)pow(8, i);
+        
+          i++;
+          numeroOctal /= 10;
+     }
+     return numeroDecimal;
 }
-
-
-
-
 
 void opciones()
 {
@@ -287,7 +319,8 @@ void imprimirOpciones()
                printf("\nUSTED INGRESO LA OPCION 4: GENERAR LISTA DE CONSTANTES DECIMALES.\n");
                printf("-------------------------------------------------------------------------\n\n");
                printf("Listado de constantes decimales encontradas y el total acumulado:\n");
-               mostrarLista1(id); /* Modificar */
+               mostrarLista1(cdec);
+               printf("El total acumulado es: %d\n", sumarDecimales(cdec));
                break;
 
           case 5:
@@ -295,7 +328,7 @@ void imprimirOpciones()
                printf("\nUSTED INGRESO LA OPCION 5: GENERAR LISTA DE CONSTANTES OCTALES.\n");
                printf("-------------------------------------------------------------------------\n\n");
                printf("Listado de constantes octales encontradas y su valor en decimal:\n");
-               mostrarLista1(id); /*Modificar*/
+               mostrarLista1(coct); /*Modificar*/
                break;
 
           case 6:
@@ -303,7 +336,7 @@ void imprimirOpciones()
                printf("\nUSTED INGRESO LA OPCION 6: GENERAR LISTA DE CONSTANTES HEXADECIMALES.\n");
                printf("-------------------------------------------------------------------------\n\n");
                printf("Listado de constantes hexadecimales encontradas y su valor en decimal:\n");
-               mostrarLista1(id); /*Modificar*/
+               mostrarLista1(chex); /*Modificar*/
                break;
 
           case 7:
@@ -319,7 +352,7 @@ void imprimirOpciones()
                printf("\nUSTED INGRESO LA OPCION 8: GENERAR LISTA DE CONSTANTES CARACTER.\n");
                printf("-------------------------------------------------------------------------\n\n");
                printf("Listado de constantes caracter encontradas segun su orden de aparicion:\n");
-               mostrarLista1(id); /*Modificar*/
+            mostrarLista2(ccar);
                break;
 
           case 9:

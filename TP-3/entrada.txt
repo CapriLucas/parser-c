@@ -2,12 +2,11 @@
 asd,da,asd?"hola"+"mundo"do while kkasd int,asd,da,da lalaa
 //123123 sad
 /*asd */ ?'2"wsd" ""sad\"" "sak134" (12++3+)
-while 
-
+while '3''2''(''m'
 #define WIDTH       80
 #define WIDTH     0X265
 do
-
+0xff'x' '3' 'm'
 for
 
 for

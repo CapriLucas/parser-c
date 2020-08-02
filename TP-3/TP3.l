@@ -102,23 +102,32 @@ COMENTARIOS_SIMPLES   \/\/.*
 
 {DIRECTIVA}             {printf("La cadena %s representa una directiva al compilador\n", yytext);}
 
-{CEDECIMAL}             {acum = acum + atoi(yytext); printf("El valor acumulado es %d\n", acum);}
+{CEDECIMAL}             {acum = acum + atoi(yytext); printf("El valor acumulado es %d\n", acum);
+                        cdec = verificarCadena(cdec,yytext);}
 
-{CEOCTAL}               {printf("La cadena %s representa una constante entera octal\n", yytext);}
+{CEOCTAL}               {printf("La cadena %s representa una constante entera octal\n", yytext);
+                        int oct=(int)strtol(yytext, NULL, 0);
+                        //int oct =OctalADecimal(atoi(yytext));
+                        coct = verificarCadena2(coct,yytext,oct);
+                        }
 
-{CEHEXA}                {valor=strtol(yytext, NULL, 16);printf("La cadena %s representa una constante entera hexadecimal y su valor en decimal es %d\n", yytext),valor;} 
+{CEHEXA}                {printf("La cadena %s representa una constante entera hexadecimal\n", yytext);
+                        int hex=(int)strtol(yytext, NULL, 0);
+                        chex = verificarCadena2(chex,yytext,hex);
+} 
 
-{CREAL}                 {printf("La cadena %s representa una constante real\n", yytext);}
+{CREAL}                 {printf("La cadena %s representa una constante real\n", yytext);
+                        }
 
-{CARACTER}              {acum= acum+1; printf("La cadena %s representa un caracter\n", yytext);}
+{CARACTER}              {acum= acum+1; printf("La cadena %s representa un caracter\n", yytext);
+                        ccar = verificarCadena3(ccar,yytext);}
 
 {COMENTARIOS_MULTIPLES} {printf("La cadena %s representa un comentario de multiples lineas\n", yytext);} 
 
 {COMENTARIOS_SIMPLES}   {printf("La cadena %s representa un comentario simple\n", yytext);} 
 
 {PALABRA_RESERVADA}     {printf("La cadena %s representa una palabra reservada para representar un tipo de dato\n", yytext);
-                        char *palabra=(char *)malloc(sizeof(char *));
-                        strcpy(palabra,yytext);  pr =agregarALista2(pr,palabra);}
+                        pr = verificarCadena3(pr,yytext);}
 
 {COP}                   {printf("La cadena %s representa un caracter de operacion\n", yytext);
                           cop = verificarCadena(cop,yytext);}
@@ -142,6 +151,8 @@ int main(){
     
     yyin = fopen("entrada.txt","r");
     yylex();
+    //int x = 0xf;
+    //printf("%d",x);
     imprimirOpciones();
     return 0;
 }
@@ -172,6 +183,9 @@ int main(){
     //Acomode un poco los archivos para que no quede todo tan mezclado
     //No se que tanto mas se pueden "delegar" las definiciones usando reglas que ya estan, habria que cambiar casi TODAS y no se si queda tan expresivo en definitiva
 
+
+    //Simplifique lo de pasar a decimal, ojala espero que hayas copiado las funciones si no me vas a querer matar xD
+    
 
     
 
