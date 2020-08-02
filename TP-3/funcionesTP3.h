@@ -33,7 +33,7 @@ struct Nodo1 *cpu = NULL;
 struct Nodo2 *coml = NULL;
 struct Nodo2 *comml = NULL;
 struct Nodo1 *ccarno = NULL;
-
+struct Nodo1 *dir = NULL;
 struct Nodo1 *agregarALista(struct Nodo1 *puntero, char *cadenaNueva, int numero)
 {
      struct Nodo1 *nuevo = (struct Nodo1 *)malloc(sizeof(struct Nodo1));
@@ -120,14 +120,22 @@ struct Nodo2 *buscarCadena2(struct Nodo2 *puntero, char *cad)
      }
      return aux;
 }
-
+struct Nodo3 *buscarCadena3(struct Nodo3 *puntero, char *cad)
+{
+     struct Nodo3 *aux = puntero;
+     while (aux != NULL && strcmp(aux->cadena, cad) != 0)
+     {
+          aux = aux->sig;
+     }
+     return aux;
+}
 int sumarDecimales(struct Nodo1 *dec)
 {
      struct Nodo1 *aux = dec;
      int total = 0;
      while (aux != NULL)
      {
-          total = total + atoi(aux->cadena);
+          total = total + atoi(aux->cadena) * aux->nro;
           aux = aux->sig;
      }
      return total;
@@ -166,6 +174,19 @@ struct Nodo2 *verificarCadena3(struct Nodo2 *punt, char *cadena)
      if (cadbus == NULL)
      {
           punt = agregarALista2(punt, palabra);
+     }
+     return punt;
+}
+struct Nodo3 *verificarCadena4(struct Nodo3 *punt, char *cadena)
+{
+     double entera;
+     char *palabra = (char *)malloc(100 * sizeof(char *));
+     strcpy(palabra, cadena);
+     double mantisa = modf(atof(cadena), &entera);
+     struct Nodo3 *cadbus = buscarCadena3(punt, palabra);
+     if (cadbus == NULL)
+     {
+          punt = agregarALista3(punt, palabra, entera, mantisa);
      }
      return punt;
 }
@@ -248,17 +269,43 @@ long long HexadecimalADecimal(char hexadecimal[40])
 int OctalADecimal(int numeroOctal)
 {
      int numeroDecimal = 0, i = 0;
-       printf("%d\n",numeroOctal);
+     printf("%d\n", numeroOctal);
      while (numeroOctal != 0)
      {
-          numeroDecimal += (numeroOctal%10) * (int)pow(8, i);
-        
+          numeroDecimal += (numeroOctal % 10) * (int)pow(8, i);
+
           i++;
           numeroOctal /= 10;
      }
      return numeroDecimal;
 }
-
+char *eliminarComillas(char *cadena)
+{
+     char *palabra = (char *)malloc(100 * sizeof(char *));
+     int i = 0;
+     while (cadena[i] != '\0')
+     {
+          cadena[i] = cadena[i + 1];
+          i++;
+     }
+     cadena[strlen(cadena) - 1] = '\0';
+     i = 0;
+     while (cadena[i] != '\0')
+     {
+          if (cadena[i] == '\\' && cadena[i + 1] == '"')
+          {
+               while (cadena[i] != '\0')
+               {
+                    cadena[i] = cadena[i + 1];
+                    i++;
+               }
+               i = 0;
+          }
+          i++;
+     }
+     strcpy(palabra, cadena);
+     return palabra;
+}
 void opciones()
 {
      printf("\nINGRESE LA OPCION DE LO QUE DESEA HACER:\n\n");
@@ -274,7 +321,8 @@ void opciones()
      printf("10) Generar listado de caracteres de operacion\n");
      printf("11) Generar listado de comentarios \n");
      printf("12) Generar listado de caracteres no reconocidos\n");
-     printf("13) Salir del reporte\n");
+     printf("13) Generar listado de directivas\n");
+     printf("14) Salir del reporte\n");
 }
 
 void imprimirOpciones()
@@ -328,7 +376,7 @@ void imprimirOpciones()
                printf("\nUSTED INGRESO LA OPCION 5: GENERAR LISTA DE CONSTANTES OCTALES.\n");
                printf("-------------------------------------------------------------------------\n\n");
                printf("Listado de constantes octales encontradas y su valor en decimal:\n");
-               mostrarLista1(coct); /*Modificar*/
+               mostrarLista1(coct);
                break;
 
           case 6:
@@ -336,7 +384,7 @@ void imprimirOpciones()
                printf("\nUSTED INGRESO LA OPCION 6: GENERAR LISTA DE CONSTANTES HEXADECIMALES.\n");
                printf("-------------------------------------------------------------------------\n\n");
                printf("Listado de constantes hexadecimales encontradas y su valor en decimal:\n");
-               mostrarLista1(chex); /*Modificar*/
+               mostrarLista1(chex);
                break;
 
           case 7:
@@ -352,7 +400,7 @@ void imprimirOpciones()
                printf("\nUSTED INGRESO LA OPCION 8: GENERAR LISTA DE CONSTANTES CARACTER.\n");
                printf("-------------------------------------------------------------------------\n\n");
                printf("Listado de constantes caracter encontradas segun su orden de aparicion:\n");
-            mostrarLista2(ccar);
+               mostrarLista2(ccar);
                break;
 
           case 9:
@@ -375,8 +423,10 @@ void imprimirOpciones()
                printf("-------------------------------------------------------------------------");
                printf("\nUSTED INGRESO LA OPCION 11: GENERAR LISTA DE COMENTARIOS.\n");
                printf("-------------------------------------------------------------------------\n\n");
-               printf("Listado de comentarios encontrados clasificados en multilinea/simples:\n");
-               mostrarLista1(id); /*Modificar*/
+               printf("Listado de comentarios encontrados multilinea:\n");
+               mostrarLista2(comml);
+               printf("Listado de comentarios encontrados simples:\n");
+               mostrarLista2(coml);
                break;
 
           case 12:
@@ -384,14 +434,21 @@ void imprimirOpciones()
                printf("\nUSTED INGRESO LA OPCION 12: GENERAR LISTA DE CARACTERES NO RECONOCIDOS.\n");
                printf("-------------------------------------------------------------------------\n\n");
                printf("Listado de cadenas y caracteres no reconocidos con su numero de linea:\n");
-               mostrarLista1(id); /*Modificar*/
+               mostrarLista1(ccarno); /*Modificar*/
+               break;
+          case 13:
+               printf("-------------------------------------------------------------------------");
+               printf("\nUSTED INGRESO LA OPCION 13: GENERAR LISTA DE DIRECTIVAS.\n");
+               printf("-------------------------------------------------------------------------\n\n");
+               printf("Listado de cadenas y directivas con su numero de linea:\n");
+               mostrarLista1(dir); /*Modificar*/
                break;
           }
 
           system("pause");
           system("cls");
 
-     } while (opcionIngresada != 13);
+     } while (opcionIngresada != 14);
      printf("-------------------------------------------------------------------------");
      printf("\n\t\t\tREPORTE FINALIZADO\n\n");
      printf("-------------------------------------------------------------------------\n\n");
