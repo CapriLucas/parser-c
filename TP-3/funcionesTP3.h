@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <ctype.h>
 struct Nodo1
 {
      int nro;
@@ -34,9 +35,46 @@ struct Nodo2 *coml = NULL;
 struct Nodo2 *comml = NULL;
 struct Nodo1 *ccarno = NULL;
 struct Nodo1 *dir = NULL;
+
+char* aMiniscula(char * cadena){
+int i=0;
+char*aux = (char *)malloc((strlen(cadena) + 1) * sizeof(char));
+strcpy(aux,cadena);
+     for (i; aux[i] != '\0'; ++i){
+		aux[i] = tolower(aux[i]);
+	}
+     return aux;
+}
+struct Nodo1 *ordenarAgregar(struct Nodo1 *punt, char *cad, int numero)
+{
+     struct Nodo1 *nuevo = (struct Nodo1 *)malloc((strlen(cad) + 1) * sizeof(struct Nodo1));
+     nuevo->cadena = cad;
+     nuevo->nro = numero;
+     nuevo->sig = NULL;
+     struct Nodo1 *aux = punt;
+     struct Nodo1 *ant = NULL;
+     while (aux != NULL && strcmp(aMiniscula(aux->cadena), aMiniscula(cad)) <= 0)
+     {
+          ant = aux;
+          aux = aux->sig;
+     }
+
+     if (ant == NULL)
+     {
+          punt = nuevo;
+     }
+     else
+     {
+          ant->sig = nuevo;
+     }
+
+     nuevo->sig = aux;
+
+     return punt;
+}
 struct Nodo1 *agregarALista(struct Nodo1 *puntero, char *cadenaNueva, int numero)
 {
-     struct Nodo1 *nuevo = (struct Nodo1 *)malloc(sizeof(struct Nodo1));
+     struct Nodo1 *nuevo = (struct Nodo1 *)malloc((strlen(cadenaNueva) + 1)*sizeof(struct Nodo1));
      nuevo->cadena = cadenaNueva;
      nuevo->nro = numero;
      nuevo->sig = NULL;
@@ -58,7 +96,7 @@ struct Nodo1 *agregarALista(struct Nodo1 *puntero, char *cadenaNueva, int numero
 }
 struct Nodo2 *agregarALista2(struct Nodo2 *puntero, char *cadenaNueva)
 {
-     struct Nodo2 *nuevo = (struct Nodo2 *)malloc(sizeof(struct Nodo2));
+     struct Nodo2 *nuevo = (struct Nodo2 *)malloc((strlen(cadenaNueva) + 1)*sizeof(struct Nodo2));
      nuevo->cadena = cadenaNueva;
      nuevo->sig = NULL;
      if (puntero != NULL)
@@ -81,7 +119,7 @@ struct Nodo2 *agregarALista2(struct Nodo2 *puntero, char *cadenaNueva)
 
 struct Nodo3 *agregarALista3(struct Nodo3 *puntero, char *cadenaNueva, int ent, double mant)
 {
-     struct Nodo3 *nuevo = (struct Nodo3 *)malloc(sizeof(struct Nodo3));
+     struct Nodo3 *nuevo = (struct Nodo3 *)malloc((strlen(cadenaNueva) + 1)*sizeof(struct Nodo3));
      nuevo->mantisa = mant;
      nuevo->entera = ent;
      nuevo->cadena = cadenaNueva;
@@ -142,7 +180,7 @@ int sumarDecimales(struct Nodo1 *dec)
 }
 struct Nodo1 *verificarCadena(struct Nodo1 *punt, char *cadena)
 {
-     char *palabra = (char *)malloc(100 * sizeof(char *));
+     char *palabra = (char *)malloc((strlen(cadena) + 1) * sizeof(char *));
      strcpy(palabra, cadena);
      struct Nodo1 *cadbus = buscarCadena(punt, palabra);
      if (cadbus == NULL)
@@ -155,9 +193,24 @@ struct Nodo1 *verificarCadena(struct Nodo1 *punt, char *cadena)
      }
      return punt;
 }
+struct Nodo1 *verificarCadena5(struct Nodo1 *punt, char *cadena)
+{
+     char *palabra = (char *)malloc((strlen(cadena) + 1) * sizeof(char *));
+     strcpy(palabra, cadena);
+     struct Nodo1 *cadbus = buscarCadena(punt, palabra);
+     if (cadbus == NULL)
+     {
+          punt = ordenarAgregar(punt, palabra, 1);
+     }
+     else
+     {
+          cadbus->nro++;
+     }
+     return punt;
+}
 struct Nodo1 *verificarCadena2(struct Nodo1 *punt, char *cadena, int cant)
 {
-     char *palabra = (char *)malloc(100 * sizeof(char *));
+     char *palabra = (char *)malloc((strlen(cadena) + 1) * sizeof(char *));
      strcpy(palabra, cadena);
      struct Nodo1 *cadbus = buscarCadena(punt, palabra);
      if (cadbus == NULL)
@@ -168,19 +221,15 @@ struct Nodo1 *verificarCadena2(struct Nodo1 *punt, char *cadena, int cant)
 }
 struct Nodo2 *verificarCadena3(struct Nodo2 *punt, char *cadena)
 {
-     char *palabra = (char *)malloc(100 * sizeof(char *));
+     char *palabra = (char *)malloc((strlen(cadena) + 1) * sizeof(char *));
      strcpy(palabra, cadena);
-     struct Nodo2 *cadbus = buscarCadena2(punt, palabra);
-     if (cadbus == NULL)
-     {
           punt = agregarALista2(punt, palabra);
-     }
      return punt;
 }
 struct Nodo3 *verificarCadena4(struct Nodo3 *punt, char *cadena)
 {
      double entera;
-     char *palabra = (char *)malloc(100 * sizeof(char *));
+     char *palabra = (char *)malloc((strlen(cadena) + 1) * sizeof(char *));
      strcpy(palabra, cadena);
      double mantisa = modf(atof(cadena), &entera);
      struct Nodo3 *cadbus = buscarCadena3(punt, palabra);
@@ -221,67 +270,9 @@ void mostrarLista3(struct Nodo3 *ident)
      }
 }
 
-int sumarElementosLista(struct Nodo1 *cdec)
+char *devolverCadena(char *cadena)
 {
-     int suma = 0;
-     while (cdec != NULL)
-     {
-          suma = suma + cdec->nro;
-          cdec = cdec->sig;
-     }
-     return suma;
-}
-
-long long HexadecimalADecimal(char hexadecimal[40])
-{
-     long long numeroDecimal, pos;
-     int i = 0, val, len;
-
-     numeroDecimal = 0;
-     pos = 1;
-
-     len = strlen(hexadecimal);
-     len--;
-
-     for (i = 0; hexadecimal[i] != '\0'; i++)
-     {
-
-          if (hexadecimal[i] >= '0' && hexadecimal[i] <= '9')
-          {
-               val = hexadecimal[i] - 48;
-          }
-          else if (hexadecimal[i] >= 'a' && hexadecimal[i] <= 'f')
-          {
-               val = hexadecimal[i] - 97 + 10;
-          }
-          else if (hexadecimal[i] >= 'A' && hexadecimal[i] <= 'F')
-          {
-               val = hexadecimal[i] - 65 + 10;
-          }
-
-          numeroDecimal += val * pow(16, len);
-          len--;
-     }
-
-     return numeroDecimal;
-}
-
-int OctalADecimal(int numeroOctal)
-{
-     int numeroDecimal = 0, i = 0;
-     printf("%d\n", numeroOctal);
-     while (numeroOctal != 0)
-     {
-          numeroDecimal += (numeroOctal % 10) * (int)pow(8, i);
-
-          i++;
-          numeroOctal /= 10;
-     }
-     return numeroDecimal;
-}
-char *eliminarComillas(char *cadena)
-{
-     char *palabra = (char *)malloc(100 * sizeof(char *));
+     char *palabra = (char *)malloc((strlen(cadena) + 1) * sizeof(char *));
      int i = 0;
      while (cadena[i] != '\0')
      {
@@ -306,23 +297,20 @@ char *eliminarComillas(char *cadena)
      strcpy(palabra, cadena);
      return palabra;
 }
+
+
 void opciones()
 {
      printf("\nINGRESE LA OPCION DE LO QUE DESEA HACER:\n\n");
      printf("1)  Generar lista de identificadores\n");
      printf("2)  Generar lista de literales cadenas\n");
      printf("3)  Generar lista de palabras reservadas\n");
-     printf("4)  Generar listado de constantes decimales\n");
-     printf("5)  Generar listado de constantes octales\n");
-     printf("6)  Generar listado de constantes hexadecimales\n");
-     printf("7)  Generar listado de constantes reales\n");
-     printf("8)  Generar listado de constantes caracter\n");
-     printf("9)  Generar listado de caracteres de puntuacion\n");
-     printf("10) Generar listado de caracteres de operacion\n");
-     printf("11) Generar listado de comentarios \n");
-     printf("12) Generar listado de caracteres no reconocidos\n");
-     printf("13) Generar listado de directivas\n");
-     printf("14) Salir del reporte\n");
+     printf("4)  Generar listado de constantes\n");
+     printf("5)  Generar listado de operadores\\caracteres de puntuacion\n");
+     printf("6)  Generar listado de comentarios \n");
+     printf("7)  Generar listado de cadenas\\caracteres no reconocidos\n");
+     printf("8)  Generar listado de directivas\n");
+     printf("9)  Salir del reporte\n");
 }
 
 void imprimirOpciones()
@@ -342,7 +330,7 @@ void imprimirOpciones()
                printf("-------------------------------------------------------------------------");
                printf("\nUSTED INGRESO LA OPCION 1: GENERAR LISTA DE IDENTIFICADORES.\n");
                printf("-------------------------------------------------------------------------\n\n");
-               printf("Listado de identificadores encontrados y su cantidad de veces: \n");
+               printf("Listado de identificadores encontrados ordenados alfabeticamente y su cantidad de veces: \n");
                mostrarLista1(id);
                break;
 
@@ -364,64 +352,38 @@ void imprimirOpciones()
 
           case 4:
                printf("-------------------------------------------------------------------------");
-               printf("\nUSTED INGRESO LA OPCION 4: GENERAR LISTA DE CONSTANTES DECIMALES.\n");
+               printf("\nUSTED INGRESO LA OPCION 4: GENERAR LISTA DE CONSTANTES .\n");
                printf("-------------------------------------------------------------------------\n\n");
                printf("Listado de constantes decimales encontradas y el total acumulado:\n");
                mostrarLista1(cdec);
                printf("El total acumulado es: %d\n", sumarDecimales(cdec));
-               break;
-
-          case 5:
-               printf("-------------------------------------------------------------------------");
-               printf("\nUSTED INGRESO LA OPCION 5: GENERAR LISTA DE CONSTANTES OCTALES.\n");
                printf("-------------------------------------------------------------------------\n\n");
                printf("Listado de constantes octales encontradas y su valor en decimal:\n");
                mostrarLista1(coct);
-               break;
-
-          case 6:
-               printf("-------------------------------------------------------------------------");
-               printf("\nUSTED INGRESO LA OPCION 6: GENERAR LISTA DE CONSTANTES HEXADECIMALES.\n");
                printf("-------------------------------------------------------------------------\n\n");
                printf("Listado de constantes hexadecimales encontradas y su valor en decimal:\n");
                mostrarLista1(chex);
-               break;
-
-          case 7:
-               printf("-------------------------------------------------------------------------");
-               printf("\nUSTED INGRESO LA OPCION 7: GENERAR LISTA DE CONSTANTES REALES.\n");
                printf("-------------------------------------------------------------------------\n\n");
-               printf("Listado de constantes reales encontradas junto con el valor de su mantisa y parte entera:\n");
+               printf("Listado de constantes reales encontradas junto con la parte entera y el valor de su mantisa:\n");
                mostrarLista3(cre);
-               break;
-
-          case 8:
-               printf("-------------------------------------------------------------------------");
-               printf("\nUSTED INGRESO LA OPCION 8: GENERAR LISTA DE CONSTANTES CARACTER.\n");
                printf("-------------------------------------------------------------------------\n\n");
                printf("Listado de constantes caracter encontradas segun su orden de aparicion:\n");
                mostrarLista2(ccar);
                break;
-
-          case 9:
+          case 5:
                printf("-------------------------------------------------------------------------");
-               printf("\nUSTED INGRESO LA OPCION 9: GENERAR LISTA DE CARACTERES DE PUNTUACION.\n");
+               printf("\nUSTED INGRESO LA OPCION 5: GENERAR LISTA DE OPERADORES/CARACTERES DE PUNTUACION.\n");
                printf("-------------------------------------------------------------------------\n\n");
                printf("Listado de caracteres de puntuacion encontrados y la cantidad de veces que aparecen:\n");
+               mostrarLista1(cpu);
+               printf("-------------------------------------------------------------------------\n\n");
+               printf("Listado de operadores encontrados y la cantidad de veces que aparecen:\n");
                mostrarLista1(cop);
                break;
 
-          case 10:
+          case 6:
                printf("-------------------------------------------------------------------------");
-               printf("\nUSTED INGRESO LA OPCION 10: GENERAR LISTA DE CARACTERES DE OPERACION.\n");
-               printf("-------------------------------------------------------------------------\n\n");
-               printf("Listado de caracteres de operacion encontrados y la cantidad de veces que aparecen::\n");
-               mostrarLista1(cpu);
-               break;
-
-          case 11:
-               printf("-------------------------------------------------------------------------");
-               printf("\nUSTED INGRESO LA OPCION 11: GENERAR LISTA DE COMENTARIOS.\n");
+               printf("\nUSTED INGRESO LA OPCION 6: GENERAR LISTA DE COMENTARIOS.\n");
                printf("-------------------------------------------------------------------------\n\n");
                printf("Listado de comentarios encontrados multilinea:\n");
                mostrarLista2(comml);
@@ -429,26 +391,27 @@ void imprimirOpciones()
                mostrarLista2(coml);
                break;
 
-          case 12:
+          case 7:
                printf("-------------------------------------------------------------------------");
-               printf("\nUSTED INGRESO LA OPCION 12: GENERAR LISTA DE CARACTERES NO RECONOCIDOS.\n");
+               printf("\nUSTED INGRESO LA OPCION 7: GENERAR LISTA DE CARACTERES NO RECONOCIDOS.\n");
                printf("-------------------------------------------------------------------------\n\n");
                printf("Listado de cadenas y caracteres no reconocidos con su numero de linea:\n");
                mostrarLista1(ccarno); /*Modificar*/
+               //ACA VA CADENA NO RECONOCIDA FALTA
                break;
-          case 13:
+          case 8:
                printf("-------------------------------------------------------------------------");
-               printf("\nUSTED INGRESO LA OPCION 13: GENERAR LISTA DE DIRECTIVAS.\n");
+               printf("\nUSTED INGRESO LA OPCION 8: GENERAR LISTA DE DIRECTIVAS.\n");
                printf("-------------------------------------------------------------------------\n\n");
                printf("Listado de cadenas y directivas con su numero de linea:\n");
-               mostrarLista1(dir); /*Modificar*/
+               mostrarLista1(dir);
                break;
           }
 
           system("pause");
           system("cls");
 
-     } while (opcionIngresada != 14);
+     } while (opcionIngresada != 9);
      printf("-------------------------------------------------------------------------");
      printf("\n\t\t\tREPORTE FINALIZADO\n\n");
      printf("-------------------------------------------------------------------------\n\n");

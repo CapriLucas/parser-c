@@ -1,5 +1,5 @@
 #include <stdio.h>
-asd,da,asd?"\"hola\""+"mundo"do while kkasd int,asd,da,da lalaa
+kkasd asd,da,asd?"\"hola\""+"mundo"do while  int,asd,da,da lalaa,
 //123123 sad
 /*asd
 asd */ ?'2"wsd" ""sad\" " "sak134" (12++3+)'\''\0''\n'\0
@@ -10,8 +10,10 @@ do 2 12 12
 0xff'x' '3' 'm'
 for
 /* loca*///asd
-for
-
+fora
+laala
+luna
+arabias
 36
 032
 0x25125
