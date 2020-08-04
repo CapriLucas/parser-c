@@ -299,6 +299,48 @@ char *devolverCadena(char *cadena)
 }
 
 
+/*void generarReporteCompleto(struct Nodo1*lista1){
+       FILE * F;
+       struct Nodo1* aux=NULL;
+       int val;
+       char* cad;
+       lista1 = aux;
+
+     F=fopen("Salida.txt","w");
+     while (!feof(F)){
+    
+     while(aux != NULL){
+          val=aux->nro;
+          cad=aux->cadena;
+          fwrite(&val,sizeof(val),1,F);
+          fwrite(&cad,sizeof(cad),1,F);
+          aux= aux-> sig;
+
+     }
+     }
+     fclose(F);
+}
+*///otro intento fallido con fwrite jajaja
+
+void generarReporteCompleto(struct Nodo1*lista1){  
+       FILE * F;
+      struct Nodo1* aux=NULL;
+      aux=lista1;
+
+     F=fopen("Salida.txt","w");
+    
+     while(aux != NULL){
+          fputs(aux->cadena,F);
+          fputc(aux->nro,F);
+          aux= aux-> sig;
+     }
+     fflush(F);
+     fclose(F);
+}
+
+//no se si viene por aca la cosa, quise hacer una funcion para imprimir en un archivo de texto todas las listas, probe pasando solamente por parametro la de id,
+//pero me imprime cualquier cosa ¿??
+
 void opciones()
 {
      printf("\nINGRESE LA OPCION DE LO QUE DESEA HACER:\n\n");
@@ -310,7 +352,8 @@ void opciones()
      printf("6)  Generar listado de comentarios \n");
      printf("7)  Generar listado de cadenas\\caracteres no reconocidos\n");
      printf("8)  Generar listado de directivas\n");
-     printf("9)  Salir del reporte\n");
+     printf("9)  Generar reporte completo\n");
+     printf("10) Salir del reporte\n");
 }
 
 void imprimirOpciones()
@@ -399,6 +442,7 @@ void imprimirOpciones()
                mostrarLista1(ccarno); /*Modificar*/
                //ACA VA CADENA NO RECONOCIDA FALTA
                break;
+
           case 8:
                printf("-------------------------------------------------------------------------");
                printf("\nUSTED INGRESO LA OPCION 8: GENERAR LISTA DE DIRECTIVAS.\n");
@@ -406,12 +450,20 @@ void imprimirOpciones()
                printf("Listado de cadenas y directivas con su numero de linea:\n");
                mostrarLista1(dir);
                break;
+
+          case 9: 
+               printf("-------------------------------------------------------------------------");
+               printf("\nUSTED INGRESO LA OPCION 9: GENERAR REPORTE COMPLETO.\n");
+               printf("-------------------------------------------------------------------------\n\n");
+               printf("REPORTE GENERADO EXITOSAMENTE.\n");
+               generarReporteCompleto(id);
+               break;
           }
 
           system("pause");
           system("cls");
 
-     } while (opcionIngresada != 9);
+     } while (opcionIngresada != 10);
      printf("-------------------------------------------------------------------------");
      printf("\n\t\t\tREPORTE FINALIZADO\n\n");
      printf("-------------------------------------------------------------------------\n\n");

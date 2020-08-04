@@ -50,18 +50,15 @@ int nlinea = 1;
 
 //   COSAS PARA ARREGLAR - AGREGAR
 
-//Faltan algunos COP y CPU
-//ordenar la prioridad de reglas esto para el archivo.c ----->"vean la bnf"<--------
+//Corregi los cop y cpu pero igual hay dudas con algunos que representan ambos (ejemplo los () y la ,)
 //Probar reglas una vez completadas en el .c pongan codigo bien escrito de alguna pagina o trabajos 
 //anteriores que hayan hecho
-
-//falta una regla para cadena no reconocida 
 //si aparece \n \t %d %f etc en una cadena tambien se imprime "hola%d\n" hay que corregir eso o dejarlo asi nomas 
-//reordene la lista de opciones, faltaria agregar una que de el reporte completo por si acaso
+//Falta reporte completo
+//Corregir la regla de la directiva #define, hay mas casos, los agregue en archivo de entrada
 
 //-------------------------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------------------------
-//directivas ok regla descomentando y uniendolo a la regla - definiciones revisar
 
 
 %}
@@ -72,77 +69,75 @@ CEOCTAL		         0[0-7]*
 CEHEXA		         0[xX][A-Fa-f0-9]+
 CREAL	             [0-9]*"."[0-9]+([eE]([\+\-]?)[0-9]+)?[FfLl]?|[0-9]+"."([eE][\+\-]?[0-9]+)?[FfLl]?|[0-9]+([eE][\+\-]?[0-9]+)[FfLl]?
 CARACTER             '.'|'\\0'|'\\n'
-PR_DATO	     int|char|float|bool|double|long|short|unsigned|signed|typedef|const|enum|struct
-PR_CONDICIONAL    if|else|switch|case|break|return|default
-PR_ITERATIVA while|for|do 
-PR_OTRO      auto|continue|extern|goto|register|static|union|void|volatile
+PR_DATO	             int|char|float|bool|double|long|short|unsigned|signed|typedef|const|enum|struct
+PR_CONDICIONAL       if|else|switch|case|break|return|default
+PR_ITERATIVA         while|for|do 
+PR_OTRO              auto|continue|extern|goto|register|static|union|void|volatile
 
-LITCAD        \"(\\.|[^\\"])*\"
+LITCAD               \"(\\.|[^\\"])*\"
 
-PR    {PR_DATO}|{PR_CONDICIONAL}|{PR_ITERATIVA}|{PR_OTRO}
+PR                   {PR_DATO}|{PR_CONDICIONAL}|{PR_ITERATIVA}|{PR_OTRO}
 
 ID       	         [a-zA-Z_][a-zA-Z0-9_]*
 
-COP                  "++"|"*"|"+"|"&"|"!"|"sizeof"|"/"|"-"|"--"|"<"|">"|"<="|">="|"=="|"!="|"="
+COP                  "++"|"*"|"+"|"&"|"!"|"sizeof"|"/"|"-"|"--"|"<"|">"|"<="|">="|"=="|"!="|"="|"&&"|"?:"|"+="|"~"|"%"|"<<"|">>"|"|"|"^"|"||"
 CPU                  "("|")"|"{"|"}"|";"|","|":"  
 
-COM_MULT \/\*(\*+[^\*\/]|[^\*])*\*+\/
-COM_SIMP   \/\/.*
+COM_MULT             \/\*(\*+[^\*\/]|[^\*])*\*+\/
+COM_SIMP             \/\/.*
 
 /*  /[ |\n|COMENTARIOS_MULTIPLES|COMENTARIOS_SIMPLES]*/
 %%
 
-{DIRECTIVA} {printf("La cadena %s representa una directiva al compilador\n", yytext);
+{DIRECTIVA}         {printf("La cadena %s representa una directiva al compilador\n", yytext);
                         dir = verificarCadena2(dir,yytext,nlinea);}
 
-{CEDECIMAL}             {printf("La cadena %s representa una constante entera decimal\n", yytext);
-                        cdec = verificarCadena(cdec,yytext);}
-
-{CEOCTAL}              {printf("La cadena %s representa una constante entera octal\n", yytext);
-                        int oct=(int)strtol(yytext, NULL, 0);
-                        coct = verificarCadena2(coct,yytext,oct);
-                        }
-
-{CEHEXA}                {printf("La cadena %s representa una constante entera hexadecimal\n", yytext);
-                        int hex=(int)strtol(yytext, NULL, 0);
-                        chex = verificarCadena2(chex,yytext,hex);
-                        } 
-
-{CREAL}                 {printf("La cadena %s representa una constante real\n", yytext);
-                        cre = verificarCadena4(cre,yytext);}
-
-{CARACTER}            {printf("La cadena %s representa un caracter\n", yytext);
-                        ccar = verificarCadena3(ccar,yytext);}
-
-{COM_MULT} {printf("La cadena %s representa un comentario de multiples lineas\n", yytext);
-                        comml = verificarCadena3(comml,yytext);} 
-
-{COM_SIMP}   {printf("La cadena %s representa un comentario simple\n", yytext);
-                        coml = verificarCadena3(coml,yytext);} 
-
-{PR}     {printf("La cadena %s representa una palabra reservada para representar un tipo de dato\n", yytext);
+{PR}                {printf("La cadena %s representa una palabra reservada para representar un tipo de dato\n", yytext);
                         pr = verificarCadena3(pr,yytext);}
 
-{COP}                 {printf("La cadena %s representa un caracter de operacion\n", yytext);
+{ID}                {printf("La cadena %s representa un identificador\n", yytext);
+                        id =verificarCadena5(id,yytext);}
+
+{CEDECIMAL}         {printf("La cadena %s representa una constante entera decimal\n", yytext);
+                        cdec = verificarCadena(cdec,yytext);}
+
+{CEOCTAL}           {printf("La cadena %s representa una constante entera octal\n", yytext);
+                        int oct=(int)strtol(yytext, NULL, 0);
+                        coct = verificarCadena2(coct,yytext,oct);}
+
+{CEHEXA}            {printf("La cadena %s representa una constante entera hexadecimal\n", yytext);
+                        int hex=(int)strtol(yytext, NULL, 0);
+                        chex = verificarCadena2(chex,yytext,hex);} 
+
+{CREAL}             {printf("La cadena %s representa una constante real\n", yytext);
+                        cre = verificarCadena4(cre,yytext);}
+
+{CARACTER}          {printf("La cadena %s representa un caracter\n", yytext);
+                        ccar = verificarCadena3(ccar,yytext);}
+
+{LITCAD}            {printf("La cadena %s representa un literal cadena de %d caracteres\n", yytext,yyleng);
+                          char * cad=devolverCadena(yytext);
+                          lt =verificarCadena2(lt,cad,strlen(cad));}
+
+{COP}               {printf("La cadena %s representa un caracter de operacion\n", yytext);
                           cop = verificarCadena(cop,yytext);}
 
 {CPU}               {printf("La cadena %s representa un caracter de puntuacion\n", yytext);
                           cpu = verificarCadena(cpu,yytext);}
 
-{ID}                {printf("La cadena %s representa un identificador\n", yytext);
-                          id =verificarCadena5(id,yytext);}
-              
-{LITCAD}        {printf("La cadena %s representa un literal cadena de %d caracteres\n", yytext,yyleng);
-                          char * cad=devolverCadena(yytext);
-                          lt =verificarCadena2(lt,cad,strlen(cad));}
+{COM_MULT}          {printf("La cadena %s representa un comentario de multiples lineas\n", yytext);
+                        comml = verificarCadena3(comml,yytext);} 
+
+{COM_SIMP}          {printf("La cadena %s representa un comentario simple\n", yytext);
+                        coml = verificarCadena3(coml,yytext);} 
+
 
 \n  {nlinea +=1;}    
 [\t ]+
-(.)  {printf("La cadena %s representa un caracter no reconocido\n", yytext);
-        ccarno = verificarCadena2(ccarno,yytext,nlinea);}
 
+(.)                 {printf("La cadena %s representa un caracter no reconocido\n", yytext);
+                        ccarno = verificarCadena2(ccarno,yytext,nlinea);}
 
-       
 %%
 
 
@@ -159,25 +154,16 @@ int main(){
 
 
 
-
-
-
-
-
-
-
-
-
     //COMENTARIOS, DUDAS Y CAMBIOS
 
-    //Agregue una definicion para #define, pero me parece que queda otra mas, la de los ejemplos que estan en el archivo de entrada funcionan bien
-    //Agregue un par de caracteres de puntuacion y operacion que faltaban (Puede que falte alguno todavia, revisar lo del sizeof)
-    
-    //Agregue una funcion devolvercadena
-    //Estan todas las listas agregue directivas a las opciones 
-    //Agregue un entrada.c con una funcion simple 
-    //Agregue la parte que devuelve parte mantisa y entera en verificar4 ya que solo lo usamos en una regla
-    
+    //ordene las reglas segun la bnf del libro
+    //agregue mas caracteres de puntuacion y operacion(ver lo que puse arriba)
+    //revisar en la libreria, empece una funcion para imprimir la lista de cada cosa pedida en un archivo txt nuevo de salida, pero me imprime 
+    //CUALQUIER cosa ?¿??
+    /* Los comentarios yo los dejaria asi, osea que aparezca "La cadena //ejemplo representa un comentario" y lo mismo con /* en los de multiple linea,
+    si los sacamos parece que son identificadores, el hecho de que tengan //  creo que hace que parezcan mas comentario que otra cosa             */
+    /* "falta una regla para cadena no reconocida" --- te referis a la regla (.)? porque probe y al parecer funciona bien, sino habria que en una regla
+    poner todas las cobinaciones de simbolos y cosas que no estan en las otras */
 
 
  // COSAS CORREGIDAS Y LISTAS (Borrar despues)
@@ -185,6 +171,10 @@ int main(){
 //No deberia ser un archivo .c como entrada? 
 //Si solo use el txt para ir probando antes de mandarlo al .c ya que no me andara hinchando con los errores
 //lo vuelvo a poner para hacer una pre prueba en el txt y luego el mismo en .c
+//Agregue una funcion devolvercadena
+//Estan todas las listas agregue directivas a las opciones 
+//Agregue un entrada.c con una funcion simple 
+//Agregue la parte que devuelve parte mantisa y entera en verificar4 ya que solo lo usamos en una regla
 
 
 
