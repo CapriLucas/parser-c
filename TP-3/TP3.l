@@ -6,6 +6,7 @@
 #include<stdlib.h> /* */
 #include<string.h>
 #include        "funcionesTP3.h"
+ # define sa(as,asa) laslal?&
 int nlinea = 1;
 
 
@@ -51,11 +52,12 @@ int nlinea = 1;
 //   COSAS PARA ARREGLAR - AGREGAR
 
 //Corregi los cop y cpu pero igual hay dudas con algunos que representan ambos (ejemplo los () y la ,)
+//En esos casos podriamos ponerlos en ambas y hacer unas erx en esos casos, sino ponerlo en cualquiera de los 2  
 //Probar reglas una vez completadas en el .c pongan codigo bien escrito de alguna pagina o trabajos 
 //anteriores que hayan hecho
 //si aparece \n \t %d %f etc en una cadena tambien se imprime "hola%d\n" hay que corregir eso o dejarlo asi nomas 
-//Falta reporte completo
-//Corregir la regla de la directiva #define, hay mas casos, los agregue en archivo de entrada
+//Reporte completo listo
+//Corregi lo del #define hay que probar
 
 //-------------------------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------------------------
@@ -63,7 +65,7 @@ int nlinea = 1;
 
 %}
 
-DIRECTIVA            "#include"[ ]*(\".*".h"\"|"<".*".h>")|"#define"[ ]+{ID}[ ]+({CEDECIMAL}|{CEHEXA}|{CEOCTAL}|{CREAL})
+DIRECTIVA            [ ]*"#"[ ]*"include"[ ]*(\".*".h"\"|"<".*".h>")|[ ]*"#"[ ]*"define"[ ]+{ID}[ ]*("("[ ]*({ID}[ ]*","[ ]*)*{ID}[ ]*")")?[ ]+([^#\n]+)?
 CEDECIMAL 	         [1-9][0-9]* 
 CEOCTAL		         0[0-7]*
 CEHEXA		         0[xX][A-Fa-f0-9]+
@@ -86,10 +88,10 @@ CPU                  "("|")"|"{"|"}"|";"|","|":"
 COM_MULT             \/\*(\*+[^\*\/]|[^\*])*\*+\/
 COM_SIMP             \/\/.*
 
-/*  /[ |\n|COMENTARIOS_MULTIPLES|COMENTARIOS_SIMPLES]*/
+/*  /[ |\n|COMENTARIOS_MULTIPLES|COMENTARIOS_SIMPLES]      Esto sirve puede usarse despues de {DIRECTIVA}*/  
 %%
 
-{DIRECTIVA}         {printf("La cadena %s representa una directiva al compilador\n", yytext);
+{DIRECTIVA}     {printf("La cadena %s representa una directiva al compilador\n", yytext);
                         dir = verificarCadena2(dir,yytext,nlinea);}
 
 {PR}                {printf("La cadena %s representa una palabra reservada para representar un tipo de dato\n", yytext);
@@ -139,7 +141,15 @@ COM_SIMP             \/\/.*
                         ccarno = verificarCadena2(ccarno,yytext,nlinea);}
 
 %%
-
+/* NOTA: para la ultima erx de cadena no reconocida ya se probo:
+     (.)(.)+/[ ]
+     [^ ]+/[ ]
+     (.)* /[]
+     (.)+/[]  
+     {REGLAS}{REGLAS}+/[ ]
+     {REGLAS}(REGLAS|[^ ])+
+     Descubri que el espacio se puede obviar en algunos casos del codigo asi que es opcional
+ */
 
 int main(){
     
@@ -156,25 +166,24 @@ int main(){
 
     //COMENTARIOS, DUDAS Y CAMBIOS
 
-    //ordene las reglas segun la bnf del libro
-    //agregue mas caracteres de puntuacion y operacion(ver lo que puse arriba)
-    //revisar en la libreria, empece una funcion para imprimir la lista de cada cosa pedida en un archivo txt nuevo de salida, pero me imprime 
-    //CUALQUIER cosa ?¿??
+        
     /* Los comentarios yo los dejaria asi, osea que aparezca "La cadena //ejemplo representa un comentario" y lo mismo con /* en los de multiple linea,
     si los sacamos parece que son identificadores, el hecho de que tengan //  creo que hace que parezcan mas comentario que otra cosa             */
     /* "falta una regla para cadena no reconocida" --- te referis a la regla (.)? porque probe y al parecer funciona bien, sino habria que en una regla
     poner todas las cobinaciones de simbolos y cosas que no estan en las otras */
+        //De eso hablo estaba intentando por dias algo asi tipo{REGLAS}{REGLAS}+ pero si tocaba idid == id o cdeccdec == cdec
+        // esos casos presentan problema quiza alguno mas no he probado todas las posibilidades
+        //EN REGLAS habia puesto todas las que hicimos, obvio que tambien estan [%&$#!] que no los puse
+        // La idea es que si viene tipo 123abc o ABC123 lo tome como cadena no reconocida
+
 
 
  // COSAS CORREGIDAS Y LISTAS (Borrar despues)
 
-//No deberia ser un archivo .c como entrada? 
-//Si solo use el txt para ir probando antes de mandarlo al .c ya que no me andara hinchando con los errores
-//lo vuelvo a poner para hacer una pre prueba en el txt y luego el mismo en .c
-//Agregue una funcion devolvercadena
-//Estan todas las listas agregue directivas a las opciones 
-//Agregue un entrada.c con una funcion simple 
-//Agregue la parte que devuelve parte mantisa y entera en verificar4 ya que solo lo usamos en una regla
 
-
-
+   //agregue mas caracteres de puntuacion y operacion(ver lo que puse arriba)
+    //revisar en la libreria, empece una funcion para imprimir la lista de cada cosa pedida en un archivo txt nuevo de salida, pero me imprime 
+    //CUALQUIER cosa ?¿??
+        //no hace falta ninguna func estaba pensando que seria mas facil poner todo lo de las opciones
+        // en la op9 e imprimir todo lo que tengamos osea los mostrar lista todo seguidos y separarlos con printf
+        

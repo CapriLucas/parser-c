@@ -36,13 +36,15 @@ struct Nodo2 *comml = NULL;
 struct Nodo1 *ccarno = NULL;
 struct Nodo1 *dir = NULL;
 
-char* aMiniscula(char * cadena){
-int i=0;
-char*aux = (char *)malloc((strlen(cadena) + 1) * sizeof(char));
-strcpy(aux,cadena);
-     for (i; aux[i] != '\0'; ++i){
-		aux[i] = tolower(aux[i]);
-	}
+char *aMiniscula(char *cadena)
+{
+     int i = 0;
+     char *aux = (char *)malloc((strlen(cadena) + 1) * sizeof(char));
+     strcpy(aux, cadena);
+     for (i; aux[i] != '\0'; ++i)
+     {
+          aux[i] = tolower(aux[i]);
+     }
      return aux;
 }
 struct Nodo1 *ordenarAgregar(struct Nodo1 *punt, char *cad, int numero)
@@ -74,7 +76,7 @@ struct Nodo1 *ordenarAgregar(struct Nodo1 *punt, char *cad, int numero)
 }
 struct Nodo1 *agregarALista(struct Nodo1 *puntero, char *cadenaNueva, int numero)
 {
-     struct Nodo1 *nuevo = (struct Nodo1 *)malloc((strlen(cadenaNueva) + 1)*sizeof(struct Nodo1));
+     struct Nodo1 *nuevo = (struct Nodo1 *)malloc((strlen(cadenaNueva) + 1) * sizeof(struct Nodo1));
      nuevo->cadena = cadenaNueva;
      nuevo->nro = numero;
      nuevo->sig = NULL;
@@ -96,7 +98,7 @@ struct Nodo1 *agregarALista(struct Nodo1 *puntero, char *cadenaNueva, int numero
 }
 struct Nodo2 *agregarALista2(struct Nodo2 *puntero, char *cadenaNueva)
 {
-     struct Nodo2 *nuevo = (struct Nodo2 *)malloc((strlen(cadenaNueva) + 1)*sizeof(struct Nodo2));
+     struct Nodo2 *nuevo = (struct Nodo2 *)malloc((strlen(cadenaNueva) + 1) * sizeof(struct Nodo2));
      nuevo->cadena = cadenaNueva;
      nuevo->sig = NULL;
      if (puntero != NULL)
@@ -119,7 +121,7 @@ struct Nodo2 *agregarALista2(struct Nodo2 *puntero, char *cadenaNueva)
 
 struct Nodo3 *agregarALista3(struct Nodo3 *puntero, char *cadenaNueva, int ent, double mant)
 {
-     struct Nodo3 *nuevo = (struct Nodo3 *)malloc((strlen(cadenaNueva) + 1)*sizeof(struct Nodo3));
+     struct Nodo3 *nuevo = (struct Nodo3 *)malloc((strlen(cadenaNueva) + 1) * sizeof(struct Nodo3));
      nuevo->mantisa = mant;
      nuevo->entera = ent;
      nuevo->cadena = cadenaNueva;
@@ -223,7 +225,7 @@ struct Nodo2 *verificarCadena3(struct Nodo2 *punt, char *cadena)
 {
      char *palabra = (char *)malloc((strlen(cadena) + 1) * sizeof(char *));
      strcpy(palabra, cadena);
-          punt = agregarALista2(punt, palabra);
+     punt = agregarALista2(punt, palabra);
      return punt;
 }
 struct Nodo3 *verificarCadena4(struct Nodo3 *punt, char *cadena)
@@ -298,7 +300,6 @@ char *devolverCadena(char *cadena)
      return palabra;
 }
 
-
 /*void generarReporteCompleto(struct Nodo1*lista1){
        FILE * F;
        struct Nodo1* aux=NULL;
@@ -320,9 +321,10 @@ char *devolverCadena(char *cadena)
      }
      fclose(F);
 }
-*///otro intento fallido con fwrite jajaja
+*/
+//otro intento fallido con fwrite jajaja
 
-void generarReporteCompleto(struct Nodo1*lista1){  
+/* void generarReporteCompleto(struct Nodo1*lista1){  
        FILE * F;
       struct Nodo1* aux=NULL;
       aux=lista1;
@@ -337,10 +339,51 @@ void generarReporteCompleto(struct Nodo1*lista1){
      fflush(F);
      fclose(F);
 }
-
-//no se si viene por aca la cosa, quise hacer una funcion para imprimir en un archivo de texto todas las listas, probe pasando solamente por parametro la de id,
-//pero me imprime cualquier cosa ¿??
-
+ */
+void generarReporteCompleto()
+{
+     printf("Listado de identificadores encontrados ordenados alfabeticamente y su cantidad de veces: \n");
+     mostrarLista1(id);
+     printf("-------------------------------------------------------------------------\n\n");
+     printf("Listado de literales cadena encontrados y la longitud de los mismos:\n");
+     mostrarLista1(lt);
+     printf("-------------------------------------------------------------------------\n\n");
+     printf("Listado de palabras reservadas encontradas en el orden en el que se encontraron:\n");
+     mostrarLista2(pr);
+     printf("-------------------------------------------------------------------------\n\n");
+     printf("Listado de constantes decimales encontradas y el total acumulado:\n");
+     mostrarLista1(cdec);
+     printf("El total acumulado es: %d\n", sumarDecimales(cdec));
+     printf("-------------------------------------------------------------------------\n\n");
+     printf("Listado de constantes octales encontradas y su valor en decimal:\n");
+     mostrarLista1(coct);
+     printf("-------------------------------------------------------------------------\n\n");
+     printf("Listado de constantes hexadecimales encontradas y su valor en decimal:\n");
+     mostrarLista1(chex);
+     printf("-------------------------------------------------------------------------\n\n");
+     printf("Listado de constantes reales encontradas junto con la parte entera y el valor de su mantisa:\n");
+     mostrarLista3(cre);
+     printf("-------------------------------------------------------------------------\n\n");
+     printf("Listado de constantes caracter encontradas segun su orden de aparicion:\n");
+     mostrarLista2(ccar);
+     printf("-------------------------------------------------------------------------\n\n");
+     printf("Listado de caracteres de puntuacion encontrados y la cantidad de veces que aparecen:\n");
+     mostrarLista1(cpu);
+     printf("-------------------------------------------------------------------------\n\n");
+     printf("Listado de operadores encontrados y la cantidad de veces que aparecen:\n");
+     mostrarLista1(cop);
+     printf("-------------------------------------------------------------------------\n\n");
+     printf("Listado de comentarios encontrados multilinea:\n");
+     mostrarLista2(comml);
+     printf("Listado de comentarios encontrados simples:\n");
+     mostrarLista2(coml);
+     printf("-------------------------------------------------------------------------\n\n");
+     printf("Listado de cadenas y caracteres no reconocidos con su numero de linea:\n");
+     mostrarLista1(ccarno);
+     printf("-------------------------------------------------------------------------\n\n");
+     printf("Listado de cadenas y directivas con su numero de linea:\n");
+     mostrarLista1(dir);
+}
 void opciones()
 {
      printf("\nINGRESE LA OPCION DE LO QUE DESEA HACER:\n\n");
@@ -451,7 +494,7 @@ void imprimirOpciones()
                mostrarLista1(dir);
                break;
 
-          case 9: 
+          case 9:
                printf("-------------------------------------------------------------------------");
                printf("\nUSTED INGRESO LA OPCION 9: GENERAR REPORTE COMPLETO.\n");
                printf("-------------------------------------------------------------------------\n\n");
