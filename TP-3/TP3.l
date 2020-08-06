@@ -29,19 +29,19 @@ int nlinea = 1;
 //      Comentarios de múltiples líneas x
 
 //Reporte
-//  1 Listado de identificadores encontrados indicando la cantidad de veces que aparece cada uno de ellos. 
-//   El listado debe estar ordenado alfabéticamente.
-//  2 Listado de literales cadena encontrados indicando la longitud de los mismos.
-//  3 Listado de palabras reservadas en el orden en el que han aparecido.
-//  4 Listado de constantes indicando según su tipo:
-//          Para las constantes octales indicar su valor entero decimal.
-//          Para las constante hexadecimales indicar su valor entero decimal.
-//          Para las constantes decimales indicar el valor de cada una y el total acumulado de sumar todas ellas.
-//          Para las constantes reales indicar el valor de su mantisa y parte entera.
-//          Para las constantes caracter, enumerarlas según orden de aparición. 
-//  5 Listado de operadores/caracteres de puntuación indicando cantidad de veces que aparecen.
-//  6 Listado de comentarios encontrados distinguiendo si se trata de comentarios de una línea o múltiples líneas.
-//  7 Listado de cadenas y/o caracteres no reconocidos indicando el número de línea.
+// 1 Listado de identificadores encontrados indicando la cantidad de veces que aparece cada uno de ellos. 
+//  El listado debe estar ordenado alfabéticamente. OK
+// 2 Listado de literales cadena encontrados indicando la longitud de los mismos. OK
+// 3 Listado de palabras reservadas en el orden en el que han aparecido. OK
+// 4 Listado de constantes indicando según su tipo:
+//      Para las constantes octales indicar su valor entero decimal. OK
+//      Para las constante hexadecimales indicar su valor entero decimal. OK
+//      Para las constantes decimales indicar el valor de cada una y el total acumulado de sumar todas ellas. 
+//      Para las constantes reales indicar el valor de su mantisa y parte entera. OK
+//      Para las constantes caracter, enumerarlas según orden de aparición. OK
+// 5 Listado de operadores/caracteres de puntuación indicando cantidad de veces que aparecen. OK
+// 6 Listado de comentarios encontrados distinguiendo si se trata de comentarios de una línea o múltiples líneas. OK
+// 7 Listado de cadenas y/o caracteres no reconocidos indicando el número de línea. 
 
 // 8 Desafío opcional
 //  Adicionar al analizador léxico el reconocimiento de las directivas del precompilador #Include #Define.
@@ -51,13 +51,20 @@ int nlinea = 1;
 
 //   COSAS PARA ARREGLAR - AGREGAR
 
-//Corregi los cop y cpu pero igual hay dudas con algunos que representan ambos (ejemplo los () y la ,)
-//En esos casos podriamos ponerlos en ambas y hacer unas erx en esos casos, sino ponerlo en cualquiera de los 2  
-//Probar reglas una vez completadas en el .c pongan codigo bien escrito de alguna pagina o trabajos 
-//anteriores que hayan hecho
+//cop y cpu encontrar los que se repiten en ambos,opciones:
+/*1) Lo obviamos y lo ponemos en el que sea prioridad esencial, no en el que es caso especial
+2) Hacemos una condicion de arranque o de consecuencia(no se como se dice) al lado de las reglas de cpu y cop*/
+//Probar reglas una vez completadas en el .c pongan codigo bien escrito de alguna pagina o trabajos hechos
+//#define probar
+//Simplificar codigo 
+// borrar funciones comentadas una vez terminemos el tp
+
+//Se pueden obviar:
 //si aparece \n \t %d %f etc en una cadena tambien se imprime "hola%d\n" hay que corregir eso o dejarlo asi nomas 
-//Reporte completo listo
-//Corregi lo del #define hay que probar
+/* lista de constantes decimales solo pide su valor y el total hicimos algo de mas como mostrar las veces que se
+repitio una misma constante puede cambiarse a que solo muestre el valor y repeticiones no se cuentan se 
+imprime aunque salga repetido el valor */ 
+//comentar que hace cada funcion y poner nombres mas acordes a la funcion en algunos casos
 
 //-------------------------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------------------------
@@ -65,29 +72,27 @@ int nlinea = 1;
 
 %}
 
-DIRECTIVA            [ ]*"#"[ ]*"include"[ ]*(\".*".h"\"|"<".*".h>")|[ ]*"#"[ ]*"define"[ ]+{ID}[ ]*("("[ ]*({ID}[ ]*","[ ]*)*{ID}[ ]*")")?[ ]+([^#\n]+)?
+DIRECTIVA            "#"[ ]*"include"[ ]*(\".*".h"\"|"<".*".h>")|"#"[ ]*"define"[ ]+{ID}[ ]*("("[ ]*({ID}[ ]*","[ ]*)*{ID}[ ]*")")?[ ]+([^#\n]+)?
+
 CEDECIMAL 	         [1-9][0-9]* 
 CEOCTAL		         0[0-7]*
 CEHEXA		         0[xX][A-Fa-f0-9]+
 CREAL	             [0-9]*"."[0-9]+([eE]([\+\-]?)[0-9]+)?[FfLl]?|[0-9]+"."([eE][\+\-]?[0-9]+)?[FfLl]?|[0-9]+([eE][\+\-]?[0-9]+)[FfLl]?
 CARACTER             '.'|'\\0'|'\\n'
+CONSTANTES          {CEDECIMAL}|{CEOCTAL}|{CEHEXA}|{CREAL}
+
 PR_DATO	             int|char|float|bool|double|long|short|unsigned|signed|typedef|const|enum|struct
 PR_CONDICIONAL       if|else|switch|case|break|return|default
 PR_ITERATIVA         while|for|do 
 PR_OTRO              auto|continue|extern|goto|register|static|union|void|volatile
-
-LITCAD               \"(\\.|[^\\"])*\"
-
 PR                   {PR_DATO}|{PR_CONDICIONAL}|{PR_ITERATIVA}|{PR_OTRO}
 
+LITCAD               \"(\\.|[^\\"])*\"
 ID       	         [a-zA-Z_][a-zA-Z0-9_]*
-
 COP                  "++"|"*"|"+"|"&"|"!"|"sizeof"|"/"|"-"|"--"|"<"|">"|"<="|">="|"=="|"!="|"="|"&&"|"?:"|"+="|"~"|"%"|"<<"|">>"|"|"|"^"|"||"
 CPU                  "("|")"|"{"|"}"|";"|","|":"  
-
 COM_MULT             \/\*(\*+[^\*\/]|[^\*])*\*+\/
 COM_SIMP             \/\/.*
-
 /*  /[ |\n|COMENTARIOS_MULTIPLES|COMENTARIOS_SIMPLES]      Esto sirve puede usarse despues de {DIRECTIVA}*/  
 %%
 
@@ -133,13 +138,12 @@ COM_SIMP             \/\/.*
 {COM_SIMP}          {printf("La cadena %s representa un comentario simple\n", yytext);
                         coml = verificarCadena3(coml,yytext);} 
 
-
-\n  {nlinea +=1;}    
-[\t ]+
-
+\n                  {nlinea +=1;}    
+[\t ]+              //Se come los espacios
 (.)                 {printf("La cadena %s representa un caracter no reconocido\n", yytext);
                         ccarno = verificarCadena2(ccarno,yytext,nlinea);}
-
+{CONSTANTES}{ID}+ {printf("La cadena %s representa un caracter no reconocido\n", yytext);
+                        ccarno = verificarCadena2(ccarno,yytext,nlinea);}
 %%
 /* NOTA: para la ultima erx de cadena no reconocida ya se probo:
      (.)(.)+/[ ]
@@ -155,9 +159,6 @@ int main(){
     
     yyin = fopen("entrada.c","r");
     yylex();
-    int print = strcmp("alv","aca");
-    printf("%d",print);
-    
     imprimirOpciones();
     return 0;
 }
@@ -167,23 +168,12 @@ int main(){
     //COMENTARIOS, DUDAS Y CAMBIOS
 
         
-    /* Los comentarios yo los dejaria asi, osea que aparezca "La cadena //ejemplo representa un comentario" y lo mismo con /* en los de multiple linea,
-    si los sacamos parece que son identificadores, el hecho de que tengan //  creo que hace que parezcan mas comentario que otra cosa             */
-    /* "falta una regla para cadena no reconocida" --- te referis a la regla (.)? porque probe y al parecer funciona bien, sino habria que en una regla
-    poner todas las cobinaciones de simbolos y cosas que no estan en las otras */
-        //De eso hablo estaba intentando por dias algo asi tipo{REGLAS}{REGLAS}+ pero si tocaba idid == id o cdeccdec == cdec
-        // esos casos presentan problema quiza alguno mas no he probado todas las posibilidades
-        //EN REGLAS habia puesto todas las que hicimos, obvio que tambien estan [%&$#!] que no los puse
-        // La idea es que si viene tipo 123abc o ABC123 lo tome como cadena no reconocida
-
-
-
+    
+    /* Le agregue la regla para cadenas no reconocidas por el momento queda asi
+    Cambie la funcion aMiniscula por un strcasecmp() para simplificar codigo
+    Hice una funcion para imprimir constantes para no tener mucho codigo repetido*/
+    
  // COSAS CORREGIDAS Y LISTAS (Borrar despues)
 
-
-   //agregue mas caracteres de puntuacion y operacion(ver lo que puse arriba)
-    //revisar en la libreria, empece una funcion para imprimir la lista de cada cosa pedida en un archivo txt nuevo de salida, pero me imprime 
-    //CUALQUIER cosa ?¿??
-        //no hace falta ninguna func estaba pensando que seria mas facil poner todo lo de las opciones
-        // en la op9 e imprimir todo lo que tengamos osea los mostrar lista todo seguidos y separarlos con printf
-        
+/* Los comentarios yo los dejaria asi, osea que aparezca "La cadena //ejemplo representa un comentario" y lo mismo con /* en los de multiple linea,
+    si los sacamos parece que son identificadores, el hecho de que tengan //  creo que hace que parezcan mas comentario que otra cosa             */

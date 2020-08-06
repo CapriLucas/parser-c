@@ -36,7 +36,7 @@ struct Nodo2 *comml = NULL;
 struct Nodo1 *ccarno = NULL;
 struct Nodo1 *dir = NULL;
 
-char *aMiniscula(char *cadena)
+/* char *aMiniscula(char *cadena)
 {
      int i = 0;
      char *aux = (char *)malloc((strlen(cadena) + 1) * sizeof(char));
@@ -46,7 +46,7 @@ char *aMiniscula(char *cadena)
           aux[i] = tolower(aux[i]);
      }
      return aux;
-}
+} */
 struct Nodo1 *ordenarAgregar(struct Nodo1 *punt, char *cad, int numero)
 {
      struct Nodo1 *nuevo = (struct Nodo1 *)malloc((strlen(cad) + 1) * sizeof(struct Nodo1));
@@ -55,7 +55,7 @@ struct Nodo1 *ordenarAgregar(struct Nodo1 *punt, char *cad, int numero)
      nuevo->sig = NULL;
      struct Nodo1 *aux = punt;
      struct Nodo1 *ant = NULL;
-     while (aux != NULL && strcmp(aMiniscula(aux->cadena), aMiniscula(cad)) <= 0)
+     while (aux != NULL && strcasecmp(aux->cadena, cad) <= 0)
      {
           ant = aux;
           aux = aux->sig;
@@ -340,16 +340,9 @@ char *devolverCadena(char *cadena)
      fclose(F);
 }
  */
-void generarReporteCompleto()
+
+void imprimirConstantes()
 {
-     printf("Listado de identificadores encontrados ordenados alfabeticamente y su cantidad de veces: \n");
-     mostrarLista1(id);
-     printf("-------------------------------------------------------------------------\n\n");
-     printf("Listado de literales cadena encontrados y la longitud de los mismos:\n");
-     mostrarLista1(lt);
-     printf("-------------------------------------------------------------------------\n\n");
-     printf("Listado de palabras reservadas encontradas en el orden en el que se encontraron:\n");
-     mostrarLista2(pr);
      printf("-------------------------------------------------------------------------\n\n");
      printf("Listado de constantes decimales encontradas y el total acumulado:\n");
      mostrarLista1(cdec);
@@ -366,6 +359,18 @@ void generarReporteCompleto()
      printf("-------------------------------------------------------------------------\n\n");
      printf("Listado de constantes caracter encontradas segun su orden de aparicion:\n");
      mostrarLista2(ccar);
+}
+void generarReporteCompleto()
+{
+     printf("Listado de identificadores encontrados ordenados alfabeticamente y su cantidad de veces: \n");
+     mostrarLista1(id);
+     printf("-------------------------------------------------------------------------\n\n");
+     printf("Listado de literales cadena encontrados y la longitud de los mismos:\n");
+     mostrarLista1(lt);
+     printf("-------------------------------------------------------------------------\n\n");
+     printf("Listado de palabras reservadas encontradas en el orden en el que se encontraron:\n");
+     mostrarLista2(pr);
+     imprimirConstantes();
      printf("-------------------------------------------------------------------------\n\n");
      printf("Listado de caracteres de puntuacion encontrados y la cantidad de veces que aparecen:\n");
      mostrarLista1(cpu);
@@ -439,22 +444,7 @@ void imprimirOpciones()
           case 4:
                printf("-------------------------------------------------------------------------");
                printf("\nUSTED INGRESO LA OPCION 4: GENERAR LISTA DE CONSTANTES .\n");
-               printf("-------------------------------------------------------------------------\n\n");
-               printf("Listado de constantes decimales encontradas y el total acumulado:\n");
-               mostrarLista1(cdec);
-               printf("El total acumulado es: %d\n", sumarDecimales(cdec));
-               printf("-------------------------------------------------------------------------\n\n");
-               printf("Listado de constantes octales encontradas y su valor en decimal:\n");
-               mostrarLista1(coct);
-               printf("-------------------------------------------------------------------------\n\n");
-               printf("Listado de constantes hexadecimales encontradas y su valor en decimal:\n");
-               mostrarLista1(chex);
-               printf("-------------------------------------------------------------------------\n\n");
-               printf("Listado de constantes reales encontradas junto con la parte entera y el valor de su mantisa:\n");
-               mostrarLista3(cre);
-               printf("-------------------------------------------------------------------------\n\n");
-               printf("Listado de constantes caracter encontradas segun su orden de aparicion:\n");
-               mostrarLista2(ccar);
+               imprimirConstantes();
                break;
           case 5:
                printf("-------------------------------------------------------------------------");
@@ -482,8 +472,7 @@ void imprimirOpciones()
                printf("\nUSTED INGRESO LA OPCION 7: GENERAR LISTA DE CARACTERES NO RECONOCIDOS.\n");
                printf("-------------------------------------------------------------------------\n\n");
                printf("Listado de cadenas y caracteres no reconocidos con su numero de linea:\n");
-               mostrarLista1(ccarno); /*Modificar*/
-               //ACA VA CADENA NO RECONOCIDA FALTA
+               mostrarLista1(ccarno);
                break;
 
           case 8:
