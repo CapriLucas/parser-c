@@ -36,18 +36,8 @@ struct Nodo2 *comml = NULL;
 struct Nodo1 *ccarno = NULL;
 struct Nodo1 *dir = NULL;
 
-/* char *aMiniscula(char *cadena)
-{
-     int i = 0;
-     char *aux = (char *)malloc((strlen(cadena) + 1) * sizeof(char));
-     strcpy(aux, cadena);
-     for (i; aux[i] != '\0'; ++i)
-     {
-          aux[i] = tolower(aux[i]);
-     }
-     return aux;
-} */
-struct Nodo1 *ordenarAgregar(struct Nodo1 *punt, char *cad, int numero)
+//Ordena y agrega alfabeticamente la lista de identificadores, la cadena yytext y un entero, devuelve la lista actualizada
+struct Nodo1 *ordenarAgregarIdentificadores(struct Nodo1 *punt, char *cad, int numero)
 {
      struct Nodo1 *nuevo = (struct Nodo1 *)malloc((strlen(cad) + 1) * sizeof(struct Nodo1));
      nuevo->cadena = cad;
@@ -74,6 +64,7 @@ struct Nodo1 *ordenarAgregar(struct Nodo1 *punt, char *cad, int numero)
 
      return punt;
 }
+//Agrega a la lista dada en el parametro, la cadena yytext y un entero, devuelve la lista actualizada
 struct Nodo1 *agregarALista(struct Nodo1 *puntero, char *cadenaNueva, int numero)
 {
      struct Nodo1 *nuevo = (struct Nodo1 *)malloc((strlen(cadenaNueva) + 1) * sizeof(struct Nodo1));
@@ -96,6 +87,7 @@ struct Nodo1 *agregarALista(struct Nodo1 *puntero, char *cadenaNueva, int numero
      }
      return puntero;
 }
+//Agrega a la lista dada en el parametro, la cadena yytext, devuelve la lista actualizada
 struct Nodo2 *agregarALista2(struct Nodo2 *puntero, char *cadenaNueva)
 {
      struct Nodo2 *nuevo = (struct Nodo2 *)malloc((strlen(cadenaNueva) + 1) * sizeof(struct Nodo2));
@@ -118,7 +110,7 @@ struct Nodo2 *agregarALista2(struct Nodo2 *puntero, char *cadenaNueva)
      }
      return puntero;
 }
-
+//Agrega a la lista de constantes reales, la cadena yytext, una parte entera y una real, devuelve la lista actualizada
 struct Nodo3 *agregarALista3(struct Nodo3 *puntero, char *cadenaNueva, int ent, double mant)
 {
      struct Nodo3 *nuevo = (struct Nodo3 *)malloc((strlen(cadenaNueva) + 1) * sizeof(struct Nodo3));
@@ -142,6 +134,7 @@ struct Nodo3 *agregarALista3(struct Nodo3 *puntero, char *cadenaNueva, int ent, 
      return puntero;
 }
 
+//Busca en la lista tipo Nodo1 dada en el parametro, una cadena que coincida con cad y devuelve donde se encontro
 struct Nodo1 *buscarCadena(struct Nodo1 *puntero, char *cad)
 {
      struct Nodo1 *aux = puntero;
@@ -151,6 +144,7 @@ struct Nodo1 *buscarCadena(struct Nodo1 *puntero, char *cad)
      }
      return aux;
 }
+//Busca en la lista tipo Nodo2 dada en el parametro, una cadena que coincida con cad y devuelve donde se encontro
 struct Nodo2 *buscarCadena2(struct Nodo2 *puntero, char *cad)
 {
      struct Nodo2 *aux = puntero;
@@ -160,6 +154,7 @@ struct Nodo2 *buscarCadena2(struct Nodo2 *puntero, char *cad)
      }
      return aux;
 }
+//Busca en la lista tipo Nodo3 dada en el parametro, una cadena que coincida con cad y devuelve donde se encontro
 struct Nodo3 *buscarCadena3(struct Nodo3 *puntero, char *cad)
 {
      struct Nodo3 *aux = puntero;
@@ -169,6 +164,7 @@ struct Nodo3 *buscarCadena3(struct Nodo3 *puntero, char *cad)
      }
      return aux;
 }
+//Suma todos los valores de la lista de constantes decimales
 int sumarDecimales(struct Nodo1 *dec)
 {
      struct Nodo1 *aux = dec;
@@ -180,6 +176,7 @@ int sumarDecimales(struct Nodo1 *dec)
      }
      return total;
 }
+//Verifica que la cadena yytext no se repita y agregue en la lista tipo Nodo1 dada, acumula las veces que se repitio
 struct Nodo1 *verificarCadena(struct Nodo1 *punt, char *cadena)
 {
      char *palabra = (char *)malloc((strlen(cadena) + 1) * sizeof(char *));
@@ -195,6 +192,7 @@ struct Nodo1 *verificarCadena(struct Nodo1 *punt, char *cadena)
      }
      return punt;
 }
+//Verifica que la cadena yytext no se repita y agregue en la lista ordenada tipo Nodo1 dada, acumula las veces que se repitio
 struct Nodo1 *verificarCadena5(struct Nodo1 *punt, char *cadena)
 {
      char *palabra = (char *)malloc((strlen(cadena) + 1) * sizeof(char *));
@@ -202,7 +200,7 @@ struct Nodo1 *verificarCadena5(struct Nodo1 *punt, char *cadena)
      struct Nodo1 *cadbus = buscarCadena(punt, palabra);
      if (cadbus == NULL)
      {
-          punt = ordenarAgregar(punt, palabra, 1);
+          punt = ordenarAgregarIdentificadores(punt, palabra, 1);
      }
      else
      {
@@ -210,17 +208,15 @@ struct Nodo1 *verificarCadena5(struct Nodo1 *punt, char *cadena)
      }
      return punt;
 }
+//Verifica que la cadena yytext se agregue en la lista tipo Nodo1 dada
 struct Nodo1 *verificarCadena2(struct Nodo1 *punt, char *cadena, int cant)
 {
      char *palabra = (char *)malloc((strlen(cadena) + 1) * sizeof(char *));
      strcpy(palabra, cadena);
-     struct Nodo1 *cadbus = buscarCadena(punt, palabra);
-     if (cadbus == NULL)
-     {
-          punt = agregarALista(punt, palabra, cant);
-     }
+     punt = agregarALista(punt, palabra, cant);
      return punt;
 }
+//Verifica que la cadena yytext se agregue en la lista tipo Nodo2 dada
 struct Nodo2 *verificarCadena3(struct Nodo2 *punt, char *cadena)
 {
      char *palabra = (char *)malloc((strlen(cadena) + 1) * sizeof(char *));
@@ -228,20 +224,17 @@ struct Nodo2 *verificarCadena3(struct Nodo2 *punt, char *cadena)
      punt = agregarALista2(punt, palabra);
      return punt;
 }
+//Verifica que la cadena yytext se agregue en la lista tipo Nodo3 dada
 struct Nodo3 *verificarCadena4(struct Nodo3 *punt, char *cadena)
 {
      double entera;
      char *palabra = (char *)malloc((strlen(cadena) + 1) * sizeof(char *));
      strcpy(palabra, cadena);
      double mantisa = modf(atof(cadena), &entera);
-     struct Nodo3 *cadbus = buscarCadena3(punt, palabra);
-     if (cadbus == NULL)
-     {
-          punt = agregarALista3(punt, palabra, entera, mantisa);
-     }
+     punt = agregarALista3(punt, palabra, entera, mantisa);
      return punt;
 }
-
+//Muestra de la lista tipo Nodo1 dada, su cadena y su nro entero
 void mostrarLista1(struct Nodo1 *ident)
 {
      struct Nodo1 *aux = ident;
@@ -251,6 +244,7 @@ void mostrarLista1(struct Nodo1 *ident)
           aux = aux->sig;
      }
 }
+//Muestra de la lista tipo Nodo2 dada, su posicion en que fue encontrada y su cadena
 void mostrarLista2(struct Nodo2 *ident)
 {
      struct Nodo2 *aux = ident;
@@ -262,6 +256,7 @@ void mostrarLista2(struct Nodo2 *ident)
           i++;
      }
 }
+//Muestra de la lista tipo Nodo3 dada, su cadena, su nro entero y su mantisa
 void mostrarLista3(struct Nodo3 *ident)
 {
      struct Nodo3 *aux = ident;
@@ -271,8 +266,8 @@ void mostrarLista3(struct Nodo3 *ident)
           aux = aux->sig;
      }
 }
-
-char *devolverCadena(char *cadena)
+//Devuelve la cadena sin las comillas que admitio el yytext
+char *devolverCadenaSinComillas(char *cadena)
 {
      char *palabra = (char *)malloc((strlen(cadena) + 1) * sizeof(char *));
      int i = 0;
@@ -283,6 +278,7 @@ char *devolverCadena(char *cadena)
      }
      cadena[strlen(cadena) - 1] = '\0';
      i = 0;
+     //Esto puede estar demas: pasa la \" a " de una cadena
      while (cadena[i] != '\0')
      {
           if (cadena[i] == '\\' && cadena[i + 1] == '"')
@@ -299,48 +295,7 @@ char *devolverCadena(char *cadena)
      strcpy(palabra, cadena);
      return palabra;
 }
-
-/*void generarReporteCompleto(struct Nodo1*lista1){
-       FILE * F;
-       struct Nodo1* aux=NULL;
-       int val;
-       char* cad;
-       lista1 = aux;
-
-     F=fopen("Salida.txt","w");
-     while (!feof(F)){
-    
-     while(aux != NULL){
-          val=aux->nro;
-          cad=aux->cadena;
-          fwrite(&val,sizeof(val),1,F);
-          fwrite(&cad,sizeof(cad),1,F);
-          aux= aux-> sig;
-
-     }
-     }
-     fclose(F);
-}
-*/
-//otro intento fallido con fwrite jajaja
-
-/* void generarReporteCompleto(struct Nodo1*lista1){  
-       FILE * F;
-      struct Nodo1* aux=NULL;
-      aux=lista1;
-
-     F=fopen("Salida.txt","w");
-    
-     while(aux != NULL){
-          fputs(aux->cadena,F);
-          fputc(aux->nro,F);
-          aux= aux-> sig;
-     }
-     fflush(F);
-     fclose(F);
-}
- */
-
+//Imprime el listado de las constantes pedidas
 void imprimirConstantes()
 {
      printf("-------------------------------------------------------------------------\n\n");
@@ -360,6 +315,7 @@ void imprimirConstantes()
      printf("Listado de constantes caracter encontradas segun su orden de aparicion:\n");
      mostrarLista2(ccar);
 }
+//Imprime el reporte completo pedido
 void generarReporteCompleto()
 {
      printf("Listado de identificadores encontrados ordenados alfabeticamente y su cantidad de veces: \n");
@@ -389,12 +345,13 @@ void generarReporteCompleto()
      printf("Listado de cadenas y directivas con su numero de linea:\n");
      mostrarLista1(dir);
 }
+
 void opciones()
 {
      printf("\nINGRESE LA OPCION DE LO QUE DESEA HACER:\n\n");
-     printf("1)  Generar lista de identificadores\n");
-     printf("2)  Generar lista de literales cadenas\n");
-     printf("3)  Generar lista de palabras reservadas\n");
+     printf("1)  Generar listado de identificadores\n");
+     printf("2)  Generar listado de literales cadenas\n");
+     printf("3)  Generar listado de palabras reservadas\n");
      printf("4)  Generar listado de constantes\n");
      printf("5)  Generar listado de operadores\\caracteres de puntuacion\n");
      printf("6)  Generar listado de comentarios \n");
@@ -404,7 +361,7 @@ void opciones()
      printf("10) Salir del reporte\n");
 }
 
-void imprimirOpciones()
+void imprimirOpcionesReporte()
 {
 
      int opcionIngresada;
@@ -447,6 +404,7 @@ void imprimirOpciones()
                imprimirConstantes();
                break;
           case 5:
+               //Esto podria hacerse en un solo listado
                printf("-------------------------------------------------------------------------");
                printf("\nUSTED INGRESO LA OPCION 5: GENERAR LISTA DE OPERADORES/CARACTERES DE PUNTUACION.\n");
                printf("-------------------------------------------------------------------------\n\n");

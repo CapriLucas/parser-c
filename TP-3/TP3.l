@@ -3,10 +3,9 @@
 
 #include<stdio.h> 
 #include<math.h> 
-#include<stdlib.h> /* */
+#include<stdlib.h>
 #include<string.h>
 #include        "funcionesTP3.h"
- # define sa(as,asa) laslal?&
 int nlinea = 1;
 
 
@@ -18,15 +17,15 @@ int nlinea = 1;
 
 
 //Categorías léxicas de C a reconocer:
-//      Constantes (Entera decimal, entera octal, entera hexadecimal, real, caracter) x
-//      Literal cadena x
+//      Constantes (Entera decimal, entera octal, entera hexadecimal, real, caracter) 
+//      Literal cadena 
 //      Palabras reservadas (distinguir entre tipo de dato, estructuras de control y otros) 
-//      Identificadores x
+//      Identificadores 
 //      Caracteres de puntuación y operadores de C.
 
 //Comentarios (es realidad son reconocidos por el PRECOMPILADOR)
-//      Comentarios de una línea x
-//      Comentarios de múltiples líneas x
+//      Comentarios de una línea 
+//      Comentarios de múltiples líneas 
 
 //Reporte
 // 1 Listado de identificadores encontrados indicando la cantidad de veces que aparece cada uno de ellos. 
@@ -36,7 +35,7 @@ int nlinea = 1;
 // 4 Listado de constantes indicando según su tipo:
 //      Para las constantes octales indicar su valor entero decimal. OK
 //      Para las constante hexadecimales indicar su valor entero decimal. OK
-//      Para las constantes decimales indicar el valor de cada una y el total acumulado de sumar todas ellas. 
+//      Para las constantes decimales indicar el valor de cada una y el total acumulado de sumar todas ellas. OK
 //      Para las constantes reales indicar el valor de su mantisa y parte entera. OK
 //      Para las constantes caracter, enumerarlas según orden de aparición. OK
 // 5 Listado de operadores/caracteres de puntuación indicando cantidad de veces que aparecen. OK
@@ -44,30 +43,7 @@ int nlinea = 1;
 // 7 Listado de cadenas y/o caracteres no reconocidos indicando el número de línea. 
 
 // 8 Desafío opcional
-//  Adicionar al analizador léxico el reconocimiento de las directivas del precompilador #Include #Define.
-
-//-----------------------------------------------------------------------------------------------------------------
-//------------------------------------------------------------------------------------------------------------------
-
-//   COSAS PARA ARREGLAR - AGREGAR
-
-//cop y cpu encontrar los que se repiten en ambos,opciones:
-/*1) Lo obviamos y lo ponemos en el que sea prioridad esencial, no en el que es caso especial
-2) Hacemos una condicion de arranque o de consecuencia(no se como se dice) al lado de las reglas de cpu y cop*/
-//Probar reglas una vez completadas en el .c pongan codigo bien escrito de alguna pagina o trabajos hechos
-//#define probar
-//Simplificar codigo 
-// borrar funciones comentadas una vez terminemos el tp
-
-//Se pueden obviar:
-//si aparece \n \t %d %f etc en una cadena tambien se imprime "hola%d\n" hay que corregir eso o dejarlo asi nomas 
-/* lista de constantes decimales solo pide su valor y el total hicimos algo de mas como mostrar las veces que se
-repitio una misma constante puede cambiarse a que solo muestre el valor y repeticiones no se cuentan se 
-imprime aunque salga repetido el valor */ 
-//comentar que hace cada funcion y poner nombres mas acordes a la funcion en algunos casos
-
-//-------------------------------------------------------------------------------------------------------------------
-//-------------------------------------------------------------------------------------------------------------------
+//  Adicionar al analizador léxico el reconocimiento de las directivas del precompilador #Include #Define. OK
 
 
 %}
@@ -90,10 +66,9 @@ PR                   {PR_DATO}|{PR_CONDICIONAL}|{PR_ITERATIVA}|{PR_OTRO}
 LITCAD               \"(\\.|[^\\"])*\"
 ID       	         [a-zA-Z_][a-zA-Z0-9_]*
 COP                  "++"|"*"|"+"|"&"|"!"|"sizeof"|"/"|"-"|"--"|"<"|">"|"<="|">="|"=="|"!="|"="|"&&"|"?:"|"+="|"~"|"%"|"<<"|">>"|"|"|"^"|"||"
-CPU                  "("|")"|"{"|"}"|";"|","|":"  
+CPU                  "("|")"|"{"|"}"|";"|","|":"|"..."  
 COM_MULT             \/\*(\*+[^\*\/]|[^\*])*\*+\/
 COM_SIMP             \/\/.*
-/*  /[ |\n|COMENTARIOS_MULTIPLES|COMENTARIOS_SIMPLES]      Esto sirve puede usarse despues de {DIRECTIVA}*/  
 %%
 
 {DIRECTIVA}     {printf("La cadena %s representa una directiva al compilador\n", yytext);
@@ -101,9 +76,6 @@ COM_SIMP             \/\/.*
 
 {PR}                {printf("La cadena %s representa una palabra reservada para representar un tipo de dato\n", yytext);
                         pr = verificarCadena3(pr,yytext);}
-
-{ID}                {printf("La cadena %s representa un identificador\n", yytext);
-                        id =verificarCadena5(id,yytext);}
 
 {CEDECIMAL}         {printf("La cadena %s representa una constante entera decimal\n", yytext);
                         cdec = verificarCadena(cdec,yytext);}
@@ -123,7 +95,7 @@ COM_SIMP             \/\/.*
                         ccar = verificarCadena3(ccar,yytext);}
 
 {LITCAD}            {printf("La cadena %s representa un literal cadena de %d caracteres\n", yytext,yyleng);
-                          char * cad=devolverCadena(yytext);
+                          char * cad=devolverCadenaSinComillas(yytext);
                           lt =verificarCadena2(lt,cad,strlen(cad));}
 
 {COP}               {printf("La cadena %s representa un caracter de operacion\n", yytext);
@@ -132,6 +104,9 @@ COM_SIMP             \/\/.*
 {CPU}               {printf("La cadena %s representa un caracter de puntuacion\n", yytext);
                           cpu = verificarCadena(cpu,yytext);}
 
+{ID}                {printf("La cadena %s representa un identificador\n", yytext);
+                        id =verificarCadena5(id,yytext);}
+
 {COM_MULT}          {printf("La cadena %s representa un comentario de multiples lineas\n", yytext);
                         comml = verificarCadena3(comml,yytext);} 
 
@@ -139,41 +114,17 @@ COM_SIMP             \/\/.*
                         coml = verificarCadena3(coml,yytext);} 
 
 \n                  {nlinea +=1;}    
-[\t ]+              //Se come los espacios
+[\t ]+              {;}
 (.)                 {printf("La cadena %s representa un caracter no reconocido\n", yytext);
                         ccarno = verificarCadena2(ccarno,yytext,nlinea);}
 {CONSTANTES}{ID}+ {printf("La cadena %s representa un caracter no reconocido\n", yytext);
                         ccarno = verificarCadena2(ccarno,yytext,nlinea);}
 %%
-/* NOTA: para la ultima erx de cadena no reconocida ya se probo:
-     (.)(.)+/[ ]
-     [^ ]+/[ ]
-     (.)* /[]
-     (.)+/[]  
-     {REGLAS}{REGLAS}+/[ ]
-     {REGLAS}(REGLAS|[^ ])+
-     Descubri que el espacio se puede obviar en algunos casos del codigo asi que es opcional
- */
 
 int main(){
     
     yyin = fopen("entrada.c","r");
     yylex();
-    imprimirOpciones();
+    imprimirOpcionesReporte();
     return 0;
 }
-
-
-
-    //COMENTARIOS, DUDAS Y CAMBIOS
-
-        
-    
-    /* Le agregue la regla para cadenas no reconocidas por el momento queda asi
-    Cambie la funcion aMiniscula por un strcasecmp() para simplificar codigo
-    Hice una funcion para imprimir constantes para no tener mucho codigo repetido*/
-    
- // COSAS CORREGIDAS Y LISTAS (Borrar despues)
-
-/* Los comentarios yo los dejaria asi, osea que aparezca "La cadena //ejemplo representa un comentario" y lo mismo con /* en los de multiple linea,
-    si los sacamos parece que son identificadores, el hecho de que tengan //  creo que hace que parezcan mas comentario que otra cosa             */

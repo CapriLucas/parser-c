@@ -16,26 +16,25 @@ struct Nodo1
 
 void eliminarComillas()
 {
-  printf("hola mundo\"");
+  printf("hola mundo\"");/* hola mundo/\\"**/*/
 }
 int main(){
     
     yylex();
-    int print = strcmp("alv","aca");
-    int 2.19N2 = 22,dec = 34;
+    int print = strcmp("alv\\","ac\"a");
+    int 2.19N2 = 22,dec = sizeof(char);
     printf("%d",print);
     char man ='s';
     int oct = 023;
-    int hex = 0xfe;
+    int hex = 0xfea;
     float real = 2.9E+4;
-    imprimirOpciones ();
+    imprimirOpcionesReporte ();
     return 0;
 }
 
 $
 @
-ç
-
+ç=?
 
 /* Prueba 
 comentario
