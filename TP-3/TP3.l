@@ -46,6 +46,15 @@ int nlinea = 1;
 //  Adicionar al analizador léxico el reconocimiento de las directivas del precompilador #Include #Define. OK
 
 
+
+
+
+//--------------------------------------------------------------------------
+//Segun lo que mando natalia es posible que COP y CPU esten en una sola definicion que podria llamarse COYP
+//Lo podemos dejar asi separados o unificarlos, cambiar algunos detalles.
+//Cambie un error que encontre que sizeof lo tomaba ID cambie el orden de la regla ID ya que afectaba a COP
+//Limpiar comentarios dentro de las funciones 
+
 %}
 
 DIRECTIVA            "#"[ ]*"include"[ ]*(\".*".h"\"|"<".*".h>")|"#"[ ]*"define"[ ]+{ID}[ ]*("("[ ]*({ID}[ ]*","[ ]*)*{ID}[ ]*")")?[ ]+([^#\n]+)?
