@@ -240,7 +240,7 @@ void mostrarLista1(struct Nodo1 *ident)
      struct Nodo1 *aux = ident;
      while (aux != NULL)
      {
-          printf("%s -- %d\n", aux->cadena, aux->nro);
+          printf("%s --- %d\n", aux->cadena, aux->nro);
           aux = aux->sig;
      }
 }
@@ -278,7 +278,6 @@ char *devolverCadenaSinComillas(char *cadena)
      }
      cadena[strlen(cadena) - 1] = '\0';
      i = 0;
-     //Esto puede estar demas: pasa la \" a " de una cadena
      while (cadena[i] != '\0')
      {
           if (cadena[i] == '\\' && cadena[i + 1] == '"')
@@ -366,7 +365,7 @@ void imprimirOpcionesReporte()
 
      int opcionIngresada;
      printf("-------------------------------------------------------------------------");
-     printf("\n\t\t\t\tREPORTE\n");
+     printf("\n\t\t\tOPCIONES DISPONIBLES:\n");
      printf("-------------------------------------------------------------------------\n\n");
      do
      {
@@ -404,7 +403,6 @@ void imprimirOpcionesReporte()
                imprimirConstantes();
                break;
           case 5:
-               //Esto podria hacerse en un solo listado
                printf("-------------------------------------------------------------------------");
                printf("\nUSTED INGRESO LA OPCION 5: GENERAR LISTA DE OPERADORES/CARACTERES DE PUNTUACION.\n");
                printf("-------------------------------------------------------------------------\n\n");
@@ -444,8 +442,10 @@ void imprimirOpcionesReporte()
           case 9:
                printf("-------------------------------------------------------------------------");
                printf("\nUSTED INGRESO LA OPCION 9: GENERAR REPORTE COMPLETO.\n");
+               printf("-------------------------------------------------------------------------\n");
+               printf("\nREPORTE GENERADO EXITOSAMENTE.\n\n");
                printf("-------------------------------------------------------------------------\n\n");
-               printf("REPORTE GENERADO EXITOSAMENTE.\n");
+               printf("\nREPORTE:\n\n");
                generarReporteCompleto(id);
                break;
           }
