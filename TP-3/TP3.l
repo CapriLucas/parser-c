@@ -71,7 +71,7 @@ COM_SIMP             \/\/.*
 
 int main(){
     
-    yyin = fopen("entrada.c","r");
+    yyin = fopen("Entrada.c","r");
     yyout = fopen("salida.txt","w");
     yylex();
     imprimirOpcionesReporte();

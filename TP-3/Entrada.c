@@ -47,25 +47,7 @@ struct Nodo1 *ordenarAgregarIdentificadores(struct Nodo1 *punt, char *cad, int n
 system("pause");
 system("cls");
 
-void imprimirConstantes()
-{
-     printf("-------------------------------------------------------------------------\n\n");
-     printf("Listado de constantes decimales encontradas y el total acumulado:\n");
-     mostrarLista1(cdec);
-     printf("El total acumulado es: %d\n", sumarDecimales(cdec));
-     printf("-------------------------------------------------------------------------\n\n");
-     printf("Listado de constantes octales encontradas y su valor en decimal:\n");
-     mostrarLista1(coct);
-     printf("-------------------------------------------------------------------------\n\n");
-     printf("Listado de constantes hexadecimales encontradas y su valor en decimal:\n");
-     mostrarLista1(chex);
-     printf("-------------------------------------------------------------------------\n\n");
-     printf("Listado de constantes reales encontradas junto con la parte entera y el valor de su mantisa:\n");
-     mostrarLista3(cre);
-     printf("-------------------------------------------------------------------------\n\n");
-     printf("Listado de constantes caracter encontradas segun su orden de aparicion:\n");
-     mostrarLista2(ccar);
-}
+
 
 
 char *devolverCadenaSinComillas(char *cadena)
