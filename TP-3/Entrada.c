@@ -10,7 +10,7 @@ struct Nodo1
 {
      int nro;
      char *cadena;
-     int jojo? = 23as;
+     int jojo?: = 23as;
      struct Nodo1 *sig;
 };
 

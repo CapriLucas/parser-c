@@ -446,7 +446,7 @@ void imprimirOpcionesReporte()
                printf("\nREPORTE GENERADO EXITOSAMENTE.\n\n");
                printf("-------------------------------------------------------------------------\n\n");
                printf("\nREPORTE:\n\n");
-               generarReporteCompleto(id);
+               generarReporteCompleto();
                break;
           }
 
