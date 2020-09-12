@@ -38,6 +38,7 @@ int yyerror (char *s)  /* Llamada por yyparse ante un error */
   printf ("%s\n", s);
 }
 
+
 int main ()
 {
 

@@ -21,6 +21,7 @@ void yyerror (char const *s) {
 
 %}
 
+
 %union {
 char cadena[30];
 int entero;

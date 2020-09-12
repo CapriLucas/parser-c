@@ -42,4 +42,5 @@ int main ()
     printf("Tipo de Sentencias Encontradas");
     // Funcion generica que devuelva lo pedido 
     printf("Secuencias que no pertenecen a ninguna categoria lexica o estructuras no validas");
+    
 }

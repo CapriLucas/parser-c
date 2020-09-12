@@ -6,7 +6,6 @@
 #include<stdlib.h>
 #include<ctype.h>
 
-
 int yylineno;
 //Tareas
 /* 

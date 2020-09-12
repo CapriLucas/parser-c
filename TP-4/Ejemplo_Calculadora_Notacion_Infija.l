@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 #include "Ejemplo_Calculadora_Notacion_Infija.tab.h"
+
 %}
 
 option noyywrap

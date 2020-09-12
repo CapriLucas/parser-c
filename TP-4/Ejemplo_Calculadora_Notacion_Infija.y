@@ -4,6 +4,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <ctype.h>
+
 int yylex ();
 int yyerror (char*);
 int yywrap(){

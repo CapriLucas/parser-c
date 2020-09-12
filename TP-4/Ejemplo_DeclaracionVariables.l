@@ -4,6 +4,7 @@
 #include "Ejemplo_DeclaracionVariables.tab.h"
 #include <stdio.h>
 #include <string.h>
+
 %}
 
 

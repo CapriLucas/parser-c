@@ -13,7 +13,6 @@ void yyerror (char const *s) {
 }
 
 
-
 %}
 
 %union {

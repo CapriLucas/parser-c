@@ -3,6 +3,7 @@
 	#include "calc.h"
 	#include "mfcalc.tab.h"
 	#include <string.h>
+	
 %}
 
 NUM [0-9]
