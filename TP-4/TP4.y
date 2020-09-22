@@ -11,12 +11,95 @@ int yywrap(){
     return(1);
 }
 
+
+%}
+
+%union {
+char* ccval; // cadenas
+double dval; // numeros reales/racionales
+int ival; // numeros enteros
+}
+%token <ival> CENTERO 
+%token <dval> CREAL
+%token <ccval> OPASIG OR AND OPIGUAL OPCORR OPREL OPINCDEC TDATO SIOF FLECHA LCADENA
+
 %% /*  reglas gramaticales y las acciones */
+ 
+input:  /* vacio */
+        | input line
+;
 
+line:   '\n'
+        | exp '\n' 
+;
 
+exp:    expAsig
+        | exp ',' expAsig
+;      
+expAsig:    expCond
+            | expUna operAsig expAsig
+;
+operAsig:   OPASIG
+;
+expCond:    expOr
+            | expOr '?' exp ':' expCond
+;
+expOr:  expAnd
+        | expOr OR expAnd 
+;
+expAnd: expIgual
+        | expAnd AND expIgual
+;
+expIgual:   expRel
+            | expIgual OPIGUAL expRel
+;
+expRel: expCorr
+        | expRel opRela expCorr
+;
+opRela: '<' | '>' | OPREL
+;
+expCorr: expAdi
+        | expCorr OPCORR expAdi
+;
+
+expAdi: expMul
+        | expAdi '+' expMul
+        | expAdi '-' expMul
+;
+expMul: expUna
+        | expMul '*' expConv
+        | expMul '/' expConv
+        | expMul '%' expConv
+;
+expConv: expUna
+         | TDATO expConv
+;
+expUna: expPFijo
+        | OPINCDEC expUna
+        | opUna expConv
+        | SIOF expUna
+        | SIOF '(' TDATO ')'
+;
+opUna: '&' | '*' | '+' | '-'| '~'| '!'
+;
+expPFijo:   expPri
+            | expPFijo '[' exp ']'
+            | expPFijo '(' listaArg ')'
+            | expPFijo '.' ID
+            | expPFijo FLECHA ID
+            | expPFijo OPINCDEC
+;
+listaArg:   expAsig
+            | listaArg ',' expAsig
+;
+expPri:     ID | CENTERO | CREAL | LCADENA | '(' exp ')'
+;
 %%
 
-int yyerror (char *mensaje)  
+
+//Si el analizador no empareja con ninguna produccion se muestra un msj de error con su linea 
+
+void yyerror (char *mensaje)  
 {  
     printf ("Error: %s\n", mensaje);
 }
@@ -32,7 +115,7 @@ int main ()
 // Las gramáticas pueden ser extraídas del volumen 1 del apunte de la cátedra, en varios casos pueden empezar
 // implementando las producciones más sencillas y luego ir agregando complejidad. 
 
-  yyin = fopen("entrada.txt","r");
+  yyin = fopen("Entrada.txt","r");
   // yyout = fopen("salida.txt","w"); Para hacer pruebas
   yyparse ();
  	printf("Variables declaradas y su tipo de dato\n");
