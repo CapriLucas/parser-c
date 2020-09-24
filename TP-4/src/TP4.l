@@ -54,15 +54,13 @@ CREAL	             [0-9]*"."[0-9]+([eE]([\+\-]?)[0-9]+)?[FfLl]?|[0-9]+"."([eE][\
 CARACTER             '.'|'\\0'|'\\n'
 CONSTANTES          {CEDECIMAL}|{CEOCTAL}|{CEHEXA}|{CREAL}
 
-PR_DATO	             int|char|float|bool|double|long|short|unsigned|signed|typedef|const|enum|struct
-PR_CONDICIONAL       if|else|switch|case|break|return|default
-PR_ITERATIVA         while|for|do 
-PR_OTRO              auto|continue|extern|goto|register|static|union|void|volatile
-PR                   {PR_DATO}|{PR_CONDICIONAL}|{PR_ITERATIVA}|{PR_OTRO}
+PR_DATO	             int|char|float|bool|double|long|short|unsigned|signed|typedef|const|enum|struct 
+PR_OTRO              auto|extern|register|static|union|void|volatile
+PR                   {PR_DATO}|{PR_OTRO}
 
 LCADENA               \"(\\.|[^\\"])*\"
 ID       	         [a-zA-Z_][a-zA-Z0-9_]*
-COP                  "++"|"*"|"+"|"&"|"!"|"sizeof"|"/"|"-"|"--"|"<"|">"|"<="|">="|"=="|"!="|"="|"&&"|"?:"|"+="|"~"|"%"|"<<"|">>"|"|"|"^"|"||"
+COP                  "++"|"*"|"+"|"&"|"!"|"/"|"-"|"--"|"<"|">"|"<="|">="|"=="|"!="|"="|"&&"|"?:"|"+="|"~"|"%"|"<<"|">>"|"|"|"^"|"||"
 CPU                  "("|")"|"{"|"}"|";"|","|":"|"..."|"["|"]"  
 COM_MULT             \/\*(\*+[^\*\/]|[^\*])*\*+\/
 COM_SIMP             \/\/.*
@@ -122,10 +120,21 @@ COM_SIMP             \/\/.*
 "=<"            {strcpy(yylval.ccval,yytext); return OPREL;}
 "!="            {strcpy(yylval.ccval,yytext); return OPIGUAL;}
 "=="            {strcpy(yylval.ccval,yytext); return OPIGUAL;}
-
 "<<"            {strcpy(yylval.ccval,yytext); return OPCORR;}
 ">>"            {strcpy(yylval.ccval,yytext); return OPCORR;}
 "sizeof"        {strcpy(yylval.ccval,yytext); return SIOF;}
+"if"            {strcpy(yylval.ccval,yytext); return IF;}
+"else"          {strcpy(yylval.ccval,yytext); return ELSE;}
+"switch"          {strcpy(yylval.ccval,yytext); return SWITCH;}
+"while"          {strcpy(yylval.ccval,yytext); return WHILE;}
+"do"          {strcpy(yylval.ccval,yytext); return DO;}
+"for"          {strcpy(yylval.ccval,yytext); return FOR;}
+"return"          {strcpy(yylval.ccval,yytext); return RETURN;}
+"continue"          {strcpy(yylval.ccval,yytext); return CONTINUE;}
+"goto"          {strcpy(yylval.ccval,yytext); return GOTO;}
+"break"          {strcpy(yylval.ccval,yytext); return BREAK;}
+"case"          {strcpy(yylval.ccval,yytext); return CASE;}
+"default"          {strcpy(yylval.ccval,yytext); return DEFAULT;}
 "->"            {strcpy(yylval.ccval,yytext); return FLECHA;}
 "="             {return '=';}   
 "."             {return '.';}   

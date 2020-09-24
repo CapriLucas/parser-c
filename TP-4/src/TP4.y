@@ -21,7 +21,8 @@ int ival; // numeros enteros
 }
 %token <ival> CENTERO 
 %token <dval> CREAL
-%token <ccval> ID LCADENA OPASIG OR AND OPIGUAL OPCORR OPREL OPINCDEC TDATO SIOF FLECHA LCADENA
+%token <ccval> ID LCADENA OPASIG OR AND OPIGUAL OPCORR OPREL OPINCDEC TDATO FLECHA LCADENA
+%token <ccval> IF ELSE SIOF SWITCH WHILE DO FOR RETURN CONTINUE GOTO BREAK CASE DEFAULT
 
 %% /*  reglas gramaticales y las acciones */
  
@@ -57,21 +58,23 @@ listsent:   /* vacio */
 
 sentExp:		expOp ';'
 ;
-sentSelecc:	"if" '(' exp ')' sent
-         	| "if" '(' exp ')' sent "else" sent
-            | "switch" '(' exp ')' sent
+sentSelecc:	IF '(' exp ')' sent elseSent
+            | SWITCH '(' exp ')' sent
 ;
-sentIterac:	"while" '(' exp ')' sent
-            | "do" sent "while" '(' exp ')'
-            | "for" '('expOp ';' expOp ';' expOp ')' sent
+elseSent: 	/* vacio */
+				| ELSE sent
 ;
-sentSalto:  "return" expOp ';'
-            | "continue" ';'
-            | "break" ';'
-            | "goto" ID ';'
+sentIterac:	WHILE '(' exp ')' sent
+            | DO sent WHILE '(' exp ')'
+            | FOR '('expOp ';' expOp ';' expOp ')' sent
 ;
-sentEtiq:   "case" exp ':' sent
-            | "default" ':' sent
+sentSalto:  RETURN expOp ';'
+            | CONTINUE ';'
+            | BREAK ';'
+            | GOTO ID ';'
+;
+sentEtiq:   CASE exp ':' sent
+            | DEFAULT ':' sent
             | ID ':' sent
 ;
 
