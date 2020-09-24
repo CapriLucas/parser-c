@@ -35,16 +35,18 @@ line:   '\n'
 
 sent:      sentExp | sentComp | sentSelecc | sentIterac | sentSalto
 ;
-sentComp:  '{' listDecl? listsent? '}'
+sentComp:  '{' listDecl listsent '}'
 ;
-listDecl:   decl
+listDecl:   /* vacio */
+            |decl
             |listDecl decl
 ;
-listsent:   sent
+listsent:   /* vacio */
+            |sent
             | listsent sent
 ;
 
-sentExp:   exp? ';'
+sentExp:   expOp ';'
 ;
 sentSelecc:   "if" '(' exp ')' sent
             | "if" '(' exp ')' sent "else" sent
@@ -52,14 +54,17 @@ sentSelecc:   "if" '(' exp ')' sent
 ;
 sentIterac:   "while" '(' exp ')' sent
               | "do" sent "while" '(' exp ')'
-              | "for" '('exp? ';' exp? ';' exp? ')' sent
+              | "for" '('expOp ';' expOp ';' expOp ')' sent
 ;
-sentSalto:    "return" exp? ';'
+sentSalto:    "return" expOp ';'
 ;
 
 exp:    expAsig
         | exp ',' expAsig
-;      
+;
+expOp: /* vacio */
+        | exp
+;  
 expAsig:    expCond
             | expUna operAsig expAsig
 ;
