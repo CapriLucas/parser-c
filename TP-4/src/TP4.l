@@ -60,7 +60,7 @@ PR_ITERATIVA         while|for|do
 PR_OTRO              auto|continue|extern|goto|register|static|union|void|volatile
 PR                   {PR_DATO}|{PR_CONDICIONAL}|{PR_ITERATIVA}|{PR_OTRO}
 
-LITCAD               \"(\\.|[^\\"])*\"
+LCADENA               \"(\\.|[^\\"])*\"
 ID       	         [a-zA-Z_][a-zA-Z0-9_]*
 COP                  "++"|"*"|"+"|"&"|"!"|"sizeof"|"/"|"-"|"--"|"<"|">"|"<="|">="|"=="|"!="|"="|"&&"|"?:"|"+="|"~"|"%"|"<<"|">>"|"|"|"^"|"||"
 CPU                  "("|")"|"{"|"}"|";"|","|":"|"..."|"["|"]"  
@@ -83,13 +83,13 @@ COM_SIMP             \/\/.*
 
 {CARACTER}          {yylval.cval = atoi(yytext); return ENTERO;}
 
-{LITCAD}            {;}
+{LCADENA}            {strcpy(yylval.ccval,yytext); return LCADENA;}
 
 {COP}               {;}
 
 {CPU}               {;}
 
-{ID}                {}
+{ID}                {strcpy(yylval.ccval,yytext); return ID;}
 
 {COM_MULT}          {;} 
 

@@ -21,7 +21,7 @@ int ival; // numeros enteros
 }
 %token <ival> CENTERO 
 %token <dval> CREAL
-%token <ccval> OPASIG OR AND OPIGUAL OPCORR OPREL OPINCDEC TDATO SIOF FLECHA LCADENA
+%token <ccval> ID LCADENA OPASIG OR AND OPIGUAL OPCORR OPREL OPINCDEC TDATO SIOF FLECHA LCADENA
 
 %% /*  reglas gramaticales y las acciones */
  
@@ -31,6 +31,30 @@ input:  /* vacio */
 
 line:   '\n'
         | exp '\n' 
+;
+
+sent:      sentExp | sentComp | sentSelecc | sentIterac | sentSalto
+;
+sentComp:  '{' listDecl? listsent? '}'
+;
+listDecl:   decl
+            |listDecl decl
+;
+listsent:   sent
+            | listsent sent
+;
+
+sentExp:   exp? ';'
+;
+sentSelecc:   "if" '(' exp ')' sent
+            | "if" '(' exp ')' sent "else" sent
+            | "switch" '(' exp ')' sent
+;
+sentIterac:   "while" '(' exp ')' sent
+              | "do" sent "while" '(' exp ')'
+              | "for" '('exp? ';' exp? ';' exp? ')' sent
+;
+sentSalto:    "return" exp? ';'
 ;
 
 exp:    expAsig
@@ -94,6 +118,10 @@ listaArg:   expAsig
 ;
 expPri:     ID | CENTERO | CREAL | LCADENA | '(' exp ')'
 ;
+
+     
+
+
 %%
 
 
