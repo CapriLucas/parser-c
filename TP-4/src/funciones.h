@@ -10,24 +10,27 @@
 #include <string.h>
 #include <stdio.h>
 
-struct NodoVar
+struct NodoDecl
 {
   char *tipo;
   char *id;
-  NodoVar *sig;
+  NodoDecl *parametros; // Puntero al primer nodo de una lista con los parametros de las funciones
+  NodoDecl *sig;
 };
 
-struct NodoVar *listaVar = NULL;
+struct NodoDecl *listaVar = NULL;
+struct NodoFunc *listaFunc = NULL;
 
 // Funcion para retornar el puntero a la lista que se va a almacenar en "*listaVar"  (el parametro *punt es el mismo puntero a la lista)
-struct NodoVar *agregarVariable(struct NodoVar *punt, char *id, char *tipo)
+struct NodoDecl *agregarAListaVar(struct NodoDecl *punt, char *id, char *tipo)
 {
-  struct NodoVar *nuevo = (struct NodoVar *)malloc((strlen(tipo) + strlen(id) + 2) * sizeof(struct NodoVar));
+  struct NodoDecl *nuevo = (struct NodoDecl *)malloc((strlen(tipo) + strlen(id) + 2) * sizeof(struct NodoDecl));
   nuevo->id = id;
   nuevo->tipo = tipo;
+  nuevo->parametros = NULL;
   nuevo->sig = NULL;
-  struct NodoVar *ant = NULL;
-  struct NodoVar *aux = punt;
+  struct NodoDecl *ant = NULL;
+  struct NodoDecl *aux = punt;
   while (aux != NULL && strcasecmp(aux->id, id) <= 0)
   {
     ant = aux;
@@ -43,4 +46,25 @@ struct NodoVar *agregarVariable(struct NodoVar *punt, char *id, char *tipo)
   }
   nuevo->sig = aux;
   return punt;
+}
+// Todavia no la defino, primero habria que hacer la gramatica de las declaraciones y definiciones
+// Idea de la funcion: Agregar un nodo a una lista de todas las funciones declaradas en el input
+// y en parametros se abre una sublista con la cantidad de parametros que posea la funcion en el archivo c
+struct NodoDecl *agregarAListaFunc(struct NodoDecl *punt, char *id, char *tipo)
+{
+}
+// Esta funcion verifica que no sea haya declarado dos veces ni una variable ni una funcion
+// Devuelve 1 si se encuentra ya declarada
+// devuelve 0 caso contrario
+int busquedaDecl(struct NodoDecl *punt, char *idABuscar)
+{
+  struct NodoDecl *aux = punt;
+  while (aux != NULL && aux->id != idABuscar)
+  {
+    aux = aux->sig;
+  }
+  if (aux == NULL)
+    return 0;
+  else
+    return 1;
 }
