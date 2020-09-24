@@ -33,32 +33,49 @@ line:   '\n'
         | exp '\n' 
 ;
 
-sent:      sentExp | sentComp | sentSelecc | sentIterac | sentSalto
-;
-sentComp:  '{' listDecl listsent '}'
+/* GRAMATICA DE DECLARACIONES */
+
+decl:		
 ;
 listDecl:   /* vacio */
-            |decl
+         	|decl
             |listDecl decl
 ;
+/* GRAMATICA DE DEFINICIONES */
+
+
+/* GRAMATICA DE SENTENCIAS */
+sent:		sentExp | sentComp | sentSelecc | sentIterac | sentSalto | sentEtiq
+;
+sentComp:	'{' listDecl listsent '}'
+;
+
 listsent:   /* vacio */
             |sent
             | listsent sent
 ;
 
-sentExp:   expOp ';'
+sentExp:		expOp ';'
 ;
-sentSelecc:   "if" '(' exp ')' sent
-            | "if" '(' exp ')' sent "else" sent
+sentSelecc:	"if" '(' exp ')' sent
+         	| "if" '(' exp ')' sent "else" sent
             | "switch" '(' exp ')' sent
 ;
-sentIterac:   "while" '(' exp ')' sent
-              | "do" sent "while" '(' exp ')'
-              | "for" '('expOp ';' expOp ';' expOp ')' sent
+sentIterac:	"while" '(' exp ')' sent
+            | "do" sent "while" '(' exp ')'
+            | "for" '('expOp ';' expOp ';' expOp ')' sent
 ;
-sentSalto:    "return" expOp ';'
+sentSalto:  "return" expOp ';'
+            | "continue" ';'
+            | "break" ';'
+            | "goto" ID ';'
+;
+sentEtiq:   "case" exp ':' sent
+            | "default" ':' sent
+            | ID ':' sent
 ;
 
+/* GRAMATICA DE EXPRESIONES */
 exp:    expAsig
         | exp ',' expAsig
 ;
