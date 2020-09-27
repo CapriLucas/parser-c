@@ -9,8 +9,6 @@
 int yylineno;
 //Tareas
 /* 
-1)Crear y copiar un .txt las gramaticas de declaraciones y sentencias (Cada una en un txt aparte)
-usar la del libro combinada con la del campus virtual.
 2)probar los ejemplos asi se van familiarizando con lo que tenemos que hacer con bison y flex
 comandos para ejecutar a)flex archivo.l 
  b)bison -d archivo.y
@@ -26,19 +24,18 @@ Nota2: No compila? Puede ser:
  el disco C, no olvidarse cambiarlo en el PATH tambien), despues reiniciar PC o VSCODE(si lo usaste tarda un poco).
  b)si en el error incluye #include <y.tab.h> si tira esto hay que borrar ese include en donde aparezca
  c)agregar el #include "archivo.tab.h" en archivo.l
-3)Completar en TP4.l las acciones de las reglas y agregar su return a %token(en TP4.y) segun su 
-tipo de dato descripto en %union
 4)Crear una funcion parecida a la del tp3 que devuelva y presente opciones de lo que pide el tp (que 
 no devuelva nada todavia pero que tenga un lugar en donde poner la funcion que va a devolver ) 
-en funciones.h
-5)Una vez hecho el (1) realizar sus reglas gramaticales como la que se hizo en expresiones
+en funciones.h (ARREGLAR FUNCION SON 6 OPCIONES (1)(2)(3)(4): lo que pide el tp, (5) reporte completo, 
+ la (6) que permita salir del programa) y que si elige un nro cualquiera muestre msj de error 
+ y reinicie la seleccion de opciones hasta que lo haga correctamente.
 6)Una vez hecho el (2) (3) realizar un chequeo de las reglas y definiciones a detalle del TP4.l y TP4.y
 7)Ver todo el video "completo" de bison parte 1,2,de bison debug y demas. Sacar conclusiones de como 
 mejorar/facilitar el tp, si es posible anotarlo a detalle.(De la clase de los lunes tambien) 
-8)Crear las acciones de expresiones (codigo en funciones.h)
+8)Crear las acciones de expresiones (codigo en funciones.h) 
 9)Crear las acciones de declaraciones (codigo en funciones.h)
 10)Crear las acciones de sentencias (codigo en funciones.h)
-
+11)
 Nota: No correr el programa hasta tener el paso (5 y 6)
  */
 %}
@@ -54,9 +51,11 @@ CREAL	             [0-9]*"."[0-9]+([eE]([\+\-]?)[0-9]+)?[FfLl]?|[0-9]+"."([eE][\
 CARACTER             '.'|'\\0'|'\\n'
 CONSTANTES          {CEDECIMAL}|{CEOCTAL}|{CEHEXA}|{CREAL}
 
-PR_DATO	             int|char|float|bool|double|long|short|unsigned|signed|typedef|const|enum|struct 
-PR_OTRO              auto|extern|register|static|union|void|volatile
-PR                   {PR_DATO}|{PR_OTRO}
+PR_DATO	             int|char|void|float|bool|double|long|short|unsigned|signed 
+PR_CLASE              auto|extern|register|static|typedef
+PR_STRUNION         struct|union
+PR_CAL              const|volatile
+PR                   {PR_DATO}|{PR_CLASE}
 
 LCADENA               \"(\\.|[^\\"])*\"
 ID       	         [a-zA-Z_][a-zA-Z0-9_]*
@@ -69,8 +68,6 @@ COM_SIMP             \/\/.*
 
 {DIRECTIVA}         {;}
 
-{PR}                {;}
-
 {CEDECIMAL}         {yylval.ival = atoi(yytext); return ENTERO;}
 
 {CEOCTAL}           {yylval.ival = strtol(yytext, NULL, 0); return ENTERO;}
@@ -82,10 +79,6 @@ COM_SIMP             \/\/.*
 {CARACTER}          {yylval.cval = atoi(yytext); return ENTERO;}
 
 {LCADENA}            {strcpy(yylval.ccval,yytext); return LCADENA;}
-
-{COP}               {;}
-
-{CPU}               {;}
 
 {ID}                {strcpy(yylval.ccval,yytext); return ID;}
 
@@ -100,6 +93,9 @@ COM_SIMP             \/\/.*
 
 {CONSTANTES}{ID}+   {;}
 {PR_DATO}       {strcpy(yylval.ccval,yytext); return TDATO;}
+{PR_CLASE}       {strcpy(yylval.ccval,yytext); return TCLASE;}
+{PR_CAL}        {strcpy(yylval.ccval,yytext); return CALTIPO;}
+{PR_STRUNION}       {strcpy(yylval.ccval,yytext); return STRUNION;}
 "*="            {strcpy(yylval.ccval,yytext); return OPASIG;}
 "/="            {strcpy(yylval.ccval,yytext); return OPASIG;}
 "%="            {strcpy(yylval.ccval,yytext); return OPASIG;}
@@ -135,6 +131,7 @@ COM_SIMP             \/\/.*
 "break"          {strcpy(yylval.ccval,yytext); return BREAK;}
 "case"          {strcpy(yylval.ccval,yytext); return CASE;}
 "default"          {strcpy(yylval.ccval,yytext); return DEFAULT;}
+"enum"          {strcpy(yylval.ccval,yytext); return ENUM;}
 "->"            {strcpy(yylval.ccval,yytext); return FLECHA;}
 "="             {return '=';}   
 "."             {return '.';}   

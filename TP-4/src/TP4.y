@@ -21,7 +21,8 @@ int ival; // numeros enteros
 }
 %token <ival> CENTERO 
 %token <dval> CREAL
-%token <ccval> ID LCADENA OPASIG OR AND OPIGUAL OPCORR OPREL OPINCDEC TDATO FLECHA LCADENA
+%token <ccval> ID LCADENA OPASIG OR AND OPIGUAL OPCORR OPREL OPINCDEC TDATO TCLASE FLECHA LCADENA
+%token <ccval> STRUNION CALTIPO ENUM
 %token <ccval> IF ELSE SIOF SWITCH WHILE DO FOR RETURN CONTINUE GOTO BREAK CASE DEFAULT
 
 %% /*  reglas gramaticales y las acciones */
@@ -36,27 +37,159 @@ line:   '\n'
 
 /* GRAMATICA DE DECLARACIONES */
 
-decl:		
+declaracion:	espDec	listDeclaradoresOp
 ;
-listDecl:   /* vacio */
-         	|decl
-            |listDecl decl
+espDec: espClase espDecOP
+        | espTipo espDecOP
+        | calTIpo espDecOP
+        nomTyp
 ;
-/* GRAMATICA DE DEFINICIONES */
+espDecOP:   /* vacio*/
+                | espDec
+;
+listDeclaradoresOp: /* vacio*/
+                | listDeclaradores
+;
+listDeclaradores:       declarador
+                | listDeclaradores ',' declarador
+;
+declarador:     decla
+                | decla '=' inicializador
+;
+inicializador:  expAsig
+                | '{' listInic '}'
+                | '{' listInic ',' '}'
+;
+listInic:       inicializador
+                | listInic ',' inicializador
+;
 
+espClase:       TCLASE 
+;
+espTipo:        TDATO espStrunion espEnum
+;
+calTipo:        CALTIPO
+;
+espStrunion:    STRUNION idOp '{' listStruct '}'
+                | STRUNION ID
+;
+idOp: /* vacio*/
+        | ID
+;
+listStruct:     declStruct
+                | listStruct declStruct
+;
+declStruct:     listCal declaradoresStruct ';'
+;
+listCal:        espTipo listCalOp
+                | calTipo listCalOp
+;
+listCalOp: /*vacio*/
+                | listCal
+;
+declaradoresStruct:     declaStruct
+                        | declaradoresStruct ',' declaStruct
+;
+declaStruct:    decla
+                | declaOp ';' expCond
+;
+decla: puntOp declaDir
+;
+punt: '*' listaCalTipOp
+        | '*' listaCalTipOp punt
+;
+declaOp: /*vacio*/
+        | decla
+;
+puntOp: /*vacio*/
+        | punt
+;
+listaCalTip:    calTipo
+                | listaCalTip calTipo
+;
+listaCalTipOp:  /*vacio*/
+                | listaCalTip
+;
+declaDir: ID
+        | '(' decla ')'
+        | declaDir '[' expCondOp ']'
+        | declaDir '(' listTipoParam ')'
+;
+expCondOp: /*vacio*/
+                | expCond
+;
+listTipoParam:  listParam
+                | listParam ',' '.' '.' '.'
+;
+listParam:      declParam
+                | listParam ',' declParam
+;
+declParam:      espDec decla
+                | espDec declAbsOp
+;
+espEnum:        ENUM idOp '{' listEnum '}'
+                | ENUM ID
+;
+listEnum:       enumerador
+                | listEnum ',' enumerador
+;
+enumerador:     constEnum
+                | constEnum '=' expCond
+;
+constEnum:      ID
+;
+nomTyp: ID
+;
+nomTipo:        listCal declAbsOp
+;
+declAbs:        punt
+                | puntOp declAbsDir
+;
+declAbsOp: /*vacio*/
+                | declAbs
+;
+declAbsDir:     '(' declAbs ')'
+                | declAbsDirOp '[' expCondOp ']'
+                | declAbsDirOp '(' listTipoParamOp ')'
+;
+declAbsDirOp:   /*vacio*/
+                | declAbsDir
+;
+listTipoParamOp: /*vacio*/
+                | listTipoParam
+;
+
+/* GRAMATICA DE DEFINICIONES EXTERNAS*/
+
+unidadTrad:     declExt
+                | unidadTrad declExt
+;
+declExt:        defFun
+                | declaracion
+;
+defFun:         espDecOP decla listDeclaracionesOp sentComp
+;
 
 /* GRAMATICA DE SENTENCIAS */
+
 sent:		sentExp | sentComp | sentSelecc | sentIterac | sentSalto | sentEtiq
 ;
-sentComp:	'{' listDecl listsent '}'
+sentComp:	'{' listDeclaracionesOp listsentOp '}'
 ;
 
-listsent:   /* vacio */
-            |sent
+listsent:    sent
             | listsent sent
 ;
-
-sentExp:		expOp ';'
+listsentOp: /*vacio*/
+        | listsent
+;
+listDeclaraciones:      declaracion
+                        | listDeclaraciones declaracion
+;
+listDeclaracionesOp: /*vacio*/
+                        | listDeclaraciones
+;
+sentExp:        expOp ';'
 ;
 sentSelecc:	IF '(' exp ')' sent elseSent
             | SWITCH '(' exp ')' sent
@@ -65,7 +198,7 @@ elseSent: 	/* vacio */
 				| ELSE sent
 ;
 sentIterac:	WHILE '(' exp ')' sent
-            | DO sent WHILE '(' exp ')'
+            | DO sent WHILE '(' exp ')' ';'
             | FOR '('expOp ';' expOp ';' expOp ')' sent
 ;
 sentSalto:  RETURN expOp ';'
@@ -73,7 +206,7 @@ sentSalto:  RETURN expOp ';'
             | BREAK ';'
             | GOTO ID ';'
 ;
-sentEtiq:   CASE exp ':' sent
+sentEtiq:   CASE expCond ':' sent
             | DEFAULT ':' sent
             | ID ':' sent
 ;
@@ -127,7 +260,7 @@ expUna: expPFijo
         | OPINCDEC expUna
         | opUna expConv
         | SIOF expUna
-        | SIOF '(' TDATO ')'
+        | SIOF '(' nomTipo ')'
 ;
 opUna: '&' | '*' | '+' | '-'| '~'| '!'
 ;
@@ -143,9 +276,6 @@ listaArg:   expAsig
 ;
 expPri:     ID | CENTERO | CREAL | LCADENA | '(' exp ')'
 ;
-
-     
-
 
 %%
 

@@ -9,9 +9,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <ctype.h>
 
 struct NodoDecl
 {
+
   char *tipo;
   char *id;
   NodoDecl *parametros; // Puntero al primer nodo de una lista con los parametros de las funciones
@@ -20,7 +22,6 @@ struct NodoDecl
 
 struct NodoDecl *listaVar = NULL;
 struct NodoFunc *listaFunc = NULL;
-
 // Funcion para retornar el puntero a la lista que se va a almacenar en la lista de variables o la de funciones
 // el parametro *punt es el mismo puntero a la lista
 struct NodoDecl *agregarAListaDecl(struct NodoDecl *punt, char *id, char *tipo)
@@ -91,7 +92,7 @@ void opciones()
   printf("\nINGRESE LA OPCION DE LO QUE DESEA HACER:\n\n");
   printf("1)  Generar listado de variables declaradas\n");
   printf("2)  Generar listado de funciones declaradas\n");
-  printf("3)  Generar listado de cantidad de sentencias\n");
+  printf("3)  Generar listado de sentencias\n");
   printf("4) Salir del reporte\n");
 }
 
@@ -123,7 +124,7 @@ void imprimirOpcionesReporte()
 
     case 3:
       printf("-------------------------------------------------------------------------");
-      printf("\nUSTED INGRESO LA OPCION 3: GENERAR LISTA DE CANTIDAD DE SENTENCIAS.\n");
+      printf("\nUSTED INGRESO LA OPCION 3: GENERAR LISTA DE SENTENCIAS ENCONTRADAS.\n");
       printf("-------------------------------------------------------------------------\n\n");
       break;
 
