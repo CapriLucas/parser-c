@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "funciones.h"
 
 int yylex ();
 int yyerror (char*);
@@ -12,6 +11,10 @@ int yywrap(){
 }
 
 
+
+extern FILE* yyin;
+extern FILE* yyout;
+
 %}
 
 %union {
@@ -19,11 +22,18 @@ char* ccval; // cadenas
 double dval; // numeros reales/racionales
 int ival; // numeros enteros
 }
+
+
+
 %token <ival> CENTERO 
 %token <dval> CREAL
-%token <ccval> ID LCADENA OPASIG OR AND OPIGUAL OPCORR OPREL OPINCDEC TDATO TCLASE FLECHA LCADENA
+%token <ccval> ID
+%token <ccval> LCADENA
+%token <ccval> CCARACTER
+%token <ccval> OPASIG OR AND OPIGUAL OPCORR OPREL OPINCDEC TDATO TCLASE FLECHA 
 %token <ccval> STRUNION CALTIPO ENUM
 %token <ccval> IF ELSE SIOF SWITCH WHILE DO FOR RETURN CONTINUE GOTO BREAK CASE DEFAULT
+
 
 %% /*  reglas gramaticales y las acciones */
  
@@ -32,16 +42,22 @@ input:  /* vacio */
 ;
 
 line:   '\n'
-        | exp '\n' 
+        | expresion '\n' 
+        | sentencia 'n'
+        | declaracion 'n'
 ;
+
+
+
 
 /* GRAMATICA DE DECLARACIONES */
 
 declaracion:	espDec	listDeclaradoresOp
 ;
+
 espDec: espClase espDecOP
         | espTipo espDecOP
-        | calTIpo espDecOP
+        | calTipo espDecOP
         nomTyp
 ;
 espDecOP:   /* vacio*/
@@ -90,20 +106,27 @@ listCalOp: /*vacio*/
 declaradoresStruct:     declaStruct
                         | declaradoresStruct ',' declaStruct
 ;
-declaStruct:    decla
+declaStruct:    declaOp
                 | declaOp ';' expCond
 ;
+
 decla: puntOp declaDir
 ;
+
+declaOp: /*vacio*/
+        |decla
+;
+
 punt: '*' listaCalTipOp
         | '*' listaCalTipOp punt
 ;
-declaOp: /*vacio*/
-        | decla
-;
+
+
+
 puntOp: /*vacio*/
         | punt
 ;
+
 listaCalTip:    calTipo
                 | listaCalTip calTipo
 ;
@@ -159,64 +182,82 @@ listTipoParamOp: /*vacio*/
                 | listTipoParam
 ;
 
-/* GRAMATICA DE DEFINICIONES EXTERNAS*/
-
-unidadTrad:     declExt
-                | unidadTrad declExt
-;
-declExt:        defFun
-                | declaracion
-;
-defFun:         espDecOP decla listDeclaracionesOp sentComp
-;
 
 /* GRAMATICA DE SENTENCIAS */
 
-sent:		sentExp | sentComp | sentSelecc | sentIterac | sentSalto | sentEtiq
-;
-sentComp:	'{' listDeclaracionesOp listsentOp '}'
+sentencia:		
+        sentExp    
+        | sentComp 
+        | sentSelecc 
+        | sentIterac 
+        | sentSalto  
+        | sentEtiq  
 ;
 
-listsent:    sent
-            | listsent sent
+sentExp:        expOp ';'
+                ;
+
+sentComp:	'{' listDeclaracionesOp listsentOp '}'                      {fprintf(yyout,"Sentencia Compuesta encontrada:\n");}
 ;
+
 listsentOp: /*vacio*/
         | listsent
 ;
-listDeclaraciones:      declaracion
-                        | listDeclaraciones declaracion
-;
+
 listDeclaracionesOp: /*vacio*/
                         | listDeclaraciones
 ;
-sentExp:        expOp ';'
-;
-sentSelecc:	IF '(' exp ')' sent elseSent
-            | SWITCH '(' exp ')' sent
-;
-elseSent: 	/* vacio */
-				| ELSE sent
-;
-sentIterac:	WHILE '(' exp ')' sent
-            | DO sent WHILE '(' exp ')' ';'
-            | FOR '('expOp ';' expOp ';' expOp ')' sent
-;
-sentSalto:  RETURN expOp ';'
-            | CONTINUE ';'
-            | BREAK ';'
-            | GOTO ID ';'
-;
-sentEtiq:   CASE expCond ':' sent
-            | DEFAULT ':' sent
-            | ID ':' sent
+
+listDeclaraciones:      declaracion
+                        | listDeclaraciones declaracion
 ;
 
+listsent:    sentencia
+            | listsent sentencia
+;
+
+
+
+sentSelecc:	IF '(' expresion ')' sentencia elseSent                    {printf("Sentencia de seleccion If encontrada.\n"); }
+                | SWITCH '(' expresion ')' sentencia                       {printf("Sentencia de seleccion switch encontrada.\n"); }
+;
+
+elseSent: 	/* vacio */
+				| ELSE sentencia                           {printf("Sentencia de seleccion If-Else encontrada.\n"); }
+;
+
+
+sentIterac:	WHILE '(' expresion ')' sentencia                          {printf("Sentencia de Iteracion while encontrada.\n"); }
+                | DO sentencia WHILE '(' expresion ')' ';'                 {printf("Sentencia de Iteracion do while encontrada.\n"); }
+                | FOR '('expOp ';' expOp ';' expOp ')' sentencia           {printf("Sentencia de Iteracion for encontrada.\n"); }
+;
+
+
+sentSalto:  RETURN expOp ';'                                               {printf("Sentencia de salto return encontrada.\n"); }
+            | CONTINUE ';'                                                 {printf("Sentencia de salto continue encontrada.\n"); }
+            | BREAK ';'                                                    {printf("Sentencia de salto break encontrada.\n"); }
+            | GOTO ID ';'                                                  {printf("Sentencia de salto goto encontrada.\n"); }
+;
+
+
+sentEtiq:   CASE expCond ':' sentencia                                     {printf("Sentencia de etiqueta case encontrada.\n"); }
+            | DEFAULT ':' sentencia                                        {printf("Sentencia de etiqueta default encontrada.\n"); }
+            | ID ':' sentencia                                       
+;       
+
+
+
+
+
+
+
+
 /* GRAMATICA DE EXPRESIONES */
-exp:    expAsig
-        | exp ',' expAsig
+expresion:    expAsig
+             | expresion ',' expAsig
 ;
 expOp: /* vacio */
-        | exp
+        | expresion
 ;  
 expAsig:    expCond
             | expUna operAsig expAsig
@@ -224,7 +265,7 @@ expAsig:    expCond
 operAsig:   OPASIG
 ;
 expCond:    expOr
-            | expOr '?' exp ':' expCond
+            | expOr '?' expresion ':' expCond
 ;
 expOr:  expAnd
         | expOr OR expAnd 
@@ -265,7 +306,7 @@ expUna: expPFijo
 opUna: '&' | '*' | '+' | '-'| '~'| '!'
 ;
 expPFijo:   expPri
-            | expPFijo '[' exp ']'
+            | expPFijo '[' expresion ']'
             | expPFijo '(' listaArg ')'
             | expPFijo '.' ID
             | expPFijo FLECHA ID
@@ -274,7 +315,7 @@ expPFijo:   expPri
 listaArg:   expAsig
             | listaArg ',' expAsig
 ;
-expPri:     ID | CENTERO | CREAL | LCADENA | '(' exp ')'
+expPri:     ID | CENTERO | CREAL | LCADENA | '(' expresion ')'
 ;
 
 %%
@@ -282,31 +323,17 @@ expPri:     ID | CENTERO | CREAL | LCADENA | '(' exp ')'
 
 //Si el analizador no empareja con ninguna produccion se muestra un msj de error con su linea 
 
-void yyerror (char *mensaje)  
+int yyerror (char* mensaje)  
 {  
     printf ("Error: %s\n", mensaje);
 }
 
-int main ()
-{
-//El mismo deberá tomar un archivo de texto como entrada (archivo fuente) y dar como salida en pantalla
-//un reporte de variables declaradas indicando tipo de dato correspondiente, funciones declaradas,
-// tipos sentencias encontradas. Deberá indicarse aquellas secuencias que no pertenezcan a ninguna categoría
-// léxica o estructuras que no sean válidas sintácticamente. Para desarrollar dicho programa deberá utilizar 
-//LEX/FLEX combinado con YACC/BISON para la generación del código C.
 
-// Las gramáticas pueden ser extraídas del volumen 1 del apunte de la cátedra, en varios casos pueden empezar
-// implementando las producciones más sencillas y luego ir agregando complejidad. 
+int main (){
+yyin = fopen("Entrada.txt","r");
+yyout = fopen("Salida.txt","w");
+yyparse();
 
-  yyin = fopen("Entrada.txt","r");
-  // yyout = fopen("salida.txt","w"); Para hacer pruebas
-  yyparse ();
- 	printf("Variables declaradas y su tipo de dato\n");
-    // Funcion generica que devuelva lo pedido 
-	printf("Funciones declaradas\n");
-    // Funcion generica que devuelva lo pedido 
-    printf("Tipo de Sentencias Encontradas");
-    // Funcion generica que devuelva lo pedido 
-    printf("Secuencias que no pertenecen a ninguna categoria lexica o estructuras no validas");
-    
 }
+
+
