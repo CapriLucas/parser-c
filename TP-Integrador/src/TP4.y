@@ -37,16 +37,12 @@ int ival; // numeros enteros
 %token <ccval> OR 
 %token <ccval> AND 
 %token <ccval> OPIGUAL 
-%token <ccval> OPCORR 
 %token <ccval> OPREL 
-%token <ccval> OPERADORINC
-%token <ccval> OPERADORDEC 
+%token <ccval> OPINCDEC
 %token <ccval> T_DATO 
 %token <ccval> TCLASE 
-%token <ccval> FLECHA 
 %token <ccval> STRUNION 
 %token <ccval> CALTIPO 
-%token <ccval> OPDESIGUAL
 %token <ccval> OPERADORUNARIO
 %token  ENUM
 %token  IF 
@@ -88,15 +84,12 @@ expresion:    expresionAsignacion
 ;
 
 expresionAsignacion:    expresionCondicional
-                        | expresionUnaria operadoresAsignador expresionAsignacion
+                        | expresionUnaria OPASIG expresionAsignacion
 ;
-
-operadoresAsignador: OPASIG
-                        | '='
+expresionCondicional:    expresionOr expCondOr
 ;
-
-expresionCondicional:    expresionOr
-                        | expresionOr '?' expresion ':' expresionCondicional
+expCondOr: /*vacio*/
+                | '?' expresion ':' expresionCondicional
 ;
 expresionOr:  expresionAnd
             | expresionOr OR expresionAnd 
@@ -106,54 +99,48 @@ expresionAnd: expresionIgualdad
 ;
 expresionIgualdad:   expresionRelacional
             | expresionIgualdad OPIGUAL expresionRelacional
-            | expresionIgualdad OPDESIGUAL expresionRelacional
 ;
-expresionRelacional: expresionCorrimiento
-        | expresionRelacional operadoresRelacionales expresionCorrimiento
+expresionRelacional: expresionAditiva
+        | expresionRelacional OPREL expresionAditiva
 ;
-
-operadoresRelacionales: '<' | '>' | OPREL
-;
-
-expresionCorrimiento: expresionAditiva
-        | expresionCorrimiento OPCORR expresionAditiva
-;
-
 expresionAditiva: expresionMultiplicativa
-        | expresionAditiva '+' expresionMultiplicativa
-        | expresionAditiva '-' expresionMultiplicativa
+        | expresionAditiva operadorAditivo expresionMultiplicativa
+;
+operadorAditivo: '+' | '-'
 ;
 expresionMultiplicativa: expresionUnaria
-        | expresionMultiplicativa '*' expresionUnaria
-        | expresionMultiplicativa '/' expresionUnaria
-        | expresionMultiplicativa '%' expresionUnaria
-;
+        | expresionMultiplicativa operadorUnario expresionUnaria
 
 ;
+operadorUnario: '*' | '/' | '%'
+;
 expresionUnaria: expresionPostFijo
-        | OPERADORDEC expresionUnaria
-        | OPERADORINC expresionUnaria
+        | OPINCDEC expresionUnaria
         | SIZEOF '(' T_DATO ')'
 ;
 
 
 expresionPostFijo:   expresionPrimaria
-            | expresionPostFijo '[' expresion ']'
-            | expresionPostFijo '(' listaArgumentos ')'
-            | expresionPostFijo '.' ID
-            | expresionPostFijo FLECHA ID
-            | expresionPostFijo OPERADORINC
-            | expresionPostFijo OPERADORDEC
+            | expresionPostFijo expresionPostFijoCond
+;
+expresionPostFijoCond: '[' expresion ']'
+                        | '(' listaArgumentosOp ')'
+                        | '.' ID
+                        | OPINCDEC
 ;
 listaArgumentos:  expresionAsignacion
             | listaArgumentos ',' expresionAsignacion
+;
+listaArgumentosOp:  /*vacio*/
+            | listaArgumentos 
 ;
 expresionPrimaria:     ID 
             | CENTERO 
             | CREAL 
             | LCADENA 
+            | CCARACTER
             | '(' expresion ')'
-            ;
+;
 
 
 

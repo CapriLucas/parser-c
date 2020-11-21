@@ -48,34 +48,30 @@
      OR = 264,
      AND = 265,
      OPIGUAL = 266,
-     OPCORR = 267,
-     OPREL = 268,
-     OPERADORINC = 269,
-     OPERADORDEC = 270,
-     T_DATO = 271,
-     TCLASE = 272,
-     FLECHA = 273,
-     STRUNION = 274,
-     CALTIPO = 275,
-     OPDESIGUAL = 276,
-     OPERADORUNARIO = 277,
-     ENUM = 278,
-     IF = 279,
-     ELSE = 280,
-     SIZEOF = 281,
-     SWITCH = 282,
-     WHILE = 283,
-     DO = 284,
-     FOR = 285,
-     RETURN = 286,
-     CONTINUE = 287,
-     GOTO = 288,
-     BREAK = 289,
-     CASE = 290,
-     DEFAULT = 291,
-     DIRECTIVA = 292,
-     CNORECONOCIDO = 293,
-     ERRORLEXICO = 294
+     OPREL = 267,
+     OPINCDEC = 268,
+     T_DATO = 269,
+     TCLASE = 270,
+     STRUNION = 271,
+     CALTIPO = 272,
+     OPERADORUNARIO = 273,
+     ENUM = 274,
+     IF = 275,
+     ELSE = 276,
+     SIZEOF = 277,
+     SWITCH = 278,
+     WHILE = 279,
+     DO = 280,
+     FOR = 281,
+     RETURN = 282,
+     CONTINUE = 283,
+     GOTO = 284,
+     BREAK = 285,
+     CASE = 286,
+     DEFAULT = 287,
+     DIRECTIVA = 288,
+     CNORECONOCIDO = 289,
+     ERRORLEXICO = 290
    };
 #endif
 
@@ -86,7 +82,7 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 24 "TP4.y"
+#line 24 ".\\TP4.y"
 
 char* ccval; // cadenas
 double dval; // numeros reales/racionales
@@ -95,7 +91,7 @@ int ival; // numeros enteros
 
 
 /* Line 1676 of yacc.c  */
-#line 99 "TP4.tab.h"
+#line 95 "TP4.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
