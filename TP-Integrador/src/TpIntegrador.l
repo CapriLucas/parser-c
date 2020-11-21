@@ -1,6 +1,6 @@
 %option noyywrap 
 %{
-#include"pruebaGramatica.tab.h"
+#include"TpIntegrador.tab.h"
 #include<stdio.h>
 #include<string.h>
 #include<stdlib.h>

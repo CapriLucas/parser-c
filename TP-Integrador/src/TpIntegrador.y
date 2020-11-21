@@ -10,19 +10,20 @@ int yyerror (char*);
 int yywrap(){
     return(1);
 }
+
 extern int yylineno;
-
-
-
-
 // usar yylineno para las lineas en ts
-extern FILE* yyin;
-extern FILE* yyout;
+
+FILE* yyin;
+FILE* yyout;
 
 %}
 
+%type <ccval> variableSimple    //se agrega el type a la produccion para que pueda abarcar cualquier tipo y no haya conflicto para derivar
+
+
 %union {
-char* ccval; // cadenas
+char ccval[20]; // cadenas
 double dval; // numeros reales/racionales
 int ival; // numeros enteros
 }
@@ -41,55 +42,56 @@ int ival; // numeros enteros
 %token <ccval> OPINCDEC
 %token <ccval> T_DATO 
 %token <ccval> TCLASE 
+%token <ccval> FLECHA 
 %token <ccval> STRUNION 
 %token <ccval> CALTIPO 
+%token <ccval> OPDESIGUAL
 %token <ccval> OPERADORUNARIO
-%token  ENUM
-%token  IF 
-%token  ELSE 
-%token  SIZEOF 
-%token  SWITCH
-%token  WHILE 
-%token  DO 
-%token  FOR 
-%token  RETURN 
-%token  CONTINUE 
-%token  GOTO 
-%token  BREAK 
-%token  CASE 
-%token DEFAULT
+%token <ccval> ENUM
+%token <ccval> IF 
+%token <ccval> ELSE 
+%token <ccval> SIZEOF 
+%token <ccval> SWITCH
+%token <ccval> WHILE 
+%token <ccval> DO 
+%token <ccval> FOR 
+%token <ccval> RETURN 
+%token <ccval> CONTINUE 
+%token <ccval> GOTO 
+%token <ccval> BREAK 
+%token <ccval> CASE 
+%token <ccval>DEFAULT
 %token <ccval> DIRECTIVA
 %token <ccval> CNORECONOCIDO
-%token ERRORLEXICO
-%type <ccval> variableSimple
+%token <ccval> errorLexico
 
 
 %% 
- 
+
 input:  /* vacio */
         | input line
 ;
 
 
 line:   '\n'
-        | sentencia '\n' 
-        | declaracion '\n'
-        | definicionDeFuncion '\n' 
+        | declaracion  '\n' 
+        | sentencia '\n'
+        | errorLexico {printf("Se encontro un error lexico en la linea %d\n ", yylineno);}
+        | error {printf("\nSe encontro un error sintactico en la linea %d. Imposible emparejar por alguna produccion\n", yylineno);} //ver como hacer aca con los errores.
 ;
 
 
 /* GRAMATICA DE EXPRESIONES */
 expresion:    expresionAsignacion
-             | expresion ',' expresionAsignacion
 ;
 
 expresionAsignacion:    expresionCondicional
                         | expresionUnaria OPASIG expresionAsignacion
 ;
-expresionCondicional:    expresionOr expCondOr
-;
-expCondOr: /*vacio*/
-                | '?' expresion ':' expresionCondicional
+
+
+expresionCondicional:    expresionOr
+                        | expresionOr '?' expresion ':' expresionCondicional
 ;
 expresionOr:  expresionAnd
             | expresionOr OR expresionAnd 
@@ -100,19 +102,33 @@ expresionAnd: expresionIgualdad
 expresionIgualdad:   expresionRelacional
             | expresionIgualdad OPIGUAL expresionRelacional
 ;
+
+
+
+
+
 expresionRelacional: expresionAditiva
-        | expresionRelacional OPREL expresionAditiva
+                    |expresionRelacional OPREL expresionAditiva
 ;
+
+
+
+
+
+
+
+
+
 expresionAditiva: expresionMultiplicativa
-        | expresionAditiva operadorAditivo expresionMultiplicativa
-;
-operadorAditivo: '+' | '-'
+        | expresionAditiva '+' expresionMultiplicativa
+        | expresionAditiva '-' expresionMultiplicativa
 ;
 expresionMultiplicativa: expresionUnaria
-        | expresionMultiplicativa operadorUnario expresionUnaria
-
+        | expresionMultiplicativa '*' expresionUnaria
+        | expresionMultiplicativa '/' expresionUnaria
+        | expresionMultiplicativa '%' expresionUnaria
 ;
-operadorUnario: '*' | '/' | '%'
+
 ;
 expresionUnaria: expresionPostFijo
         | OPINCDEC expresionUnaria
@@ -121,39 +137,42 @@ expresionUnaria: expresionPostFijo
 
 
 expresionPostFijo:   expresionPrimaria
-            | expresionPostFijo expresionPostFijoCond
+            | expresionPostFijo '[' expresion ']'
+            | expresionPostFijo '(' listaArgumentos ')'
+            | expresionPostFijo '.' ID
+            | expresionPostFijo FLECHA ID
+            | expresionPostFijo OPINCDEC
+
 ;
-expresionPostFijoCond: '[' expresion ']'
-                        | '(' listaArgumentosOp ')'
-                        | '.' ID
-                        | OPINCDEC
-;
-listaArgumentos:  expresionAsignacion
+listaArgumentos:  /*vacio*/
+            |expresionAsignacion
             | listaArgumentos ',' expresionAsignacion
-;
-listaArgumentosOp:  /*vacio*/
-            | listaArgumentos 
 ;
 expresionPrimaria:     ID 
             | CENTERO 
             | CREAL 
             | LCADENA 
-            | CCARACTER
             | '(' expresion ')'
-;
+            ;
+
+
+
+
+
+
 
 
 /* GRAMATICA DE DECLARACIONES */
 
 declaracion: declaracionDeVariables
              |declaracionDeFunciones
-             |definicionDeFuncion    
+             |defincionDeFuncion    
 ;
 
-declaracionDeVariables: T_DATO listaVariablesSimples ';' {printf("\nde tipo %s", $<ccval>1);}
+declaracionDeVariables: T_DATO listaVariablesSimples ';' {printf(" de tipo %s.\n", $<ccval>1);}
 ;
 
-listaVariablesSimples: variableSimple    {printf ("\nSe encontro la variable %s", $<ccval>1);}
+listaVariablesSimples: variableSimple                     {printf ("\nSe encontro la variable %s", $<ccval>$);}
                         |listaVariablesSimples ',' variableSimple  
 ;
 
@@ -165,19 +184,19 @@ inicializador: /* vacio */
 ;
 
 
-declaracionDeFunciones: T_DATO ID '(' opcionArgumentos ')' ';'      {printf ("\nSe encontro la funcion "%s" de tipo %s", $<ccval>2, $<ccval>1);}
+declaracionDeFunciones: T_DATO ID '(' opcionArgumentos ')' ';'      {printf ("\nSe encontro la funcion %s de tipo %s\n", $<ccval>2, $<ccval>1);}
 ;
 
 opcionArgumentos: /*vacio*/
-                | T_DATO referencia ID                                 {printf ("\que recibe el parametro "%s" de tipo %s ", $<ccval>3, $<ccval>1);}
-                | T_DATO referencia ID ',' opcionArgumentos            {printf ("\que recibe los parametros "%s" de tipo %s ", $<ccval>3, $<ccval>1);}
+                | T_DATO referencia ID 
+                | T_DATO referencia ID ',' opcionArgumentos
 ;
 
 referencia: /*vacio*/
         | '&'
 ;
 
-definicionDeFuncion: T_DATO ID '(' opcionArgumentos ')' sentencia {printf ("\nSe encontro la funcion %s de tipo %s ", $<ccval>2, $<ccval>1);}
+defincionDeFuncion: T_DATO ID '(' opcionArgumentos ')' sentencia {printf ("\nSe encontro la funcion %s de tipo %s\n ", $<ccval>2, $<ccval>1);}
 
 
 
@@ -192,13 +211,13 @@ sentencia:
         | sentenciaSeleccion 
         | sentenciaIteracion 
         | sentenciaSalto  
+        | sentenciaEtiqueta  
 ;
 
 sentenciaExpresion: ';'
-                    |expresion ';'
-;
+                    |expresion;
 
-sentenciaCompuesta:	'{' listaDeclaracionesOpcional listaSentenciasOpcional '}'      {fprintf(yyout,"Sentencia Compuesta encontrada:\n");}
+sentenciaCompuesta:	'{' listaDeclaracionesOpcional listaSentenciasOpcional '}'      {printf("Sentencia compuesta encontrada.\n"); }
 ;
 
 
@@ -215,6 +234,9 @@ listaSentenciasOpcional: /*vacio*/
 listaSentencias: sentencia 
                 |listaSentencias sentencia
 ;
+
+
+
 
 sentenciaSeleccion:	IF '(' expresion ')' sentencia elseSent                         {printf("Sentencia de seleccion If encontrada.\n"); }
                         | SWITCH '(' expresion ')' sentencia                            {printf("Sentencia de seleccion switch encontrada.\n"); }
@@ -237,6 +259,12 @@ sentenciaSalto:  RETURN expresionOpc ';'                                        
                         | GOTO ID ';'                                                    {printf("Sentencia de salto goto encontrada.\n"); }
 ;
 
+
+sentenciaEtiqueta:   CASE expresionCondicional ':' sentencia                             {printf("Sentencia de etiqueta case encontrada.\n"); }
+                        | DEFAULT ':' sentencia                                          {printf("Sentencia de etiqueta default encontrada.\n"); }
+                        | ID ':' sentencia                                       
+;       
+
 expresionOpc: /*vacio*/
                         |expresion
 
@@ -246,24 +274,19 @@ expresionOpc: /*vacio*/
 %%
 
 
-
-int yyerror (char* mensaje)  
-{  
-    printf ("Error: %s\n", mensaje);
+int yyerror (char *mensajeError){  //tambien ver como hay que manerjarlo en el archivo de salida o si es necesario (todavia no me fije)
+        fprintf(yyout, "Se encontro un error sintatico\n ", mensajeError);
 }
+
+
+
 
 int main (){
 //funciones y menu
 
 yyin = fopen("Entrada.c","r");
-yyout = fopen("Salida.c","w");
-
-    #ifdef BISON_DEBUG
-        yydebug = 1;
-#endif
+yyout= fopen("Salida.txt", "w");
 yyparse();
 
 
 }
-
-
