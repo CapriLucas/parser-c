@@ -191,11 +191,10 @@ sentencia:
         | sentSelecc 
         | sentIterac 
         | sentSalto  
-        | sentEtiq  
 ;
 
 sentExp:        expOp ';'
-                ;
+;
 
 sentComp:	'{' listDeclaracionesOp listsentOp '}'                      {fprintf(yyout,"Sentencia Compuesta encontrada:\n");}
 ;
@@ -215,8 +214,6 @@ listDeclaraciones:      declaracion
 listsent:    sentencia
             | listsent sentencia
 ;
-
-
 
 sentSelecc:	IF '(' expresion ')' sentencia elseSent                    {printf("Sentencia de seleccion If encontrada.\n"); }
                 | SWITCH '(' expresion ')' sentencia                       {printf("Sentencia de seleccion switch encontrada.\n"); }
@@ -238,12 +235,6 @@ sentSalto:  RETURN expOp ';'                                               {prin
             | BREAK ';'                                                    {printf("Sentencia de salto break encontrada.\n"); }
             | GOTO ID ';'                                                  {printf("Sentencia de salto goto encontrada.\n"); }
 ;
-
-
-sentEtiq:   CASE expCond ':' sentencia                                     {printf("Sentencia de etiqueta case encontrada.\n"); }
-            | DEFAULT ':' sentencia                                        {printf("Sentencia de etiqueta default encontrada.\n"); }
-            | ID ':' sentencia                                       
-;       
 
 
 

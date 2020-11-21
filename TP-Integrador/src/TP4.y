@@ -74,7 +74,7 @@ input:  /* vacio */
 line:   '\n'
         | sentencia '\n' 
         | declaracion '\n'
-        | defincionDeFuncion '\n' 
+        | definicionDeFuncion '\n' 
 ;
 
 
@@ -143,23 +143,17 @@ expresionPrimaria:     ID
 ;
 
 
-
-
-
-
-
-
 /* GRAMATICA DE DECLARACIONES */
 
 declaracion: declaracionDeVariables
              |declaracionDeFunciones
-             |defincionDeFuncion    
+             |definicionDeFuncion    
 ;
 
 declaracionDeVariables: T_DATO listaVariablesSimples ';' {printf("\nde tipo %s", $<ccval>1);}
 ;
 
-listaVariablesSimples: variableSimple                     {printf ("\nSe encontro la variable %s", $<ccval>1);}
+listaVariablesSimples: variableSimple    {printf ("\nSe encontro la variable %s", $<ccval>1);}
                         |listaVariablesSimples ',' variableSimple  
 ;
 
@@ -183,7 +177,7 @@ referencia: /*vacio*/
         | '&'
 ;
 
-defincionDeFuncion: T_DATO ID '(' opcionArgumentos ')' sentencia {printf ("\nSe encontro la funcion %s de tipo %s ", $<ccval>2, $<ccval>1);}
+definicionDeFuncion: T_DATO ID '(' opcionArgumentos ')' sentencia {printf ("\nSe encontro la funcion %s de tipo %s ", $<ccval>2, $<ccval>1);}
 
 
 
@@ -198,11 +192,11 @@ sentencia:
         | sentenciaSeleccion 
         | sentenciaIteracion 
         | sentenciaSalto  
-        | sentenciaEtiqueta  
 ;
 
 sentenciaExpresion: ';'
-                    |expresion;
+                    |expresion ';'
+;
 
 sentenciaCompuesta:	'{' listaDeclaracionesOpcional listaSentenciasOpcional '}'      {fprintf(yyout,"Sentencia Compuesta encontrada:\n");}
 ;
@@ -221,9 +215,6 @@ listaSentenciasOpcional: /*vacio*/
 listaSentencias: sentencia 
                 |listaSentencias sentencia
 ;
-
-
-
 
 sentenciaSeleccion:	IF '(' expresion ')' sentencia elseSent                         {printf("Sentencia de seleccion If encontrada.\n"); }
                         | SWITCH '(' expresion ')' sentencia                            {printf("Sentencia de seleccion switch encontrada.\n"); }
@@ -246,12 +237,6 @@ sentenciaSalto:  RETURN expresionOpc ';'                                        
                         | GOTO ID ';'                                                    {printf("Sentencia de salto goto encontrada.\n"); }
 ;
 
-
-sentenciaEtiqueta:   CASE expresionCondicional ':' sentencia                             {printf("Sentencia de etiqueta case encontrada.\n"); }
-                        | DEFAULT ':' sentencia                                          {printf("Sentencia de etiqueta default encontrada.\n"); }
-                        | ID ':' sentencia                                       
-;       
-
 expresionOpc: /*vacio*/
                         |expresion
 
@@ -262,7 +247,10 @@ expresionOpc: /*vacio*/
 
 
 
-
+int yyerror (char* mensaje)  
+{  
+    printf ("Error: %s\n", mensaje);
+}
 
 int main (){
 //funciones y menu

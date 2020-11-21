@@ -11,7 +11,7 @@
 
 %}
 option noyywrap      
-
+%option yylineno
 %%
 "("|")"|"["|"]"|","|"?"|":"|";"|"{"|"}"|"&"|"!"|"+"|"-"|"*"|"/"|"%"       {return yytext[0];}
 "int" | "char" | "void" | "float" |"bool"|"double"|"long"|"short"|"unsigned"|"signed"     {return T_DATO;}
