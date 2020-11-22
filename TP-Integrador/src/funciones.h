@@ -1,145 +1,126 @@
-//Funciones para el tp
-// Tener en cuenta que debemos almacenar lo sig:
-// .Variables declaradas con tipo de dato (valor?)
-// .Funciones declaradas
-// .Tipos de sentencias encontradas (sentencia expresión|sentencia compuesta|sentencia de selección|sentencia de iteración|
-//        sentencia etiquetada|sentencia de salto)
-// .Secuencias que no pertenezcan a ninguna cat Lexica y errores sintacticos
-
-
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 #include <ctype.h>
 
-
-struct NodoDecl
+struct TablaSimbolos
 {
-  char *tipo;
-  char *id;
-  NodoDecl *parametros; // Puntero al primer nodo de una lista con los parametros de las funciones
-  NodoDecl *sig;
+  struct NodoVar *listaVar;
+  struct NodoFunc *listaFunc;
 };
 
-struct NodoDecl *listaVar = NULL;
-struct NodoFunc *listaFunc = NULL;
-
-// Funcion para retornar el puntero a la lista que se va a almacenar en la lista de variables o la de funciones
-// el parametro *punt es el mismo puntero a la lista
-
-struct NodoDecl *agregarAListaDecl(struct NodoDecl *punt, char *id, char *tipo)
+struct NodoVar
 {
-  struct NodoDecl *nuevo = (struct NodoDecl *)malloc((strlen(tipo) + strlen(id) + 2) * sizeof(struct NodoDecl));
-  nuevo->id = id;
-  nuevo->tipo = tipo;
-  nuevo->parametros = NULL;
-  nuevo->sig = NULL;
-  struct NodoDecl *ant = NULL;
-  struct NodoDecl *aux = punt;
-  while (aux != NULL && strcasecmp(aux->id, id) <= 0)
-  {
-    ant = aux;
-    aux = aux->sig;
-  }
-  if (ant == NULL)
-  {
-    punt = nuevo;
-  }
-  else
-  {
-    ant->sig = nuevo;
-  }
-  nuevo->sig = aux;
-  return punt;
-}
-
-// Funcion para agregar un parametro a un nodo de una Funcion, la lista de parametros es una sub-lista de la de funciones
-// Para cada parametro de una funcion registrada, se corre esta funcion agregando el param a la sublista
-// En caso de no encontrar el id de dicha funcion ... (COMPLETAR). Por ultimo retorna el puntero a la lista de funciones
-
-
-struct NodoDecl *agregarParamAFunc(struct NodoDecl *puntListFunc, char *idFunc, char *tipoParam, char *idParam)
+  char *nombreVar;
+  char *tipoVar;
+  struct NodoVar *sig;
+};
+struct NodoFunc
 {
-  struct NodoDecl *aux = puntListFunc;
-  while (aux != NULL && aux->id != idFunc)
-  {
-    aux = aux->sig;
-  }
-  if (aux == NULL)
-  {
-    // EN ESTE CASO NO SE PUEDE AGREGAR NINGUN PARAMETRO YA QUE LA FUNCION BUSCADA NO EXISTE
-  }
-  else
-  {
-    struct NodoDecl *param = aux->parametros;
-    param = agregarAListaDecl(param, idParam, tipoParam);
-  }
-  return puntListFunc;
-}
+  char *nombreFun;
+  struct NodoParam *parametrosEntrada;
+  char *parametroSalida;
+  struct NodoFunc *sig;
+};
 
-// Esta funcion verifica que no se re-declare ni una variable ni una funcion
-// Devuelve 1 si se encuentra ya declarada
-// devuelve 0 caso contrario
-int busquedaDecl(struct NodoDecl *punt, char *idABuscar)
+struct NodoParam
 {
-  struct NodoDecl *aux = punt;
-  while (aux != NULL && aux->id != idABuscar)
-  {
-    aux = aux->sig;
-  }
-  if (aux == NULL)
-    return 0;
-  else
-    return 1;
-}
+  char *tipoDato;
+  char *nombre;
+  char *referenciaValor;
+  int cantParametros;
+  struct NodoParam *sig;
+};
 
-void opciones()
+struct TablaSimbolos *TS = NULL;
+
+void putVariable(char *nombreVar, char *tipoVar)
 {
-  printf("\nINGRESE LA OPCION DE LO QUE DESEA HACER:\n\n");
-  printf("1)  Generar listado de variables declaradas\n");
-  printf("2)  Generar listado de funciones declaradas\n");
-  printf("3)  Generar listado de sentencias\n");
-  printf("4) Salir del reporte\n");
-}
-
-void imprimirOpcionesReporte()
-{
-
-  int opcionIngresada;
-  printf("-------------------------------------------------------------------------");
-  printf("\n\t\t\tOPCIONES DISPONIBLES:\n");
-  printf("-------------------------------------------------------------------------\n\n");
-  do
+  struct NodoVar *nuevoNodo;
+  nuevoNodo->nombreVar = nombreVar;
+  nuevoNodo->tipoVar = tipoVar;
+  if (TS->listaVar != NULL)
   {
-    opciones();
-    scanf("%d", &opcionIngresada);
-    switch (opcionIngresada)
+    struct NodoVar *aux = TS->listaVar;
+    while (aux->sig != NULL)
     {
-    case 1:
-      printf("-------------------------------------------------------------------------");
-      printf("\nUSTED INGRESO LA OPCION 1: GENERAR LISTA DE VARIABLES DECLARADAS.\n");
-      printf("-------------------------------------------------------------------------\n\n");
-      break;
 
-    case 2:
-      printf("-------------------------------------------------------------------------");
-      printf("\nUSTED INGRESO LA OPCION 2: GENERAR LISTA DE FUNCIONES DECLARADAS.\n");
-      printf("-------------------------------------------------------------------------\n\n");
-
-      break;
-
-    case 3:
-      printf("-------------------------------------------------------------------------");
-      printf("\nUSTED INGRESO LA OPCION 3: GENERAR LISTA DE SENTENCIAS ENCONTRADAS.\n");
-      printf("-------------------------------------------------------------------------\n\n");
-      break;
-
-      system("pause");
-      system("cls");
+      aux = aux->sig;
     }
-  } while (opcionIngresada != 4);
-  printf("-------------------------------------------------------------------------");
-  printf("\n\t\t\tREPORTE FINALIZADO\n\n");
-  printf("-------------------------------------------------------------------------\n\n");
+    aux->sig = nuevoNodo;
+  }
+  else
+  {
+    TS->listaVar = nuevoNodo;
+  }
+}
+
+void reloadTipos(char *tipoVar)
+{
+  if (TS->listaVar != NULL)
+  {
+    struct NodoVar *aux = TS->listaVar;
+    while (aux->sig != NULL)
+    {
+      if (aux->tipoVar == NULL)
+      {
+        aux->tipoVar = tipoVar;
+      }
+      aux = aux->sig;
+    }
+  }
+}
+void putFuncion(struct NodoFunc *funcion)
+{
+  if (TS->listaFunc != NULL)
+  {
+    struct NodoFunc *aux = TS->listaFunc;
+    while (aux->sig != NULL)
+    {
+
+      aux = aux->sig;
+    }
+    aux->sig = funcion;
+  }
+  else
+  {
+    TS->listaFunc = funcion;
+  }
+}
+
+struct NodoVar *getVariable(char *nombre)
+{
+  struct NodoVar *aux = TS->listaVar;
+  while (aux != NULL && strcmp(aux->nombreVar, nombre) != 0)
+  {
+    aux = aux->sig;
+  }
+  return aux;
+}
+struct NodoFunc *getFuncion(char *nombre)
+{
+  struct NodoFunc *aux = TS->listaFunc;
+  while (aux != NULL && strcmp(aux->nombreFun, nombre) != 0)
+  {
+    aux = aux->sig;
+  }
+  return aux;
+}
+
+void printListVar()
+{
+  if (TS->listaVar != NULL)
+  {
+    struct NodoVar *aux = TS->listaVar;
+    while (aux->sig != NULL)
+    {
+      printf("\nID: %s\nTIPO: %s", aux->nombreVar, aux->tipoVar);
+      aux = aux->sig;
+    }
+  }
+  else
+  {
+    printf("LISTA VACIA");
+  }
 }
