@@ -37,9 +37,10 @@ struct TablaSimbolos *TS = NULL;
 
 void putVariable(char *nombreVar, char *tipoVar)
 {
-  struct NodoVar *nuevoNodo;
+  struct NodoVar *nuevoNodo = (struct NodoVar *)malloc((strlen(nombreVar) + strlen(tipoVar) + 2) * sizeof(struct NodoVar));
   nuevoNodo->nombreVar = nombreVar;
   nuevoNodo->tipoVar = tipoVar;
+  nuevoNodo->sig = NULL;
   if (TS->listaVar != NULL)
   {
     struct NodoVar *aux = TS->listaVar;
