@@ -74,9 +74,9 @@ input:  /* vacio */
 ;
 
 
-line:   '\n'
-        | declaracion  '\n' 
-        | sentencia '\n'
+line:   declaracion  
+        | sentencia 
+        | expresion
         | errorLexico {printf("Se encontro un error lexico en la linea %d\n ", yylineno);}
         | error {printf("\nSe encontro un error sintactico en la linea %d. Imposible emparejar por alguna produccion\n", yylineno);} //ver como hacer aca con los errores.
 ;
@@ -154,7 +154,7 @@ expresionPrimaria:     ID
             | CREAL 
             | LCADENA 
             | '(' expresion ')'
-            ;
+;
 
 
 
@@ -165,14 +165,23 @@ expresionPrimaria:     ID
 
 /* GRAMATICA DE DECLARACIONES */
 
-declaracion: declaracionDeVariables
-             |declaracionDeFunciones
-             |defincionDeFuncion    
+declaracion: '\n' 
+        | declaracionDeVariables 
+        |declaracionDeFunciones 
+        |definicionDeFuncion    
 ;
 
-declaracionDeVariables: T_DATO listaVariablesSimples ';' {printf(" de tipo %s.\n", $<ccval>1);}
+declaracionDeVariables: T_DATO declaracionDeVariablesPuntero {printf(" de tipo %s%s.\n", $<ccval>1,$<ccval>2);}
 ;
-
+declaracionDeVariablesPuntero: listaVariablesSimples ';' {strcpy($<ccval>$, "");}
+        | '*' listaVariablesSimples ';' {strcpy($<ccval>$, "*");}
+        |  ID listaArreglos ';'  {strcpy($<ccval>$, "");printf ("\nSe encontro la variable arreglo %s", $<ccval>1);}
+;
+listaArreglos: arreglo 
+                | listaArreglos arreglo
+;
+arreglo: '[' expresion ']'
+;
 listaVariablesSimples: variableSimple                     {printf ("\nSe encontro la variable %s", $<ccval>$);}
                         |listaVariablesSimples ',' variableSimple  
 ;
@@ -185,7 +194,8 @@ inicializador: /* vacio */
 ;
 
 
-declaracionDeFunciones: T_DATO ID '(' opcionArgumentos ')' ';'      {printf ("\nSe encontro la funcion %s de tipo %s\n", $<ccval>2, $<ccval>1);}
+declaracionDeFunciones: T_DATO  ID '(' opcionArgumentos ')' ';'   {printf ("\nSe encontro la funcion %s de tipo %s\n", $<ccval>2, $<ccval>1);}
+                        | T_DATO '*' ID '(' opcionArgumentos ')' ';' {printf ("\nSe encontro la funcion %s de tipo %s*\n", $<ccval>3, $<ccval>1);}
 ;
 
 opcionArgumentos: /*vacio*/
@@ -197,9 +207,8 @@ referencia: /*vacio*/
         | '&'
 ;
 
-defincionDeFuncion: T_DATO ID '(' opcionArgumentos ')' sentencia {printf ("\nSe encontro la funcion %s de tipo %s\n ", $<ccval>2, $<ccval>1);}
-
-
+definicionDeFuncion: T_DATO ID '(' opcionArgumentos ')' sentencia  {printf ("\nSe encontro la funcion %s de tipo %s\n ", $<ccval>2, $<ccval>1);}
+;
 
 
 
@@ -207,7 +216,7 @@ defincionDeFuncion: T_DATO ID '(' opcionArgumentos ')' sentencia {printf ("\nSe 
 /*GRAMATICA DE SENTENCIAS*/
 
 sentencia:		
-        sentenciaExpresion    
+        sentenciaExpresion '\n'
         | sentenciaCompuesta 
         | sentenciaSeleccion 
         | sentenciaIteracion 
@@ -216,24 +225,26 @@ sentencia:
 ;
 
 sentenciaExpresion: ';'
-                    |expresion;
+                    | expresion ';' 
+;
 
-sentenciaCompuesta:	'{' listaDeclaracionesOpcional listaSentenciasOpcional '}'      {printf("Sentencia compuesta encontrada.\n"); }
+sentenciaCompuesta:	'{' listaDeclaracionesOpcional '\n' listaSentenciasOpcional '}' '\n'    {printf("Sentencia compuesta encontrada.\n"); }
+                        | '{' listaDeclaracionesOpcional  listaSentenciasOpcional '}' '\n'    {printf("Sentencia compuesta encontrada.\n"); }
 ;
 
 
 listaDeclaracionesOpcional: /*vacio*/
-                        |declaracion
+                        | declaracion 
                         | listaDeclaracionesOpcional declaracion
 ;
 
 listaSentenciasOpcional: /*vacio*/
                         | sentencia
-                        |listaSentencias sentencia 
+                        | listaSentencias sentencia 
 ;
 
 listaSentencias: sentencia 
-                |listaSentencias sentencia
+                | listaSentencias sentencia
 ;
 
 
