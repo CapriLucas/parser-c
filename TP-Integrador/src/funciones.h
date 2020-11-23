@@ -40,13 +40,40 @@ struct NodoErrorSemantico{
   struct NodoErrorSemantico *sig;
 };
 
-
+struct NodoVariables *listaVariablesAux = NULL;
 struct NodoVariables *listaVariables = NULL;
 struct NodoFunciones *listaFunciones = NULL;
 struct NodoErrorLexico *listaErroresLexicos = NULL;
 struct NodoErrorSintactico *listaErroresSintacticos =NULL;
 struct NodoErrorSemantico *listaErroresSemanticos =NULL;
 
+struct NodoVariables *validarVariableYAgregarla(struct NodoVariables *puntero, struct NodoErrorSemantico *punteroSemantico, char *nombre,char *tipo);
+struct NodoVariables *pasarVariablesDeAux(struct NodoVariables*lista,struct NodoErrorSemantico *punteroSemantico,struct NodoVariables *auxiliar, char *tipo){
+    struct NodoVariables *aux = auxiliar;
+    while (aux != NULL)
+     {
+          lista = validarVariableYAgregarla(lista, punteroSemantico, aux->nombreVar,tipo);
+          printf("SE VALIDO : %s de tipo: %s\n", aux->nombreVar, tipo);
+          aux = aux->sig;
+     }
+    return lista;
+
+}
+
+struct NodoVariables *destroyListaVar(struct NodoVariables *lista)
+{
+  struct NodoVariables *aux = lista;
+  struct NodoVariables *next;
+
+    while (aux != NULL)
+    {
+       next = aux->sig;
+       free(aux);
+       aux = next;
+    }
+    lista = NULL;
+    return lista;
+}
 
 struct NodoVariables *agregarVariable(struct NodoVariables*puntero, char *nombre, char *tipo){
   struct NodoVariables*nuevaLista;
@@ -82,18 +109,20 @@ struct NodoVariables *buscarVariable(struct NodoVariables *puntero, char *nombre
 }
 
 
-struct NodoVariables *validarVariableYAgregarla(struct NodoVariables *puntero, struct NodoErrorSemantico *punteroSemantico, char *nombre)
+struct NodoVariables *validarVariableYAgregarla(struct NodoVariables *puntero, struct NodoErrorSemantico *punteroSemantico, char *nombre,char *tipo)
 {
      char *cadena = (char *)malloc((strlen(nombre) + 1) * sizeof(char *));
+     char *tipoVar = (char *)malloc((strlen(tipo) + 1) * sizeof(char *));
      strcpy(cadena, nombre);
+     strcpy(tipoVar,tipo);
      struct NodoVariables *cadenaABuscar = buscarVariable(puntero, cadena);
      if (cadenaABuscar == NULL)
      {
-          puntero = agregarVariable(puntero, cadena,puntero->tipoVar);
+          puntero = agregarVariable(puntero, cadena,tipoVar);
      }
      else
      {
-          printf("Error semantico. Variable %s declarada previamente.", cadenaABuscar);
+          printf("Error semantico. Variable %s declarada previamente.", cadena);
           //agregarErrorDobleDeclaracion(punteroSemantico,cadenaABuscar); //revisar 
      }
      return puntero;

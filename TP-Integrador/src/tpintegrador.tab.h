@@ -84,7 +84,7 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 28 "TpIntegrador.y"
+#line 28 "tpintegrador.y"
 
 char ccval[20]; // cadenas
 double dval; // numeros reales/racionales
@@ -94,7 +94,7 @@ int tipo;
 
 
 /* Line 1676 of yacc.c  */
-#line 98 "TpIntegrador.tab.h"
+#line 98 "tpintegrador.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

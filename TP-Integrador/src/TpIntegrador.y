@@ -187,11 +187,22 @@ declaracion: '\n'
         |definicionDeFuncion    
 ;
 
-declaracionDeVariables: T_DATO declaracionDeVariablesPuntero {printf(" de tipo %s%s.\n", $<ccval>1,$<ccval>2);}
+declaracionDeVariables: T_DATO declaracionDeVariablesPuntero {
+        printf(" de tipo %s%s.\n", $<ccval>1,$<ccval>2);
+        strcat($<ccval>1,$<ccval>2);
+        listaVariables = pasarVariablesDeAux(listaVariables,listaErroresSemanticos,listaVariablesAux, $<ccval>1);
+        listaVariablesAux = destroyListaVar(listaVariablesAux);
+        }
 ;
 declaracionDeVariablesPuntero: listaVariablesSimples ';' {strcpy($<ccval>$, "");}
         | '*' listaVariablesSimples ';' {strcpy($<ccval>$, "*");}
-        |  ID listaArreglos ';'  {strcpy($<ccval>$, "");printf ("\nSe encontro la variable arreglo %s", $<ccval>1);}
+        |  ID listaArreglos ';'  {
+                strcpy($<ccval>$, " arreglo");printf ("\nSe encontro la variable arreglo %s", $<ccval>1);
+                char *cadena = (char *)malloc((strlen($<ccval>1) + 1) * sizeof(char *));
+                strcpy(cadena,$<ccval>1);
+                listaVariablesAux = agregarVariable(listaVariablesAux,cadena," ");
+        
+        }
 ;
 listaArreglos: arreglo 
                 | listaArreglos arreglo
@@ -202,7 +213,12 @@ listaVariablesSimples: variableSimple                     {printf ("\nSe encontr
                         |listaVariablesSimples ',' variableSimple  
 ;
 
-variableSimple: ID inicializador                           {strcpy($<ccval>$, $<ccval>1);}
+variableSimple: ID inicializador                           {
+        char *cadena = (char *)malloc((strlen($<ccval>1) + 1) * sizeof(char *));
+        strcpy(cadena,$<ccval>1);
+        listaVariablesAux = agregarVariable(listaVariablesAux,cadena,"not yet");
+        strcpy($<ccval>$, $<ccval>1);
+        }
 ;
 
 inicializador: /* vacio */
@@ -321,15 +337,11 @@ TS = putVariable(TS,"hola","int");
 printf("kasjlkasjdlkas");
 printListVar(TS);
 */
-
-listaVariables=agregarVariable(listaVariables,"Int","askdja");
-mostrarListaVariables(listaVariables);
 mostrarListaErroresLexicos(listaErroresLexicos);
 yyin = fopen("Entrada.c","r");
 yyout= fopen("Salida.txt", "w");
 yyparse();
-
-
+mostrarListaVariables(listaVariables);
 
 //---al final creo que es mas facil hacer cuatro listas. Una para las funciones, otra para las variables y las otras dos de errores. La otra opcion es hacer una sola struct que tenga el tipo variable, tipo, y un campo para parametros, que este ultimo puede ser NULL si es una variable (pero puede ser un quilombo)
 //---tambien se me ocurrio como manejar el tema de los errores: los lexicos, agregar la cadena no reconocida a una lista cuando los detecta *lo hice. Probe hacerlo desde el .l pero me rompe con lineas de codigo en la consola que 
