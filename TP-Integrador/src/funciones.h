@@ -53,7 +53,6 @@ struct NodoVariables *pasarVariablesDeAux(struct NodoVariables*lista,struct Nodo
     while (aux != NULL)
      {
           lista = validarVariableYAgregarla(lista, punteroSemantico, aux->nombreVar,tipo);
-          printf("SE VALIDO : %s de tipo: %s\n", aux->nombreVar, tipo);
           aux = aux->sig;
      }
     return lista;

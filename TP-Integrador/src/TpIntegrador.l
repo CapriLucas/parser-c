@@ -5,6 +5,7 @@
 #include<string.h>
 #include<stdlib.h>
 #include<ctype.h>
+#include<math.h> 
 
 
 
@@ -38,13 +39,13 @@
 "++"|"--"                                     {return OPINCDEC;}
 ">"|"<"|"<="|">=" {strcpy(yytext, yylval.ccval);return OPREL;}
 "!="|"=="                                     {return OPIGUAL;}
-[1-9][0-9]*                             {yylval.ival = atoi(yytext);yylval.tipo = 1; return CENTERO;}
-0[0-7]*                                 {yylval.ival = strtol(yytext, NULL, 0); yylval.tipo = 1;return CENTERO;}
-0[xX][A-Fa-f0-9]+                       {yylval.ival = strtol(yytext, NULL, 0);yylval.tipo = 1; return CENTERO;} 
-[0-9]*"."[0-9]+([eE]([\+\-]?)[0-9]+)?[FfLl]?|[0-9]+"."([eE][\+\-]?[0-9]+)?[FfLl]?|[0-9]+([eE][\+\-]?[0-9]+)[FfLl]?          {yylval.dval = atof(yytext); return CREAL; yylval.tipo = 2;}
+[1-9][0-9]*                             {yylval.estructura.ival= strtol(yytext,NULL,0); yylval.estructura.tipo = 1; return CENTERO;}
+0[0-7]*                                 {yylval.estructura.ival = strtol(yytext, NULL, 0); yylval.estructura.tipo = 1; return CENTERO;}
+0[xX][A-Fa-f0-9]+                       {yylval.estructura.ival = strtol(yytext, NULL, 0); yylval.estructura.tipo = 1; return CENTERO;} 
+[0-9]*"."[0-9]+([eE]([\+\-]?)[0-9]+)?[FfLl]?|[0-9]+"."([eE][\+\-]?[0-9]+)?[FfLl]?|[0-9]+([eE][\+\-]?[0-9]+)[FfLl]?          {yylval.estructura.dval = atof(yytext); yylval.estructura.tipo=2; return CREAL; }
 '.'|'\\0'       {strcpy(yylval.ccval,yytext); return CCARACTER;}
 \"(\\.|[^\\"])*\"            {strcpy(yylval.ccval,yytext); return LCADENA;}
 [a-zA-Z_][a-zA-Z0-9_]*                          {strcpy(yylval.ccval,yytext); return ID;}
 [\t ]+              {;}
-.                   {printf("\nCaracter o cadena %s no emparejable. ",yytext); return errorLexico;}
+.                   {printf("\nCaracter o cadena %s no emparejable. ", yytext); return errorLexico;}
 %%

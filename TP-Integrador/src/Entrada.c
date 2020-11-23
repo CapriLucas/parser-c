@@ -10,7 +10,7 @@ while(a<b){
 char* coma;
 int r=5;
 b++;
-r= b+r;
+r= 10.5f + 4;
 }
 $
 @

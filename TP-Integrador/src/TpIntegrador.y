@@ -27,9 +27,13 @@ FILE* yyout;
 
 %union {
 char ccval[20]; // cadenas
-double dval; // numeros reales/racionales
-int ival; // numeros enteros
-int tipo;
+struct yylval_struct
+  {
+      int tipo;
+      int ival;
+      double dval;
+  } estructura;
+
 }
 
 
@@ -85,6 +89,7 @@ line:   declaracion
 ;
 
 
+
 /* GRAMATICA DE EXPRESIONES */
 expresion:    expresionAsignacion
 ;
@@ -124,36 +129,60 @@ expresionRelacional: expresionAditiva
 
 
 expresionAditiva: expresionMultiplicativa 
-        | expresionAditiva '+' expresionMultiplicativa {  if($<tipo>1==$<tipo>3) { 
-                                                        if($<tipo>1==1){
-                                                        $<ival>$=$<ival>1+$<ival>3;
-                                                        printf("El resultado es: %d\n",$<ival>$);
-                                                        }
-                                                        else{
-                                                        $<dval>$=$<dval>1+$<dval>3;
-                                                        printf("El resultado es: %f\n",$<dval>$);
+        | expresionAditiva '+' expresionMultiplicativa {  if($<estructura>1.tipo==$<estructura>3.tipo) { 
+                                                        if($<estructura>1.tipo==1){
+                                                        $<estructura>$.ival=$<estructura>1.ival+$<estructura>3.ival;
+                                                        printf("El resultado es: %d\n",$<estructura>$.ival);
+                                                        }else{
+                                                        $<estructura>$.dval=$<estructura>1.dval+$<estructura>3.dval;
+                                                        printf("El resultado es: %f\n",$<estructura>$.dval);
                                                         }
                                                            } else {
-                                                                printf("Error semantico en la linea %d. Los operandos son de distinto tipo \n", yylineno);
+                                                                printf("Error semantico en la linea %d Los operandos son de distinto tipo \n",yylineno);
+                                                                printf("Tipo1 = %d. Tipo2 = %d. \n",$<estructura>1.tipo,$<estructura>3.tipo);
                                                                 }
                                                         }
         
         | expresionAditiva '-' expresionMultiplicativa
 ;
-expresionMultiplicativa: expresionUnaria {$<ival>$=$<ival>1;}
+expresionMultiplicativa: expresionUnaria {
+                    if($<estructura>1.tipo==1){
+                    $<estructura>$.tipo=$<estructura>1.tipo;
+                    $<estructura>$.ival=$<estructura>1.ival;
+                    }else{
+                        $<estructura>$.tipo=$<estructura>1.tipo;
+                        $<estructura>$.dval=$<estructura>1.dval;
+                        }
+                                        }
         | expresionMultiplicativa '*' expresionUnaria
         | expresionMultiplicativa '/' expresionUnaria
         | expresionMultiplicativa '%' expresionUnaria
 ;
 
 ;
-expresionUnaria: expresionPostFijo {$<ival>$=$<ival>1;}
+expresionUnaria: expresionPostFijo {
+                    if($<estructura>1.tipo==1){
+                    $<estructura>$.tipo=$<estructura>1.tipo;
+                    $<estructura>$.ival=$<estructura>1.ival;
+                    }else{
+                        $<estructura>$.tipo=$<estructura>1.tipo;
+                        $<estructura>$.dval=$<estructura>1.dval;
+                        }
+                                        }
         | OPINCDEC expresionUnaria
         | SIZEOF '(' T_DATO ')'
 ;
 
 
-expresionPostFijo:   expresionPrimaria {$<ival>$=$<ival>1;}
+expresionPostFijo:   expresionPrimaria {
+                    if($<estructura>1.tipo==1){
+                    $<estructura>$.tipo=$<estructura>1.tipo;
+                    $<estructura>$.ival=$<estructura>1.ival;
+                    }else{
+                        $<estructura>$.tipo=$<estructura>1.tipo;
+                        $<estructura>$.dval=$<estructura>1.dval;
+                        }
+                                        }
             | expresionPostFijo '[' expresion ']'
             | expresionPostFijo '(' listaArgumentos ')'
             | expresionPostFijo '.' ID
@@ -166,11 +195,16 @@ listaArgumentos:  /*vacio*/
             | listaArgumentos ',' expresionAsignacion
 ;
 expresionPrimaria:     ID 
-            | CENTERO {$<ival>$=$<ival>1;}
-            | CREAL 
+            | CENTERO {$<estructura>$.ival=$<estructura>1.ival; $<estructura>$.tipo=$<estructura>1.tipo;}
+            | CREAL {$<estructura>$.dval=$<estructura>1.dval; $<estructura>$.tipo=$<estructura>1.tipo;}
             | LCADENA 
             | '(' expresion ')'
 ;
+
+
+
+
+
 
 
 
