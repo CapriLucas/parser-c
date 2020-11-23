@@ -33,27 +33,26 @@ struct NodoParam
   struct NodoParam *sig;
 };
 
-struct TablaSimbolos *TS;
-
 struct TablaSimbolos *inicializarTS()
 {
   struct TablaSimbolos ts;
   ts.listaVar = NULL;
   ts.listaFunc = NULL;
-  struct TablaSimbolos *TS = &ts;
-  return TS;
+  struct TablaSimbolos *punt = &ts;
+  return punt;
 }
 
 //agrega una variable con su tipo
 struct TablaSimbolos *putVariable(struct TablaSimbolos *punt, char *nombreVar, char *tipoVar)
 {
-  struct NodoVar *nuevoNodo = (struct NodoVar *)malloc((strlen(nombreVar) + strlen(tipoVar) + 2) * sizeof(struct NodoVar));
+  struct NodoVar *nuevoNodo = (struct NodoVar *)malloc((strlen(nombreVar) + strlen(tipoVar) + 1) * sizeof(struct NodoVar));
   nuevoNodo->nombreVar = nombreVar;
   nuevoNodo->tipoVar = tipoVar;
   nuevoNodo->sig = NULL;
-  if (TS->listaVar != NULL)
+  if (punt->listaVar != NULL)
   {
-    struct NodoVar *aux = TS->listaVar;
+    printf("NO APAREZCAS");
+    struct NodoVar *aux = punt->listaVar;
     while (aux->sig != NULL)
     {
 
@@ -63,58 +62,61 @@ struct TablaSimbolos *putVariable(struct TablaSimbolos *punt, char *nombreVar, c
   }
   else
   {
-    TS->listaVar = nuevoNodo;
+    printf("nuevo NODO como raiz");
+    punt->listaVar = nuevoNodo;
   }
   return punt;
 }
 
-// agregar funcion a la tabla de simbolos
-void putFuncion(struct NodoFunc *funcion)
-{
-  if (TS->listaFunc != NULL)
-  {
-    struct NodoFunc *aux = TS->listaFunc;
-    while (aux->sig != NULL)
-    {
+// // agregar funcion a la tabla de simbolos
+// void putFuncion(struct NodoFunc *funcion)
+// {
+//   if (TS->listaFunc != NULL)
+//   {
+//     struct NodoFunc *aux = TS->listaFunc;
+//     while (aux->sig != NULL)
+//     {
 
-      aux = aux->sig;
-    }
-    aux->sig = funcion;
-  }
-  else
-  {
-    TS->listaFunc = funcion;
-  }
-}
+//       aux = aux->sig;
+//     }
+//     aux->sig = funcion;
+//   }
+//   else
+//   {
+//     TS->listaFunc = funcion;
+//   }
+// }
 
-struct NodoVar *getVariable(char *nombre)
-{
-  struct NodoVar *aux = TS->listaVar;
-  while (aux != NULL && strcmp(aux->nombreVar, nombre) != 0)
-  {
-    aux = aux->sig;
-  }
-  return aux;
-}
-struct NodoFunc *getFuncion(char *nombre)
-{
-  struct NodoFunc *aux = TS->listaFunc;
-  while (aux != NULL && strcmp(aux->nombreFun, nombre) != 0)
-  {
-    aux = aux->sig;
-  }
-  return aux;
-}
+// struct NodoVar *getVariable(char *nombre)
+// {
+//   struct NodoVar *aux = TS->listaVar;
+//   while (aux != NULL && strcmp(aux->nombreVar, nombre) != 0)
+//   {
+//     aux = aux->sig;
+//   }
+//   return aux;
+// }
+// struct NodoFunc *getFuncion(char *nombre)
+// {
+//   struct NodoFunc *aux = TS->listaFunc;
+//   while (aux != NULL && strcmp(aux->nombreFun, nombre) != 0)
+//   {
+//     aux = aux->sig;
+//   }
+//   return aux;
+// }
 
-void printListVar()
+void printListVar(struct TablaSimbolos *punt)
 {
-  if (TS->listaVar != NULL)
+  int contador = 0;
+  if (punt->listaVar != NULL)
   {
-    struct NodoVar *aux = TS->listaVar;
-    while (aux->sig != NULL)
+    struct NodoVar *aux = punt->listaVar;
+    while (aux->sig != NULL && contador < 4)
     {
       printf("\nID: %s\nTIPO: %s", aux->nombreVar, aux->tipoVar);
       aux = aux->sig;
+      contador++;
     }
   }
   else

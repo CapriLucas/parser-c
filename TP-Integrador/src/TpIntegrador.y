@@ -309,9 +309,13 @@ int yyerror (char *mensajeError){  //tambien ver como hay que manerjarlo en el a
 
 int main (){
 //funciones y menu
+struct TablaSimbolos *TS;
 TS = inicializarTS();
+if(TS->listaVar == NULL){
+        printf("PUTOOO");
+}
 TS = putVariable(TS,"hola","int");
-printListVar();
+printListVar(TS);
 yyin = fopen("Entrada.c","r");
 yyout= fopen("Salida.txt", "w");
 yyparse();
