@@ -12,6 +12,8 @@ int yywrap(){
     return(1);
 }
 
+
+
 extern int yylineno;
 // usar yylineno para las lineas en ts
 
@@ -132,7 +134,7 @@ expresionAditiva: expresionMultiplicativa
                                                         printf("El resultado es: %f\n",$<dval>$);
                                                         }
                                                            } else {
-                                                                printf("Error semantico en la linea . Los operandos son de distinto tipo \n");
+                                                                printf("Error semantico en la linea %d. Los operandos son de distinto tipo \n", yylineno);
                                                                 }
                                                         }
         
@@ -309,16 +311,33 @@ int yyerror (char *mensajeError){  //tambien ver como hay que manerjarlo en el a
 
 int main (){
 //funciones y menu
-struct TablaSimbolos *TS;
+/*struct TablaSimbolos *TS;
 TS = inicializarTS();
 if(TS->listaVar == NULL){
         printf("PUTOOO");
 }
+printf("kasjlkasjdlkas");
 TS = putVariable(TS,"hola","int");
+printf("kasjlkasjdlkas");
 printListVar(TS);
+*/
+
+listaVariables=agregarVariable(listaVariables,"Int","askdja");
+mostrarListaVariables(listaVariables);
+mostrarListaErroresLexicos(listaErroresLexicos);
 yyin = fopen("Entrada.c","r");
 yyout= fopen("Salida.txt", "w");
 yyparse();
+
+
+
+//---al final creo que es mas facil hacer cuatro listas. Una para las funciones, otra para las variables y las otras dos de errores. La otra opcion es hacer una sola struct que tenga el tipo variable, tipo, y un campo para parametros, que este ultimo puede ser NULL si es una variable (pero puede ser un quilombo)
+//---tambien se me ocurrio como manejar el tema de los errores: los lexicos, agregar la cadena no reconocida a una lista cuando los detecta *lo hice. Probe hacerlo desde el .l pero me rompe con lineas de codigo en la consola que 
+//ni idea que son. 
+//---Los semanticos, agregarlos tambien a cada lista segun corresponda.
+//Los sintactico, mostrar los msjs de errores segun corresponda
+//revisar el control de tipos, ahora muestra los printf pero no lo hace correctamente. 
+
 
 
 }

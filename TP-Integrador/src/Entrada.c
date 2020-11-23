@@ -10,4 +10,6 @@ int r=5;
 b++;
 r= b+r;
 }
+$
+@
 int * asda (int x, int y);
