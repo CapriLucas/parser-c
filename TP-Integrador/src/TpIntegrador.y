@@ -117,7 +117,7 @@ expresionAnd: expresionIgualdad
             | expresionAnd AND expresionIgualdad
 ;
 expresionIgualdad:   expresionRelacional
-            | expresionIgualdad OPIGUAL expresionRelacional
+            | expresionIgualdad OPIGUAL expresionRelacional 
 ;
 
 
@@ -192,7 +192,7 @@ expresionPostFijo:   expresionPrimaria {
                         }
                                         }
             | expresionPostFijo '[' expresion ']'
-            | expresionPostFijo '(' listaArgumentos ')'
+            | expresionPostFijo '(' listaArgumentos ')' 
             | expresionPostFijo '.' ID
             | expresionPostFijo FLECHA ID
             | expresionPostFijo OPINCDEC
@@ -226,12 +226,14 @@ expresionPrimaria:     ID
 declaracion: '\n' 
         | declaracionDeVariables 
         |declaracionDeFunciones 
-        |definicionDeFuncion    
+        |definicionDeFuncion 
+        
 ;
 
 declaracionDeVariables: T_DATO declaracionDeVariablesPuntero {
                                         strcat($<ccval>1,$<ccval>2);
-                                        listaVariables = pasarVariablesDeAux(listaVariables,listaErroresSemanticos,listaVariablesAux, $<ccval>1);
+                                        int linea = yylineno;
+                                        listaVariables = pasarVariablesDeAux(listaVariables,listaVariablesAux, $<ccval>1,linea);
                                         listaVariablesAux = destroyListaVar(listaVariablesAux);
         }
 ;
@@ -276,7 +278,8 @@ declaracionDeFunciones: T_DATO  ID '(' opcionArgumentos ')' ';'   {
                                         char *tipo = (char *)malloc((strlen($<ccval>1) + 1) * sizeof(char *));
                                         strcpy(tipo,$<ccval>1);
                                         int cantidad = contarParametros(listaParametrosAux);
-                                        listaFunciones = validarFuncionYAgregarla(listaFunciones,listaParametrosAux, listaErroresSemanticos, id,tipo,cantidad);
+                                        int linea = yylineno;
+                                        listaFunciones = validarFuncionYAgregarla(listaFunciones,listaParametrosAux, id,tipo,cantidad,linea);
                                         listaParametrosAux = NULL;
                                         }
         
@@ -287,7 +290,8 @@ declaracionDeFunciones: T_DATO  ID '(' opcionArgumentos ')' ';'   {
                                         char *tipo = (char *)malloc((strlen($<ccval>1) + 1) * sizeof(char *));
                                         strcpy(tipo,$<ccval>1);
                                         int cantidad = contarParametros(listaParametrosAux);
-                                        listaFunciones = validarFuncionYAgregarla(listaFunciones,listaParametrosAux, listaErroresSemanticos, id,tipo,cantidad);
+                                        int linea = yylineno;
+                                        listaFunciones = validarFuncionYAgregarla(listaFunciones,listaParametrosAux, id,tipo,cantidad,linea);
                                         listaParametrosAux = NULL;
         }
 ;
@@ -415,6 +419,9 @@ yyin = fopen("Entrada.c","r");
 yyout= fopen("Salida.txt", "w");
 yyparse();
 mostrarListaErroresLexicos(listaErroresLexicos);
+printf("\n\n\n");
+mostrarListaErroresSemanticos(listaErroresSemanticos);
+printf("\n\n\n");
 mostrarListaVariables(listaVariables);
 mostrarListaFunciones(listaFunciones);
 

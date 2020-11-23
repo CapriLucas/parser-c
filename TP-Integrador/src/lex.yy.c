@@ -934,7 +934,7 @@ YY_RULE_SETUP
 case 30:
 YY_RULE_SETUP
 #line 50 "tpintegrador.l"
-{printf("\nCaracter o cadena %s no emparejable. ", yytext); strcpy(yylval.errorLex.nomError,yytext); yylval.errorLex.linea = yylineno; return errorLexico;}
+{ strcpy(yylval.errorLex.nomError,yytext); yylval.errorLex.linea = yylineno; return errorLexico;}
 	YY_BREAK
 case 31:
 YY_RULE_SETUP

@@ -524,12 +524,12 @@ static const yytype_uint16 yyrline[] =
      127,   128,   139,   140,   154,   156,   165,   166,   167,   171,
      180,   181,   185,   194,   195,   196,   197,   198,   201,   202,
      203,   205,   206,   207,   208,   209,   226,   227,   228,   229,
-     232,   239,   240,   241,   249,   250,   253,   256,   257,   260,
-     268,   269,   273,   283,   295,   296,   297,   301,   309,   321,
-     322,   325,   334,   335,   336,   337,   338,   339,   342,   343,
-     346,   347,   351,   352,   353,   356,   357,   358,   361,   362,
-     368,   369,   372,   373,   377,   378,   379,   383,   384,   385,
-     386,   390,   391,   392,   395,   396
+     233,   241,   242,   243,   251,   252,   255,   258,   259,   262,
+     270,   271,   275,   286,   299,   300,   301,   305,   313,   325,
+     326,   329,   338,   339,   340,   341,   342,   343,   346,   347,
+     350,   351,   355,   356,   357,   360,   361,   362,   365,   366,
+     372,   373,   376,   377,   381,   382,   383,   387,   388,   389,
+     390,   394,   395,   396,   399,   400
 };
 #endif
 
@@ -1687,10 +1687,11 @@ yyreduce:
   case 50:
 
 /* Line 1455 of yacc.c  */
-#line 232 "tpintegrador.y"
+#line 233 "tpintegrador.y"
     {
                                         strcat((yyvsp[(1) - (2)].ccval),(yyvsp[(2) - (2)].ccval));
-                                        listaVariables = pasarVariablesDeAux(listaVariables,listaErroresSemanticos,listaVariablesAux, (yyvsp[(1) - (2)].ccval));
+                                        int linea = yylineno;
+                                        listaVariables = pasarVariablesDeAux(listaVariables,listaVariablesAux, (yyvsp[(1) - (2)].ccval),linea);
                                         listaVariablesAux = destroyListaVar(listaVariablesAux);
         ;}
     break;
@@ -1698,21 +1699,21 @@ yyreduce:
   case 51:
 
 /* Line 1455 of yacc.c  */
-#line 239 "tpintegrador.y"
+#line 241 "tpintegrador.y"
     {strcpy((yyval.ccval), "");;}
     break;
 
   case 52:
 
 /* Line 1455 of yacc.c  */
-#line 240 "tpintegrador.y"
+#line 242 "tpintegrador.y"
     {strcpy((yyval.ccval), "*");;}
     break;
 
   case 53:
 
 /* Line 1455 of yacc.c  */
-#line 241 "tpintegrador.y"
+#line 243 "tpintegrador.y"
     {
                                         strcpy((yyval.ccval), " arreglo");
                                         char *cadena = (char *)malloc((strlen((yyvsp[(1) - (3)].ccval)) + 1) * sizeof(char *));
@@ -1725,7 +1726,7 @@ yyreduce:
   case 59:
 
 /* Line 1455 of yacc.c  */
-#line 260 "tpintegrador.y"
+#line 262 "tpintegrador.y"
     {
                                         char *cadena = (char *)malloc((strlen((yyvsp[(1) - (2)].ccval)) + 1) * sizeof(char *));
                                         strcpy(cadena,(yyvsp[(1) - (2)].ccval));
@@ -1737,14 +1738,15 @@ yyreduce:
   case 62:
 
 /* Line 1455 of yacc.c  */
-#line 273 "tpintegrador.y"
+#line 275 "tpintegrador.y"
     {
                                         char *id = (char *)malloc((strlen((yyvsp[(2) - (6)].ccval)) + 1) * sizeof(char *));
                                         strcpy(id,(yyvsp[(2) - (6)].ccval));
                                         char *tipo = (char *)malloc((strlen((yyvsp[(1) - (6)].ccval)) + 1) * sizeof(char *));
                                         strcpy(tipo,(yyvsp[(1) - (6)].ccval));
                                         int cantidad = contarParametros(listaParametrosAux);
-                                        listaFunciones = validarFuncionYAgregarla(listaFunciones,listaParametrosAux, listaErroresSemanticos, id,tipo,cantidad);
+                                        int linea = yylineno;
+                                        listaFunciones = validarFuncionYAgregarla(listaFunciones,listaParametrosAux, id,tipo,cantidad,linea);
                                         listaParametrosAux = NULL;
                                         ;}
     break;
@@ -1752,7 +1754,7 @@ yyreduce:
   case 63:
 
 /* Line 1455 of yacc.c  */
-#line 283 "tpintegrador.y"
+#line 286 "tpintegrador.y"
     {
                                         char *id = (char *)malloc((strlen((yyvsp[(3) - (7)].ccval)) + 1) * sizeof(char *));
                                         strcpy(id,(yyvsp[(3) - (7)].ccval));
@@ -1760,7 +1762,8 @@ yyreduce:
                                         char *tipo = (char *)malloc((strlen((yyvsp[(1) - (7)].ccval)) + 1) * sizeof(char *));
                                         strcpy(tipo,(yyvsp[(1) - (7)].ccval));
                                         int cantidad = contarParametros(listaParametrosAux);
-                                        listaFunciones = validarFuncionYAgregarla(listaFunciones,listaParametrosAux, listaErroresSemanticos, id,tipo,cantidad);
+                                        int linea = yylineno;
+                                        listaFunciones = validarFuncionYAgregarla(listaFunciones,listaParametrosAux, id,tipo,cantidad,linea);
                                         listaParametrosAux = NULL;
         ;}
     break;
@@ -1768,7 +1771,7 @@ yyreduce:
   case 67:
 
 /* Line 1455 of yacc.c  */
-#line 301 "tpintegrador.y"
+#line 305 "tpintegrador.y"
     {
                                         char *id = (char *)malloc((strlen((yyvsp[(3) - (3)].ccval)) + 1) * sizeof(char *));
                                         strcpy(id,(yyvsp[(3) - (3)].ccval));
@@ -1782,7 +1785,7 @@ yyreduce:
   case 68:
 
 /* Line 1455 of yacc.c  */
-#line 309 "tpintegrador.y"
+#line 313 "tpintegrador.y"
     {
                                         char *id = (char *)malloc((strlen((yyvsp[(4) - (4)].ccval)) + 1) * sizeof(char *));
                                         strcpy(id,(yyvsp[(4) - (4)].ccval));
@@ -1797,112 +1800,112 @@ yyreduce:
   case 71:
 
 /* Line 1455 of yacc.c  */
-#line 325 "tpintegrador.y"
+#line 329 "tpintegrador.y"
     {printf ("\nSe encontro la funcion %s de tipo %s\n ", (yyvsp[(2) - (6)].ccval), (yyvsp[(1) - (6)].ccval));;}
     break;
 
   case 80:
 
 /* Line 1455 of yacc.c  */
-#line 346 "tpintegrador.y"
+#line 350 "tpintegrador.y"
     {printf("Sentencia compuesta encontrada.\n"); ;}
     break;
 
   case 81:
 
 /* Line 1455 of yacc.c  */
-#line 347 "tpintegrador.y"
+#line 351 "tpintegrador.y"
     {printf("Sentencia compuesta encontrada.\n"); ;}
     break;
 
   case 90:
 
 /* Line 1455 of yacc.c  */
-#line 368 "tpintegrador.y"
+#line 372 "tpintegrador.y"
     {printf("Sentencia de seleccion If encontrada.\n"); ;}
     break;
 
   case 91:
 
 /* Line 1455 of yacc.c  */
-#line 369 "tpintegrador.y"
+#line 373 "tpintegrador.y"
     {printf("Sentencia de seleccion switch encontrada.\n"); ;}
     break;
 
   case 93:
 
 /* Line 1455 of yacc.c  */
-#line 373 "tpintegrador.y"
+#line 377 "tpintegrador.y"
     {printf("Sentencia de seleccion If-Else encontrada.\n"); ;}
     break;
 
   case 94:
 
 /* Line 1455 of yacc.c  */
-#line 377 "tpintegrador.y"
+#line 381 "tpintegrador.y"
     {printf("Sentencia de Iteracion while encontrada.\n"); ;}
     break;
 
   case 95:
 
 /* Line 1455 of yacc.c  */
-#line 378 "tpintegrador.y"
+#line 382 "tpintegrador.y"
     {printf("Sentencia de Iteracion do while encontrada.\n"); ;}
     break;
 
   case 96:
 
 /* Line 1455 of yacc.c  */
-#line 379 "tpintegrador.y"
+#line 383 "tpintegrador.y"
     {printf("Sentencia de Iteracion for encontrada.\n"); ;}
     break;
 
   case 97:
 
 /* Line 1455 of yacc.c  */
-#line 383 "tpintegrador.y"
+#line 387 "tpintegrador.y"
     {printf("Sentencia de salto return encontrada.\n"); ;}
     break;
 
   case 98:
 
 /* Line 1455 of yacc.c  */
-#line 384 "tpintegrador.y"
+#line 388 "tpintegrador.y"
     {printf("Sentencia de salto continue encontrada.\n"); ;}
     break;
 
   case 99:
 
 /* Line 1455 of yacc.c  */
-#line 385 "tpintegrador.y"
+#line 389 "tpintegrador.y"
     {printf("Sentencia de salto break encontrada.\n"); ;}
     break;
 
   case 100:
 
 /* Line 1455 of yacc.c  */
-#line 386 "tpintegrador.y"
+#line 390 "tpintegrador.y"
     {printf("Sentencia de salto goto encontrada.\n"); ;}
     break;
 
   case 101:
 
 /* Line 1455 of yacc.c  */
-#line 390 "tpintegrador.y"
+#line 394 "tpintegrador.y"
     {printf("Sentencia de etiqueta case encontrada.\n"); ;}
     break;
 
   case 102:
 
 /* Line 1455 of yacc.c  */
-#line 391 "tpintegrador.y"
+#line 395 "tpintegrador.y"
     {printf("Sentencia de etiqueta default encontrada.\n"); ;}
     break;
 
 
 
 /* Line 1455 of yacc.c  */
-#line 1906 "tpintegrador.tab.c"
+#line 1909 "tpintegrador.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2114,7 +2117,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 401 "tpintegrador.y"
+#line 405 "tpintegrador.y"
 
 
 
@@ -2132,6 +2135,9 @@ yyin = fopen("Entrada.c","r");
 yyout= fopen("Salida.txt", "w");
 yyparse();
 mostrarListaErroresLexicos(listaErroresLexicos);
+printf("\n\n\n");
+mostrarListaErroresSemanticos(listaErroresSemanticos);
+printf("\n\n\n");
 mostrarListaVariables(listaVariables);
 mostrarListaFunciones(listaFunciones);
 

@@ -37,6 +37,7 @@ struct NodoErrorSemantico{
 struct NodoErrorSintactico{
   char *cadenaError;
   int linea;
+  char* nombreError;
   struct NodoErrorSintactico *sig;
 };
 
@@ -50,15 +51,16 @@ struct NodoErrorSemantico *listaErroresSemanticos =NULL;
 
 
 
-
-void mostrarListaVariables(struct NodoVariables *puntero);
+struct NodoErrorSemantico *agregarErrorDobleDeclaracion(struct NodoErrorSemantico*puntero, char *cadNoReconocida,int linea);
+void mostrarListaVariables(struct NodoVariables* puntero);
 // VARIABLES
-struct NodoVariables *validarVariableYAgregarla(struct NodoVariables *puntero, struct NodoErrorSemantico *punteroSemantico, char *nombre,char *tipo);
-struct NodoVariables *pasarVariablesDeAux(struct NodoVariables*lista,struct NodoErrorSemantico *punteroSemantico,struct NodoVariables *auxiliar, char *tipo){
+struct NodoVariables *validarVariableYAgregarla(struct NodoVariables *puntero, char *nombre,char *tipo,int linea);
+
+struct NodoVariables *pasarVariablesDeAux(struct NodoVariables*lista,struct NodoVariables *auxiliar, char *tipo,int linea){
     struct NodoVariables *aux = auxiliar;
     while (aux != NULL)
      {
-          lista = validarVariableYAgregarla(lista, punteroSemantico, aux->nombreVar,tipo);
+          lista = validarVariableYAgregarla(lista, aux->nombreVar,tipo,linea);
           aux = aux->sig;
      }
     return lista;
@@ -114,7 +116,7 @@ struct NodoVariables *buscarVariable(struct NodoVariables *puntero, char *nombre
 }
 
 
-struct NodoVariables *validarVariableYAgregarla(struct NodoVariables *puntero, struct NodoErrorSemantico *punteroSemantico, char *nombre,char *tipo)
+struct NodoVariables *validarVariableYAgregarla(struct NodoVariables *puntero, char *nombre,char *tipo,int linea)
 {
      char *cadena = (char *)malloc((strlen(nombre) + 1) * sizeof(char *));
      char *tipoVar = (char *)malloc((strlen(tipo) + 1) * sizeof(char *));
@@ -127,8 +129,8 @@ struct NodoVariables *validarVariableYAgregarla(struct NodoVariables *puntero, s
      }
      else
      {
-          printf("\nError semantico. Variable '%s' declarada previamente.", cadena);
-          //agregarErrorDobleDeclaracion(punteroSemantico,cadenaABuscar); //revisar 
+          //printf("\nError semantico. Variable '%s' declarada previamente.", cadena);
+          listaErroresSemanticos = agregarErrorDobleDeclaracion(listaErroresSemanticos,"'doble declaracion de variable'",linea); //revisar 
      }
      return puntero;
 }
@@ -158,13 +160,34 @@ struct NodoErrorLexico *agregarErrorLexico(struct NodoErrorLexico*puntero, char 
      }
      return puntero;
 }
-
-
+/*struct NodoErrorSintactico *agregarErrorSintactico(struct NodoErrorSintactico*puntero, char *nombreToken,int linea, char nombreError){
+  struct NodoErrorSintactico *nuevaLista;
+  nuevaLista= (struct NodoErrorSintactico*)malloc(sizeof(struct NodoErrorLexico));
+  nuevaLista->cadenaError = nombreToken;
+  nuevaLista->linea = linea;
+  nuevaLista->nombreError=nombreError;
+    nuevaLista->sig=NULL;
+     if (puntero != NULL)
+     {
+          struct NodoErrorSintactico *aux = puntero;
+          while (aux->sig != NULL)
+          {
+               aux = aux->sig;
+          }
+          aux->sig = nuevaLista;
+     }
+     else
+     {
+          puntero = nuevaLista;
+     }
+     return puntero;
+}
+*/
 struct NodoErrorSemantico *agregarErrorDobleDeclaracion(struct NodoErrorSemantico*puntero, char *cadNoReconocida,int linea){
   struct NodoErrorSemantico *nuevaLista;
   nuevaLista= (struct NodoErrorSemantico*)malloc(sizeof(struct NodoErrorSemantico));
-  nuevaLista->cadenaError = cadNoReconocida;
-    nuevaLista->linea = linea;
+  nuevaLista->cadenaError=cadNoReconocida;
+  nuevaLista->linea = linea;
   nuevaLista->sig=NULL;
      if (puntero != NULL)
      {
@@ -217,7 +240,7 @@ struct NodoFunciones *buscarFuncion(struct NodoFunciones *puntero, char *nombre)
      }
      return aux;
 }
-struct NodoFunciones *validarFuncionYAgregarla(struct NodoFunciones *puntero,struct NodoVariables *listaParam, struct NodoErrorSemantico *punteroSemantico, char *nombre,char *tipo,int cantidad)
+struct NodoFunciones *validarFuncionYAgregarla(struct NodoFunciones *puntero,struct NodoVariables *listaParam, char *nombre,char *tipo,int cantidad,int linea)
 {
      char *cadena = (char *)malloc((strlen(nombre) + 1) * sizeof(char *));
      char *tipoVar = (char *)malloc((strlen(tipo) + 1) * sizeof(char *));
@@ -230,8 +253,8 @@ struct NodoFunciones *validarFuncionYAgregarla(struct NodoFunciones *puntero,str
      }
      else
      {
-          printf("\nError semantico. Funcion '%s' declarada previamente.", cadena);
-          //agregarErrorDobleDeclaracion(punteroSemantico,cadenaABuscar); //revisar 
+          //printf("\nError semantico. Funcion '%s' declarada previamente.", cadena);
+          listaErroresSemanticos = agregarErrorDobleDeclaracion(listaErroresSemanticos,"'doble declaracion de funcion'",linea); //revisar 
      }
      return puntero;
 }
@@ -245,12 +268,12 @@ void mostrarListaFunciones(struct NodoFunciones*puntero)
      struct NodoVariables *auxParam;
      while (auxFun != NULL)
      {
-          printf("\n\tSe encontro la funcion:%s , de tipo:%s\n", auxFun->nombreFun, auxFun->parametroSalida);
+          printf("\n\nSe encontro la funcion:%s , de tipo:%s\n", auxFun->nombreFun, auxFun->parametroSalida);
           auxParam = auxFun->parametrosEntrada;
           printf("\n\tRecibe %d parametros\n", auxFun->cantParametros);
           while (auxParam != NULL)
           {
-          printf("Recibe parametro: %s de tipo %s\n", auxParam->nombreVar, auxParam->tipoVar);
+          printf("\tRecibe parametro: %s de tipo %s\n", auxParam->nombreVar, auxParam->tipoVar);
           auxParam = auxParam->sig;
           }
           auxParam = NULL;
@@ -278,7 +301,7 @@ void mostrarListaErroresLexicos(struct NodoErrorLexico *puntero)
      struct NodoErrorLexico *aux = puntero;
      while (aux != NULL)
      {
-          printf("\nSe encontro el error lexico %s en la linea %d \n", aux->cadenaError,aux->linea);
+          printf("\nSe encontro el error lexico %s en la linea %d", aux->cadenaError,aux->linea);
           aux = aux->sig;
      }
 }
