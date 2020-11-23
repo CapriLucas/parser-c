@@ -27,13 +27,17 @@ FILE* yyout;
 
 %union {
 char ccval[20]; // cadenas
-struct yylval_struct
+struct yylval_Tokens
   {
       int tipo;
       int ival;
       double dval;
   } estructura;
-
+struct yylval_TokenError
+  {
+      int linea;
+      char nomError[20];
+  } errorLex;
 }
 
 
@@ -81,7 +85,14 @@ input:  /* vacio */
 line:   declaracion  
         | sentencia 
         | expresion
-        | errorLexico {printf("Se encontro un error lexico en la linea %d\n ", yylineno);}
+        | errorLexico {
+                char *cadena = (char *)malloc((strlen($<errorLex>1.nomError) + 1) * sizeof(char *));
+                strcpy(cadena,$<errorLex>1.nomError); 
+                int linea = $<errorLex>1.linea;
+                listaErroresLexicos = agregarErrorLexico(listaErroresLexicos, cadena , linea);
+
+        }
+
         | error {printf("\nSe encontro un error sintactico en la linea %d. Imposible emparejar por alguna produccion\n", yylineno);} //ver como hacer aca con los errores.
 ;
 
@@ -219,36 +230,38 @@ declaracion: '\n'
 ;
 
 declaracionDeVariables: T_DATO declaracionDeVariablesPuntero {
-        printf(" de tipo %s%s.\n", $<ccval>1,$<ccval>2);
-        strcat($<ccval>1,$<ccval>2);
-        listaVariables = pasarVariablesDeAux(listaVariables,listaErroresSemanticos,listaVariablesAux, $<ccval>1);
-        listaVariablesAux = destroyListaVar(listaVariablesAux);
+                                        strcat($<ccval>1,$<ccval>2);
+                                        listaVariables = pasarVariablesDeAux(listaVariables,listaErroresSemanticos,listaVariablesAux, $<ccval>1);
+                                        listaVariablesAux = destroyListaVar(listaVariablesAux);
         }
 ;
+
 declaracionDeVariablesPuntero: listaVariablesSimples ';' {strcpy($<ccval>$, "");}
         | '*' listaVariablesSimples ';' {strcpy($<ccval>$, "*");}
         |  ID listaArreglos ';'  {
-                strcpy($<ccval>$, " arreglo");printf ("\nSe encontro la variable arreglo %s", $<ccval>1);
-                char *cadena = (char *)malloc((strlen($<ccval>1) + 1) * sizeof(char *));
-                strcpy(cadena,$<ccval>1);
-                listaVariablesAux = agregarVariable(listaVariablesAux,cadena," ");
+                                        strcpy($<ccval>$, " arreglo");
+                                        char *cadena = (char *)malloc((strlen($<ccval>1) + 1) * sizeof(char *));
+                                        strcpy(cadena,$<ccval>1);
+                                        listaVariablesAux = agregarVariable(listaVariablesAux,cadena," ");
         
         }
 ;
 listaArreglos: arreglo 
                 | listaArreglos arreglo
 ;
+
 arreglo: '[' expresion ']'
 ;
-listaVariablesSimples: variableSimple                     {printf ("\nSe encontro la variable %s", $<ccval>$);}
+
+listaVariablesSimples: variableSimple
                         |listaVariablesSimples ',' variableSimple  
 ;
 
 variableSimple: ID inicializador                           {
-        char *cadena = (char *)malloc((strlen($<ccval>1) + 1) * sizeof(char *));
-        strcpy(cadena,$<ccval>1);
-        listaVariablesAux = agregarVariable(listaVariablesAux,cadena,"not yet");
-        strcpy($<ccval>$, $<ccval>1);
+                                        char *cadena = (char *)malloc((strlen($<ccval>1) + 1) * sizeof(char *));
+                                        strcpy(cadena,$<ccval>1);
+                                        listaVariablesAux = agregarVariable(listaVariablesAux,cadena,"not yet");
+                                        strcpy($<ccval>$, $<ccval>1);
         }
 ;
 
@@ -258,24 +271,24 @@ inicializador: /* vacio */
 
 
 declaracionDeFunciones: T_DATO  ID '(' opcionArgumentos ')' ';'   {
-        char *id = (char *)malloc((strlen($<ccval>2) + 1) * sizeof(char *));
-        strcpy(id,$<ccval>2);
-        char *tipo = (char *)malloc((strlen($<ccval>1) + 1) * sizeof(char *));
-        strcpy(tipo,$<ccval>1);
-        int cantidad = contarParametros(listaParametrosAux);
-        listaFunciones = agregarFuncion(listaFunciones,id,listaParametrosAux,tipo,cantidad);
-        listaParametrosAux = NULL;
-        }
+                                        char *id = (char *)malloc((strlen($<ccval>2) + 1) * sizeof(char *));
+                                        strcpy(id,$<ccval>2);
+                                        char *tipo = (char *)malloc((strlen($<ccval>1) + 1) * sizeof(char *));
+                                        strcpy(tipo,$<ccval>1);
+                                        int cantidad = contarParametros(listaParametrosAux);
+                                        listaFunciones = validarFuncionYAgregarla(listaFunciones,listaParametrosAux, listaErroresSemanticos, id,tipo,cantidad);
+                                        listaParametrosAux = NULL;
+                                        }
         
-                        | T_DATO '*' ID '(' opcionArgumentos ')' ';' {
-        char *id = (char *)malloc((strlen($<ccval>3) + 1) * sizeof(char *));
-        strcpy(id,$<ccval>3);
-        strcat($<ccval>1,"*");
-        char *tipo = (char *)malloc((strlen($<ccval>1) + 1) * sizeof(char *));
-        strcpy(tipo,$<ccval>1);
-        int cantidad = contarParametros(listaParametrosAux);
-        listaFunciones = agregarFuncion(listaFunciones,id,listaParametrosAux,tipo,0);
-        listaParametrosAux = NULL;
+                        |T_DATO '*' ID '(' opcionArgumentos ')' ';' {
+                                        char *id = (char *)malloc((strlen($<ccval>3) + 1) * sizeof(char *));
+                                        strcpy(id,$<ccval>3);
+                                        strcat($<ccval>1,"*");
+                                        char *tipo = (char *)malloc((strlen($<ccval>1) + 1) * sizeof(char *));
+                                        strcpy(tipo,$<ccval>1);
+                                        int cantidad = contarParametros(listaParametrosAux);
+                                        listaFunciones = validarFuncionYAgregarla(listaFunciones,listaParametrosAux, listaErroresSemanticos, id,tipo,cantidad);
+                                        listaParametrosAux = NULL;
         }
 ;
 
@@ -286,20 +299,20 @@ opcionArgumentos: /*vacio*/
 ;
 
 argumentoSimple: T_DATO referencia ID {
-        char *id = (char *)malloc((strlen($<ccval>3) + 1) * sizeof(char *));
-        strcpy(id,$<ccval>3);
-        char *tipo = (char *)malloc((strlen($<ccval>1) + 1) * sizeof(char *));
-        strcpy(tipo,$<ccval>1);
-        listaParametrosAux = agregarVariable(listaParametrosAux,id,tipo);
+                                        char *id = (char *)malloc((strlen($<ccval>3) + 1) * sizeof(char *));
+                                        strcpy(id,$<ccval>3);
+                                        char *tipo = (char *)malloc((strlen($<ccval>1) + 1) * sizeof(char *));
+                                        strcpy(tipo,$<ccval>1);
+                                        listaParametrosAux = agregarVariable(listaParametrosAux,id,tipo);
         
 }
                 |T_DATO '*' referencia ID {
-        char *id = (char *)malloc((strlen($<ccval>4) + 1) * sizeof(char *));
-        strcpy(id,$<ccval>4);
-        strcat($<ccval>1,"*");
-        char *tipo = (char *)malloc((strlen($<ccval>1) + 1) * sizeof(char *));
-        strcpy(tipo,$<ccval>1);
-        listaParametrosAux = agregarVariable(listaParametrosAux,id,tipo);
+                                        char *id = (char *)malloc((strlen($<ccval>4) + 1) * sizeof(char *));
+                                        strcpy(id,$<ccval>4);
+                                        strcat($<ccval>1,"*");
+                                        char *tipo = (char *)malloc((strlen($<ccval>1) + 1) * sizeof(char *));
+                                        strcpy(tipo,$<ccval>1);
+                                        listaParametrosAux = agregarVariable(listaParametrosAux,id,tipo);
 
 }
 ;
@@ -396,30 +409,15 @@ int yyerror (char *mensajeError){  //tambien ver como hay que manerjarlo en el a
 //La TS es global no hace falta ingresarla en putVariable
 
 int main (){
-//funciones y menu
-/*struct TablaSimbolos *TS;
-TS = inicializarTS();
-if(TS->listaVar == NULL){
-        printf("PUTOOO");
-}
-printf("kasjlkasjdlkas");
-TS = putVariable(TS,"hola","int");
-printf("kasjlkasjdlkas");
-printListVar(TS);
-*/
-mostrarListaErroresLexicos(listaErroresLexicos);
+
+
 yyin = fopen("Entrada.c","r");
 yyout= fopen("Salida.txt", "w");
 yyparse();
+mostrarListaErroresLexicos(listaErroresLexicos);
 mostrarListaVariables(listaVariables);
 mostrarListaFunciones(listaFunciones);
 
-//---al final creo que es mas facil hacer cuatro listas. Una para las funciones, otra para las variables y las otras dos de errores. La otra opcion es hacer una sola struct que tenga el tipo variable, tipo, y un campo para parametros, que este ultimo puede ser NULL si es una variable (pero puede ser un quilombo)
-//---tambien se me ocurrio como manejar el tema de los errores: los lexicos, agregar la cadena no reconocida a una lista cuando los detecta *lo hice. Probe hacerlo desde el .l pero me rompe con lineas de codigo en la consola que 
-//ni idea que son. 
-//---Los semanticos, agregarlos tambien a cada lista segun corresponda.
-//Los sintactico, mostrar los msjs de errores segun corresponda
-//revisar el control de tipos, ahora muestra los printf pero no lo hace correctamente. 
 
 
 

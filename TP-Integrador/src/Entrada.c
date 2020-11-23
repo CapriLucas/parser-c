@@ -2,6 +2,7 @@ int * asda (int x, int y);
 $
 int a = 123;
 float fff(float x, char *z);
+int fff(int y);
 char *d;
 char *hola(int w,char *oh,int cinco,char d);
 int b = 23;

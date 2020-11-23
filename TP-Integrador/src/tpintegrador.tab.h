@@ -83,18 +83,22 @@ typedef union YYSTYPE
 #line 28 "tpintegrador.y"
 
 char ccval[20]; // cadenas
-struct yylval_struct
+struct yylval_Tokens
   {
       int tipo;
       int ival;
       double dval;
   } estructura;
-
+struct yylval_TokenError
+  {
+      int linea;
+      char nomError[20];
+  } errorLex;
 
 
 
 /* Line 1676 of yacc.c  */
-#line 98 "tpintegrador.tab.h"
+#line 102 "tpintegrador.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

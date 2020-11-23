@@ -25,12 +25,19 @@ struct NodoFunciones
 
 struct NodoErrorLexico{
 char *cadenaError;
+int linea;
 struct NodoErrorLexico *sig;
 };
 
 struct NodoErrorSemantico{
   char *cadenaError;
+  int linea;
   struct NodoErrorSemantico *sig;
+};
+struct NodoErrorSintactico{
+  char *cadenaError;
+  int linea;
+  struct NodoErrorSintactico *sig;
 };
 
 struct NodoVariables *listaVariablesAux = NULL;
@@ -120,7 +127,7 @@ struct NodoVariables *validarVariableYAgregarla(struct NodoVariables *puntero, s
      }
      else
      {
-          printf("Error semantico. Variable %s declarada previamente.", cadena);
+          printf("\nError semantico. Variable '%s' declarada previamente.", cadena);
           //agregarErrorDobleDeclaracion(punteroSemantico,cadenaABuscar); //revisar 
      }
      return puntero;
@@ -130,11 +137,12 @@ struct NodoVariables *validarVariableYAgregarla(struct NodoVariables *puntero, s
 
 
 //esto habria que implemetarlas en la ultima regla del .l (dice *Error léxicos encontrados (si los hay) - (Implementar en Flex, archivo.L)* en el tp)
-struct NodoErrorLexico *agregarErrorLexico(struct NodoErrorLexico*puntero, char *cadNoReconocida){
+struct NodoErrorLexico *agregarErrorLexico(struct NodoErrorLexico*puntero, char *cadNoReconocida,int linea){
   struct NodoErrorLexico *nuevaLista;
   nuevaLista= (struct NodoErrorLexico*)malloc(sizeof(struct NodoErrorLexico));
   nuevaLista->cadenaError = cadNoReconocida;
-  nuevaLista->sig=NULL;
+  nuevaLista->linea = linea;
+    nuevaLista->sig=NULL;
      if (puntero != NULL)
      {
           struct NodoErrorLexico *aux = puntero;
@@ -152,10 +160,11 @@ struct NodoErrorLexico *agregarErrorLexico(struct NodoErrorLexico*puntero, char 
 }
 
 
-struct NodoErrorSemantico *agregarErrorDobleDeclaracion(struct NodoErrorSemantico*puntero, char *cadNoReconocida){
+struct NodoErrorSemantico *agregarErrorDobleDeclaracion(struct NodoErrorSemantico*puntero, char *cadNoReconocida,int linea){
   struct NodoErrorSemantico *nuevaLista;
   nuevaLista= (struct NodoErrorSemantico*)malloc(sizeof(struct NodoErrorSemantico));
   nuevaLista->cadenaError = cadNoReconocida;
+    nuevaLista->linea = linea;
   nuevaLista->sig=NULL;
      if (puntero != NULL)
      {
@@ -184,7 +193,6 @@ struct NodoFunciones *agregarFuncion(struct NodoFunciones*puntero, char *nombre,
   nuevaLista->cantParametros = cantParam;
   nuevaLista->parametrosEntrada = parametrosEntrada;
   nuevaLista->sig=NULL;
-  mostrarListaVariables(nuevaLista->parametrosEntrada);
      if (puntero != NULL)
      {
           struct NodoFunciones *aux = puntero;
@@ -200,6 +208,33 @@ struct NodoFunciones *agregarFuncion(struct NodoFunciones*puntero, char *nombre,
      }
      return puntero;
 }
+struct NodoFunciones *buscarFuncion(struct NodoFunciones *puntero, char *nombre)
+{
+     struct NodoFunciones *aux = puntero;
+     while (aux != NULL && strcmp(aux->nombreFun, nombre) != 0)
+     {
+          aux = aux->sig;
+     }
+     return aux;
+}
+struct NodoFunciones *validarFuncionYAgregarla(struct NodoFunciones *puntero,struct NodoVariables *listaParam, struct NodoErrorSemantico *punteroSemantico, char *nombre,char *tipo,int cantidad)
+{
+     char *cadena = (char *)malloc((strlen(nombre) + 1) * sizeof(char *));
+     char *tipoVar = (char *)malloc((strlen(tipo) + 1) * sizeof(char *));
+     strcpy(cadena, nombre);
+     strcpy(tipoVar,tipo);
+     struct NodoFunciones *cadenaABuscar = buscarFuncion(puntero, cadena);
+     if (cadenaABuscar == NULL)
+     {
+          puntero = agregarFuncion(puntero,cadena,listaParam,tipoVar,cantidad);
+     }
+     else
+     {
+          printf("\nError semantico. Funcion '%s' declarada previamente.", cadena);
+          //agregarErrorDobleDeclaracion(punteroSemantico,cadenaABuscar); //revisar 
+     }
+     return puntero;
+}
 
 
 
@@ -212,6 +247,7 @@ void mostrarListaFunciones(struct NodoFunciones*puntero)
      {
           printf("\n\tSe encontro la funcion:%s , de tipo:%s\n", auxFun->nombreFun, auxFun->parametroSalida);
           auxParam = auxFun->parametrosEntrada;
+          printf("\n\tRecibe %d parametros\n", auxFun->cantParametros);
           while (auxParam != NULL)
           {
           printf("Recibe parametro: %s de tipo %s\n", auxParam->nombreVar, auxParam->tipoVar);
@@ -242,7 +278,7 @@ void mostrarListaErroresLexicos(struct NodoErrorLexico *puntero)
      struct NodoErrorLexico *aux = puntero;
      while (aux != NULL)
      {
-          printf("Se encontro el error lexico %s en la TS", aux->cadenaError);
+          printf("\nSe encontro el error lexico %s en la linea %d \n", aux->cadenaError,aux->linea);
           aux = aux->sig;
      }
 }
@@ -254,7 +290,7 @@ void mostrarListaErroresSemanticos(struct NodoErrorSemantico *puntero)
      struct NodoErrorSemantico *aux = puntero;
      while (aux != NULL)
      {
-          printf("Se encontro el error semantico %s en la TS", aux->cadenaError);
+          printf("Se encontro el error semantico %s en la linea %d \n", aux->cadenaError,aux->linea);
           aux = aux->sig;
      }
 }
@@ -271,6 +307,98 @@ int contarParametros(struct NodoVariables* funciones ){
      }
      return cont;
 }
+
+
+
+
+
+
+
+
+/*
+
+struct NodoSentencias{
+  char *tipo;
+  struct NodoSentencias *sig;
+};
+
+struct NodoSentencias *listaSentencias;
+
+
+struct NodoSentencias *agregarSentencia(struct NodoSentencias*puntero, char *tipoSent){
+  struct NodoSentencias *nuevaLista;
+  nuevaLista= (struct NodoSentencias*)malloc(sizeof(struct NodoSentencias));
+  nuevaLista->tipo = tipoSent;
+    nuevaLista->sig=NULL;
+     if (puntero != NULL)
+     {
+          struct NodoSentencias *aux = puntero;
+          while (aux->sig != NULL)
+          {
+               aux = aux->sig;
+          }
+          aux->sig = nuevaLista;
+     }
+     else
+     {
+          puntero = nuevaLista;
+     }
+     return puntero;
+}
+
+
+
+
+
+void reporteCompleto()
+{
+     printf("-------------------------------------------------------------------------\n\n");
+     printf("--------------------------REPORTE DE COMPILACION------------------------\n\n");
+     printf("-------------------------------------------------------------------------\n\n");
+     printf("Listado de variables encontradas:");
+     mostrarListaVariables(listaVariablesAux);
+     printf("-------------------------------------------------------------------------\n\n");
+     printf("Listado de funciones encontradas:");
+     mostrarListaFunciones(listaFunciones);
+     printf("-------------------------------------------------------------------------\n\n");
+     printf("Listado de sentencias encontradas:\n");
+     //mostrarListaSentencias(listaSentencias);
+     printf("-------------------------------------------------------------------------\n\n");
+     printf("Errores lexicos detectados durante el proceso de compilacion:");
+     mostrarListaErroresLexicos(listaErroresLexicos);
+     printf("-------------------------------------------------------------------------\n\n");
+     printf("Errores sintacticos detectados durante el proceso de compilacion:");
+     mostrarListaErroresSintacticos(listaErroresSintacticos);
+     printf("-------------------------------------------------------------------------\n\n");
+
+}
+
+void opciones()
+{
+     printf("\nINGRESE LA OPCION DE LO QUE DESEA HACER:\n\n");
+     printf("1)  Generar listado de variables encontradas\n");
+     printf("2)  Generar listado de funciones encontradas\n");
+     printf("3)  Generar listado de sentencias encontradas\n");
+     printf("4)  Generar listado de errores lexicos ecnontradas\n");
+     printf("5)  Generar listado de errores sintacticos ecnontradas\n");
+     printf("6)  Generar listado de errores semanticos encontrados \n");
+     printf("7)  Generar reporte completo\n");
+     printf("8) Salir del reporte\n");
+}
+
+
+
+*/
+
+
+
+
+
+
+
+
+
+
 
 
 

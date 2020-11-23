@@ -10,6 +10,7 @@
 
 
 
+
 %}
     
 %option yylineno
@@ -46,5 +47,5 @@
 \"(\\.|[^\\"])*\"            {strcpy(yylval.ccval,yytext); return LCADENA;}
 [a-zA-Z_][a-zA-Z0-9_]*                          {strcpy(yylval.ccval,yytext); return ID;}
 [\t ]+              {;}
-.                   {printf("\nCaracter o cadena %s no emparejable. ", yytext); return errorLexico;}
+.                   {printf("\nCaracter o cadena %s no emparejable. ", yytext); strcpy(yylval.errorLex.nomError,yytext); yylval.errorLex.linea = yylineno; return errorLexico;}
 %%
