@@ -53,27 +53,23 @@
      T_DATO = 269,
      TCLASE = 270,
      FLECHA = 271,
-     STRUNION = 272,
-     CALTIPO = 273,
-     OPDESIGUAL = 274,
-     OPERADORUNARIO = 275,
-     ENUM = 276,
-     IF = 277,
-     ELSE = 278,
-     SIZEOF = 279,
-     SWITCH = 280,
-     WHILE = 281,
-     DO = 282,
-     FOR = 283,
-     RETURN = 284,
-     CONTINUE = 285,
-     GOTO = 286,
-     BREAK = 287,
-     CASE = 288,
-     DEFAULT = 289,
-     DIRECTIVA = 290,
-     CNORECONOCIDO = 291,
-     errorLexico = 292
+     OPDESIGUAL = 272,
+     OPERADORUNARIO = 273,
+     IF = 274,
+     ELSE = 275,
+     SIZEOF = 276,
+     SWITCH = 277,
+     WHILE = 278,
+     DO = 279,
+     FOR = 280,
+     RETURN = 281,
+     CONTINUE = 282,
+     GOTO = 283,
+     BREAK = 284,
+     CASE = 285,
+     DEFAULT = 286,
+     CNORECONOCIDO = 287,
+     errorLexico = 288
    };
 #endif
 
@@ -98,7 +94,7 @@ struct yylval_struct
 
 
 /* Line 1676 of yacc.c  */
-#line 102 "tpintegrador.tab.h"
+#line 98 "tpintegrador.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

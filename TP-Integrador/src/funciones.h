@@ -15,20 +15,13 @@ struct NodoVariables
 
 struct NodoFunciones
 {
-  char *nombreFun;
-  struct NodoParametros *parametrosEntrada;
-  char *parametroSalida;
-  struct NodoFuncion *sig;
+     char *nombreFun;
+     char *parametroSalida;
+     struct NodoVariables *parametrosEntrada;
+     int cantParametros;
+     struct NodoFunciones *sig;
 };
 
-struct NodoParametros
-{
-  char *tipoDato;
-  char *nombre;
-  char *referenciaValor;
-  int cantParametros;
-  struct NodoParametros *sig;
-};
 
 struct NodoErrorLexico{
 char *cadenaError;
@@ -41,12 +34,18 @@ struct NodoErrorSemantico{
 };
 
 struct NodoVariables *listaVariablesAux = NULL;
+struct NodoVariables *listaParametrosAux = NULL;
 struct NodoVariables *listaVariables = NULL;
 struct NodoFunciones *listaFunciones = NULL;
 struct NodoErrorLexico *listaErroresLexicos = NULL;
 struct NodoErrorSintactico *listaErroresSintacticos =NULL;
 struct NodoErrorSemantico *listaErroresSemanticos =NULL;
 
+
+
+
+void mostrarListaVariables(struct NodoVariables *puntero);
+// VARIABLES
 struct NodoVariables *validarVariableYAgregarla(struct NodoVariables *puntero, struct NodoErrorSemantico *punteroSemantico, char *nombre,char *tipo);
 struct NodoVariables *pasarVariablesDeAux(struct NodoVariables*lista,struct NodoErrorSemantico *punteroSemantico,struct NodoVariables *auxiliar, char *tipo){
     struct NodoVariables *aux = auxiliar;
@@ -130,35 +129,6 @@ struct NodoVariables *validarVariableYAgregarla(struct NodoVariables *puntero, s
 
 
 
-
-/* 
-
-COMO CHOTA HAGO PARA SABER CUANTOS PARAMETROS VA A TENER LA FUNCION PARA AGREGARLO A LA LISTA
-
-struct NodoFunciones *agregarFuncion(struct NodoFunciones*puntero, char *nombre, char *parametroSal, ){
-  struct NodoFunciones*nuevaLista;
-  nuevaLista= (struct NodoFunciones*)malloc(sizeof(struct NodoFunciones));
-  nuevaLista->nombreFun = nombre;
-  nuevaLista->parametroSalida= parametroSal;
-  nuevaLista->parametrosEntrada
-  nuevaLista->sig=NULL;
-     if (puntero != NULL)
-     {
-          struct NodoVariables *aux = puntero;
-          while (aux->sig != NULL)
-          {
-               aux = aux->sig;
-          }
-          aux->sig = nuevaLista;
-     }
-     else
-     {
-          puntero = nuevaLista;
-     }
-     return puntero;
-}
-*/
-
 //esto habria que implemetarlas en la ultima regla del .l (dice *Error léxicos encontrados (si los hay) - (Implementar en Flex, archivo.L)* en el tp)
 struct NodoErrorLexico *agregarErrorLexico(struct NodoErrorLexico*puntero, char *cadNoReconocida){
   struct NodoErrorLexico *nuevaLista;
@@ -204,15 +174,57 @@ struct NodoErrorSemantico *agregarErrorDobleDeclaracion(struct NodoErrorSemantic
 }
 
 
-
-/* void mostrarListaFunciones(struct NodoFunciones *puntero){
-
-  //?????
-  //?????'
+struct NodoFunciones *agregarFuncion(struct NodoFunciones*puntero, char *nombre, struct NodoVariables* parametrosEntrada, char* parametroSal, int cantParam){
+  struct NodoFunciones*nuevaLista;
+//   struct NodoVariables*listaArgumentos;
+//   listaArgumentos= (struct NodoVariables*)malloc(sizeof(struct NodoVariables));
+  nuevaLista= (struct NodoFunciones*)malloc(sizeof(struct NodoFunciones));
+  nuevaLista->nombreFun = nombre;
+  nuevaLista->parametroSalida= parametroSal;
+  nuevaLista->cantParametros = cantParam;
+  nuevaLista->parametrosEntrada = parametrosEntrada;
+  nuevaLista->sig=NULL;
+  mostrarListaVariables(nuevaLista->parametrosEntrada);
+     if (puntero != NULL)
+     {
+          struct NodoFunciones *aux = puntero;
+          while (aux->sig != NULL)
+          {
+               aux = aux->sig;
+          }
+          aux->sig = nuevaLista;
+     }
+     else
+     {
+          puntero = nuevaLista;
+     }
+     return puntero;
 }
-*/
 
 
+
+//Muestra la lista de funciones encontradas
+void mostrarListaFunciones(struct NodoFunciones*puntero)
+{
+     struct NodoFunciones *auxFun = puntero;
+     struct NodoVariables *auxParam;
+     while (auxFun != NULL)
+     {
+          printf("\n\tSe encontro la funcion:%s , de tipo:%s\n", auxFun->nombreFun, auxFun->parametroSalida);
+          auxParam = auxFun->parametrosEntrada;
+          while (auxParam != NULL)
+          {
+          printf("Recibe parametro: %s de tipo %s\n", auxParam->nombreVar, auxParam->tipoVar);
+          auxParam = auxParam->sig;
+          }
+          auxParam = NULL;
+          auxFun = auxFun->sig;
+     }
+}
+
+
+
+//Muestra la lista de variables encontradas
 void mostrarListaVariables(struct NodoVariables *puntero)
 {
      struct NodoVariables *aux = puntero;
@@ -224,6 +236,7 @@ void mostrarListaVariables(struct NodoVariables *puntero)
 }
 
 
+//Muestra la lista de errores lexicos encontrados
 void mostrarListaErroresLexicos(struct NodoErrorLexico *puntero)
 {
      struct NodoErrorLexico *aux = puntero;
@@ -235,6 +248,7 @@ void mostrarListaErroresLexicos(struct NodoErrorLexico *puntero)
 }
 
 
+//Muestra la lista de errores semanticos encontrados
 void mostrarListaErroresSemanticos(struct NodoErrorSemantico *puntero)
 {
      struct NodoErrorSemantico *aux = puntero;
@@ -246,6 +260,46 @@ void mostrarListaErroresSemanticos(struct NodoErrorSemantico *puntero)
 }
 
 
+//Cuenta la cantidad de parametros de las funciones
+int contarParametros(struct NodoVariables* funciones ){
+       struct NodoVariables *aux = funciones;
+       int cont = 0;
+     while (aux != NULL)
+     {
+          aux = aux->sig;
+          cont++;
+     }
+     return cont;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//int sumar(int a , int b);
+//Nodo funciones parametrosalida nombreFun  
+
+// struct NodoParametros
+// {
+//   char *tipoDato;
+//   char *nombre;
+//   char *referenciaValor;
+//   struct NodoParametros *sig;
+// };
 
 
 

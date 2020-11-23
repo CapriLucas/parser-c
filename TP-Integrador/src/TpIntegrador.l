@@ -19,8 +19,8 @@
 "int"|"char"|"void"|"float"|"bool"|"double"|"long"|"short"|"unsigned"|"signed"     {strcpy(yylval.ccval,yytext); return T_DATO;}
 "auto"|"extern"|"register"|"static"|"typedef"                                           {return TCLASE;}
 "\n" {return '\n';}
-"const"|"volatile"           {return CALTIPO;}
-"struct"|"union"       {return STRUNION;}
+
+
 "sizeof"            {return SIZEOF ;}
 "if"                {return IF ;}
 "else"              {return ELSE ;}
@@ -31,8 +31,7 @@
 "return"            {return RETURN;}
 "continue"          {return CONTINUE;}
 "goto"              {return GOTO;}
-"break"             {return BREAK;}
-"enum"              {return ENUM;}
+"break"              {return BREAK;}
 "&&"                {return AND;}
 "||"                {return OR;}
 "*="|"/="|"+="|"-="|"="                 {return OPASIG;}
