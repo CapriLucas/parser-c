@@ -540,9 +540,9 @@ goto find_rule; \
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
 char *yytext;
-#line 1 ".\\TpIntegrador.l"
+#line 1 "TpIntegrador.l"
 #define INITIAL 0
-#line 3 ".\\TpIntegrador.l"
+#line 3 "TpIntegrador.l"
 #include"TpIntegrador.tab.h"
 #include<stdio.h>
 #include<string.h>
@@ -703,7 +703,7 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
 
-#line 16 ".\\TpIntegrador.l"
+#line 16 "TpIntegrador.l"
 
 #line 709 "lex.yy.c"
 
@@ -798,172 +798,172 @@ do_action:	/* This label is used only to access EOF actions. */
 	{ /* beginning of action switch */
 case 1:
 YY_RULE_SETUP
-#line 17 ".\\TpIntegrador.l"
+#line 17 "TpIntegrador.l"
 {return yytext[0];}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 18 ".\\TpIntegrador.l"
+#line 18 "TpIntegrador.l"
 {strcpy(yylval.ccval,yytext); return T_DATO;}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 19 ".\\TpIntegrador.l"
+#line 19 "TpIntegrador.l"
 {return TCLASE;}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 20 ".\\TpIntegrador.l"
+#line 20 "TpIntegrador.l"
 {return '\n';}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 21 ".\\TpIntegrador.l"
+#line 21 "TpIntegrador.l"
 {return CALTIPO;}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 22 ".\\TpIntegrador.l"
+#line 22 "TpIntegrador.l"
 {return STRUNION;}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 23 ".\\TpIntegrador.l"
+#line 23 "TpIntegrador.l"
 {return SIZEOF ;}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 24 ".\\TpIntegrador.l"
+#line 24 "TpIntegrador.l"
 {return IF ;}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 25 ".\\TpIntegrador.l"
+#line 25 "TpIntegrador.l"
 {return ELSE ;}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 26 ".\\TpIntegrador.l"
+#line 26 "TpIntegrador.l"
 {return SWITCH ;}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 27 ".\\TpIntegrador.l"
+#line 27 "TpIntegrador.l"
 {return WHILE ;}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 28 ".\\TpIntegrador.l"
+#line 28 "TpIntegrador.l"
 {return DO;}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 29 ".\\TpIntegrador.l"
+#line 29 "TpIntegrador.l"
 {return FOR;}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 30 ".\\TpIntegrador.l"
+#line 30 "TpIntegrador.l"
 {return RETURN;}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 31 ".\\TpIntegrador.l"
+#line 31 "TpIntegrador.l"
 {return CONTINUE;}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 32 ".\\TpIntegrador.l"
+#line 32 "TpIntegrador.l"
 {return GOTO;}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 33 ".\\TpIntegrador.l"
+#line 33 "TpIntegrador.l"
 {return BREAK;}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 34 ".\\TpIntegrador.l"
+#line 34 "TpIntegrador.l"
 {return ENUM;}
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 35 ".\\TpIntegrador.l"
+#line 35 "TpIntegrador.l"
 {return AND;}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 36 ".\\TpIntegrador.l"
+#line 36 "TpIntegrador.l"
 {return OR;}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 37 ".\\TpIntegrador.l"
+#line 37 "TpIntegrador.l"
 {return OPASIG;}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 38 ".\\TpIntegrador.l"
+#line 38 "TpIntegrador.l"
 {return OPINCDEC;}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 39 ".\\TpIntegrador.l"
+#line 39 "TpIntegrador.l"
 {strcpy(yytext, yylval.ccval);return OPREL;}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 40 ".\\TpIntegrador.l"
+#line 40 "TpIntegrador.l"
 {return OPIGUAL;}
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 41 ".\\TpIntegrador.l"
-{yylval.ival = atoi(yytext); return CENTERO;}
+#line 41 "TpIntegrador.l"
+{yylval.ival = atoi(yytext);yylval.tipo = 1; return CENTERO;}
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 42 ".\\TpIntegrador.l"
-{yylval.ival = strtol(yytext, NULL, 0); return CENTERO;}
+#line 42 "TpIntegrador.l"
+{yylval.ival = strtol(yytext, NULL, 0); yylval.tipo = 1;return CENTERO;}
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 43 ".\\TpIntegrador.l"
-{yylval.ival = strtol(yytext, NULL, 0); return CENTERO;} 
+#line 43 "TpIntegrador.l"
+{yylval.ival = strtol(yytext, NULL, 0);yylval.tipo = 1; return CENTERO;} 
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 44 ".\\TpIntegrador.l"
-{yylval.dval = atof(yytext); return CREAL;}
+#line 44 "TpIntegrador.l"
+{yylval.dval = atof(yytext); return CREAL; yylval.tipo = 2;}
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 45 ".\\TpIntegrador.l"
+#line 45 "TpIntegrador.l"
 {strcpy(yylval.ccval,yytext); return CCARACTER;}
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 46 ".\\TpIntegrador.l"
+#line 46 "TpIntegrador.l"
 {strcpy(yylval.ccval,yytext); return LCADENA;}
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 47 ".\\TpIntegrador.l"
+#line 47 "TpIntegrador.l"
 {strcpy(yylval.ccval,yytext); return ID;}
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 48 ".\\TpIntegrador.l"
+#line 48 "TpIntegrador.l"
 {;}
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 49 ".\\TpIntegrador.l"
+#line 49 "TpIntegrador.l"
 {printf("\nCaracter o cadena %s no emparejable. ", yytext); return errorLexico;}
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 50 ".\\TpIntegrador.l"
+#line 50 "TpIntegrador.l"
 ECHO;
 	YY_BREAK
 #line 970 "lex.yy.c"
@@ -1850,4 +1850,4 @@ int main()
 	return 0;
 	}
 #endif
-#line 50 ".\\TpIntegrador.l"
+#line 50 "TpIntegrador.l"

@@ -33,9 +33,19 @@ struct NodoParam
   struct NodoParam *sig;
 };
 
-struct TablaSimbolos *TS = NULL;
+struct TablaSimbolos *TS;
 
-void putVariable(char *nombreVar, char *tipoVar)
+struct TablaSimbolos *inicializarTS()
+{
+  struct TablaSimbolos ts;
+  ts.listaVar = NULL;
+  ts.listaFunc = NULL;
+  struct TablaSimbolos *TS = &ts;
+  return TS;
+}
+
+//agrega una variable con su tipo
+struct TablaSimbolos *putVariable(struct TablaSimbolos *punt, char *nombreVar, char *tipoVar)
 {
   struct NodoVar *nuevoNodo = (struct NodoVar *)malloc((strlen(nombreVar) + strlen(tipoVar) + 2) * sizeof(struct NodoVar));
   nuevoNodo->nombreVar = nombreVar;
@@ -55,23 +65,10 @@ void putVariable(char *nombreVar, char *tipoVar)
   {
     TS->listaVar = nuevoNodo;
   }
+  return punt;
 }
 
-void reloadTipos(char *tipoVar)
-{
-  if (TS->listaVar != NULL)
-  {
-    struct NodoVar *aux = TS->listaVar;
-    while (aux->sig != NULL)
-    {
-      if (aux->tipoVar == NULL)
-      {
-        aux->tipoVar = tipoVar;
-      }
-      aux = aux->sig;
-    }
-  }
-}
+// agregar funcion a la tabla de simbolos
 void putFuncion(struct NodoFunc *funcion)
 {
   if (TS->listaFunc != NULL)
@@ -125,3 +122,19 @@ void printListVar()
     printf("LISTA VACIA");
   }
 }
+
+// void reloadTipos(char *tipoVar)
+// {
+//   if (TS->listaVar != NULL)
+//   {
+//     struct NodoVar *aux = TS->listaVar;
+//     while (aux->sig != NULL)
+//     {
+//       if (aux->tipoVar == NULL)
+//       {
+//         aux->tipoVar = tipoVar;
+//       }
+//       aux = aux->sig;
+//     }
+//   }
+// }

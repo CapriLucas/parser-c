@@ -27,6 +27,7 @@ FILE* yyout;
 char ccval[20]; // cadenas
 double dval; // numeros reales/racionales
 int ival; // numeros enteros
+int tipo;
 }
 
 
@@ -120,24 +121,37 @@ expresionRelacional: expresionAditiva
 
 
 
-expresionAditiva: expresionMultiplicativa
-        | expresionAditiva '+' expresionMultiplicativa
+expresionAditiva: expresionMultiplicativa 
+        | expresionAditiva '+' expresionMultiplicativa {  if($<tipo>1==$<tipo>3) { 
+                                                        if($<tipo>1==1){
+                                                        $<ival>$=$<ival>1+$<ival>3;
+                                                        printf("El resultado es: %d\n",$<ival>$);
+                                                        }
+                                                        else{
+                                                        $<dval>$=$<dval>1+$<dval>3;
+                                                        printf("El resultado es: %f\n",$<dval>$);
+                                                        }
+                                                           } else {
+                                                                printf("Error semantico en la linea . Los operandos son de distinto tipo \n");
+                                                                }
+                                                        }
+        
         | expresionAditiva '-' expresionMultiplicativa
 ;
-expresionMultiplicativa: expresionUnaria
+expresionMultiplicativa: expresionUnaria {$<ival>$=$<ival>1;}
         | expresionMultiplicativa '*' expresionUnaria
         | expresionMultiplicativa '/' expresionUnaria
         | expresionMultiplicativa '%' expresionUnaria
 ;
 
 ;
-expresionUnaria: expresionPostFijo
+expresionUnaria: expresionPostFijo {$<ival>$=$<ival>1;}
         | OPINCDEC expresionUnaria
         | SIZEOF '(' T_DATO ')'
 ;
 
 
-expresionPostFijo:   expresionPrimaria
+expresionPostFijo:   expresionPrimaria {$<ival>$=$<ival>1;}
             | expresionPostFijo '[' expresion ']'
             | expresionPostFijo '(' listaArgumentos ')'
             | expresionPostFijo '.' ID
@@ -150,7 +164,7 @@ listaArgumentos:  /*vacio*/
             | listaArgumentos ',' expresionAsignacion
 ;
 expresionPrimaria:     ID 
-            | CENTERO 
+            | CENTERO {$<ival>$=$<ival>1;}
             | CREAL 
             | LCADENA 
             | '(' expresion ')'
@@ -291,11 +305,13 @@ int yyerror (char *mensajeError){  //tambien ver como hay que manerjarlo en el a
 }
 
 
-
+//La TS es global no hace falta ingresarla en putVariable
 
 int main (){
 //funciones y menu
-
+TS = inicializarTS();
+TS = putVariable(TS,"hola","int");
+printListVar();
 yyin = fopen("Entrada.c","r");
 yyout= fopen("Salida.txt", "w");
 yyparse();
