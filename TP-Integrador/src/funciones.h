@@ -35,11 +35,10 @@ struct NodoErrorSemantico{
   struct NodoErrorSemantico *sig;
 };
 struct NodoErrorSintactico{
-  char *cadenaError;
   int linea;
-  char* nombreError;
   struct NodoErrorSintactico *sig;
 };
+
 struct NodoVariables *variableAux = NULL;
 struct NodoVariables *listaVariablesAux = NULL;
 struct NodoVariables *listaParametrosAux = NULL;
@@ -161,12 +160,11 @@ struct NodoErrorLexico *agregarErrorLexico(struct NodoErrorLexico*puntero, char 
      }
      return puntero;
 }
-/*struct NodoErrorSintactico *agregarErrorSintactico(struct NodoErrorSintactico*puntero, char *nombreToken,int linea, char nombreError){
+struct NodoErrorSintactico* agregarErrorSintactico(struct NodoErrorSintactico*puntero ,int linea){
   struct NodoErrorSintactico *nuevaLista;
-  nuevaLista= (struct NodoErrorSintactico*)malloc(sizeof(struct NodoErrorLexico));
-  nuevaLista->cadenaError = nombreToken;
+  nuevaLista= (struct NodoErrorSintactico*)malloc(sizeof(struct NodoErrorSintactico));
+
   nuevaLista->linea = linea;
-  nuevaLista->nombreError=nombreError;
     nuevaLista->sig=NULL;
      if (puntero != NULL)
      {
@@ -183,7 +181,6 @@ struct NodoErrorLexico *agregarErrorLexico(struct NodoErrorLexico*puntero, char 
      }
      return puntero;
 }
-*/
 struct NodoErrorSemantico *agregarErrorDobleDeclaracion(struct NodoErrorSemantico*puntero, char *cadNoReconocida,int linea){
   struct NodoErrorSemantico *nuevaLista;
   nuevaLista= (struct NodoErrorSemantico*)malloc(sizeof(struct NodoErrorSemantico));
@@ -318,7 +315,15 @@ void mostrarListaErroresSemanticos(struct NodoErrorSemantico *puntero)
           aux = aux->sig;
      }
 }
-
+void mostrarListaErroresSintacticos(struct NodoErrorSintactico *puntero)
+{
+     struct NodoErrorSintactico *aux = puntero;
+     while (aux != NULL)
+     {
+          printf("Se encontro el error Sintactico en la linea %d. Imposible emparejar por alguna produccion\n",aux->linea);
+          aux = aux->sig;
+     }
+}
 
 //Cuenta la cantidad de parametros de las funciones
 int contarParametros(struct NodoVariables* funciones ){

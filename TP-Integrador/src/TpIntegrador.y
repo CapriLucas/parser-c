@@ -82,9 +82,9 @@ input:  /* vacio */
 ;
 
 
-line:   declaracion  
+line:   declaracion   
         | sentencia 
-        | expresion
+        | expresion 
         | errorLexico {
                 char *cadena = (char *)malloc((strlen($<errorLex>1.nomError) + 1) * sizeof(char *));
                 strcpy(cadena,$<errorLex>1.nomError); 
@@ -93,8 +93,9 @@ line:   declaracion
 
         }
 
-        | error {printf("\nSe encontro un error sintactico en la linea %d. Imposible emparejar por alguna produccion\n", yylineno);} //ver como hacer aca con los errores.
+        | error '\n' {listaErroresSintacticos=agregarErrorSintactico(listaErroresSintacticos,yylineno);} //ver como hacer aca con los errores.
 ;
+
 
 
 
@@ -444,6 +445,8 @@ yyparse();
 mostrarListaErroresLexicos(listaErroresLexicos);
 printf("\n\n\n");
 mostrarListaErroresSemanticos(listaErroresSemanticos);
+printf("\n\n\n");
+mostrarListaErroresSintacticos(listaErroresSintacticos);
 printf("\n\n\n");
 mostrarListaVariables(listaVariables);
 mostrarListaFunciones(listaFunciones);
