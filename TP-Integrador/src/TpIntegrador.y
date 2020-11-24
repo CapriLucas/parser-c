@@ -15,7 +15,7 @@ int yywrap(){
 
 
 extern int yylineno;
-// usar yylineno para las lineas en ts
+
 
 FILE* yyin;
 FILE* yyout;
@@ -93,7 +93,7 @@ line:   declaracion
 
         }
 
-        | error '\n' {listaErroresSintacticos=agregarErrorSintactico(listaErroresSintacticos,yylineno);} //ver como hacer aca con los errores.
+        | error '\n' {listaErroresSintacticos=agregarErrorSintactico(listaErroresSintacticos,yylineno -1);}
 ;
 
 
@@ -147,8 +147,9 @@ expresionAditiva: expresionMultiplicativa
                                                         printf("El resultado es: %f\n",$<estructura>$.dval);
                                                         }
                                                            } else {
-                                                                printf("Error semantico en la linea %d Los operandos son de distinto tipo \n",yylineno);
-                                                                printf("Tipo1 = %d. Tipo2 = %d. \n",$<estructura>1.tipo,$<estructura>3.tipo);
+                                                                //printf("Error semantico en la linea %d Los operandos son de distinto tipo \n",yylineno);
+                                                                //printf("Tipo1 = %d. Tipo2 = %d. \n",$<estructura>1.tipo,$<estructura>3.tipo);
+                                                                agregarErrorDobleDeclaracion(listaErroresSemanticos,"'operandos de distinto tipo'", yylineno);
                                                                 }
                                                         }
         
@@ -235,12 +236,6 @@ expresionPrimaria:     ID  {strcpy($<ccval>$,$<ccval>1);}
             | LCADENA 
             | '(' expresion ')'
 ;
-
-
-
-
-
-
 
 
 
@@ -359,6 +354,9 @@ definicionDeFuncion: T_DATO ID '(' opcionArgumentos ')' sentencia  {printf ("\nS
 
 
 
+
+
+
 /*GRAMATICA DE SENTENCIAS*/
 
 sentencia:		
@@ -429,32 +427,44 @@ expresionOpc: /*vacio*/
 ;
 
 
+
+
 %%
 
 
-int yyerror (char *mensajeError){  //tambien ver como hay que manerjarlo en el archivo de salida o si es necesario (todavia no me fije)
-        fprintf(yyout, "Se encontro un error sintatico\n ", mensajeError);
+int yyerror (char *mensajeError){ 
+        fprintf(yyout, "Se encontraron errores sintatico en el archivo analizado.\n", mensajeError);
 }
 
 
-//La TS es global no hace falta ingresarla en putVariable
 
 int main (){
 
 
 yyin = fopen("Entrada.c","r");
 yyout= fopen("Salida.txt", "w");
+printf("-------------------------------------------------------------------------\n");
+printf("\n\t\t\tINFORME DE COMPILACION\n\n");
+printf("-------------------------------------------------------------------------\n\n");
+printf("\nSENTENCIAS ENCONTRADAS:\n\n");
 yyparse();
-mostrarListaErroresLexicos(listaErroresLexicos);
-printf("\n\n\n");
+printf("\n\n              ---------------------------------------               \n");
+printf("\nERRORES SEMANTICOS:\n\n");
 mostrarListaErroresSemanticos(listaErroresSemanticos);
-printf("\n\n\n");
+printf("\n\n              ---------------------------------------               \n");
+printf("\nERRORES LEXICOS:\n\n");
+mostrarListaErroresLexicos(listaErroresLexicos);
+printf("\n\n              ---------------------------------------               \n");
+printf("\nERRORES SINTACTICOS:\n\n");
 mostrarListaErroresSintacticos(listaErroresSintacticos);
-printf("\n\n\n");
+printf("\n\n              ---------------------------------------               \n");
+printf("\nVARIABLES ENCONTRADAS:\n\n");
 mostrarListaVariables(listaVariables);
+printf("\n\n              ---------------------------------------               \n");
+printf("\nFUNCIONES ENCONTRADAS:\n");
 mostrarListaFunciones(listaFunciones);
-
-
-
+printf("\n\n-------------------------------------------------------------------------\n");
+printf("\n\n\t\t\tINFORME FINALIZADO\n\n");
+printf("\n-------------------------------------------------------------------------\n");
 
 }

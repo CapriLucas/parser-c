@@ -1,2 +1,1 @@
-Se encontro un error sintatico
- 
+Se encontraron errores sintatico en el archivo analizado.
