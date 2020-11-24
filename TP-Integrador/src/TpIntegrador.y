@@ -214,16 +214,19 @@ expresionAsignacionBis: expresionAsignacion {
                                         char *id = (char *)malloc((strlen($<ccval>1) + 1) * sizeof(char *));
                                         strcpy(id,$<ccval>1);
                                         variableAux = buscarVariable(listaVariables, id);
-                                        char *tipo = (char *)malloc((strlen(variableAux->tipoVar) + 1) * sizeof(char *));
                                         if(variableAux == NULL){
+                                                char *tipo = (char *)malloc((strlen("undefined") + 1) * sizeof(char *));
                                                 strcpy(tipo,"undefined");
+                                                listaParametrosAux = agregarVariable(listaParametrosAux,id,tipo);
+                                                variableAux = NULL;
                                         }
                                         else{
+                                                char *tipo = (char *)malloc((strlen(variableAux->tipoVar) + 1) * sizeof(char *));
                                                 strcpy(tipo,variableAux->tipoVar);
+                                                listaParametrosAux = agregarVariable(listaParametrosAux,id,tipo);
+                                                variableAux = NULL;
 
                                         }
-                                        listaParametrosAux = agregarVariable(listaParametrosAux,id,tipo);
-                                        variableAux = NULL;
                                         }
 ;
 expresionPrimaria:     ID  {strcpy($<ccval>$,$<ccval>1);}
