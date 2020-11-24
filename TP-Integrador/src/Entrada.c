@@ -1,11 +1,15 @@
 int * asda (int x, int y);
 $
+void sumar(int a,int b);
 int a = 123;
+int b = 23;
 float fff(float x, char *z);
 int fff(int y);
 char *d;
+sumar(a,d);
+float flota;
+fff(flota,d);
 char *hola(int w,char *oh,int cinco,char d);
-int b = 23;
 int a[4];
 char* cosa;
 double prueba = 34234234;

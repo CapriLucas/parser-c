@@ -40,11 +40,12 @@ struct NodoErrorSintactico{
   char* nombreError;
   struct NodoErrorSintactico *sig;
 };
-
+struct NodoVariables *variableAux = NULL;
 struct NodoVariables *listaVariablesAux = NULL;
 struct NodoVariables *listaParametrosAux = NULL;
 struct NodoVariables *listaVariables = NULL;
 struct NodoFunciones *listaFunciones = NULL;
+struct NodoFunciones *funcionAux = NULL;
 struct NodoErrorLexico *listaErroresLexicos = NULL;
 struct NodoErrorSintactico *listaErroresSintacticos =NULL;
 struct NodoErrorSemantico *listaErroresSemanticos =NULL;
@@ -331,6 +332,25 @@ int contarParametros(struct NodoVariables* funciones ){
      return cont;
 }
 
+int comprobarInvocacionFuncion(struct NodoFunciones *listaFunc,struct NodoVariables *listaParam,char *idFunc,int linea){
+     funcionAux = buscarFuncion(listaFunciones, idFunc);
+     if(listaFunc->cantParametros == contarParametros(listaParam)){
+          struct NodoVariables *aux = funcionAux->parametrosEntrada;
+          struct NodoVariables *aux2 = listaParam;
+          while(aux!= NULL){
+               if(strcmp(aux->tipoVar,aux2->tipoVar) != 0){
+                    listaErroresSemanticos = agregarErrorDobleDeclaracion(listaErroresSemanticos,"'Error en paso de parametros a invocacion'",linea);
+                    funcionAux = NULL;
+                    return 0;
+               }
+               aux = aux->sig;
+               aux2 = aux2->sig;
+          }
+          funcionAux = NULL;
+
+     }
+
+}
 
 
 

@@ -183,6 +183,7 @@ expresionUnaria: expresionPostFijo {
 
 
 expresionPostFijo:   expresionPrimaria {
+
                     if($<estructura>1.tipo==1){
                     $<estructura>$.tipo=$<estructura>1.tipo;
                     $<estructura>$.ival=$<estructura>1.ival;
@@ -192,17 +193,39 @@ expresionPostFijo:   expresionPrimaria {
                         }
                                         }
             | expresionPostFijo '[' expresion ']'
-            | expresionPostFijo '(' listaArgumentos ')' 
+            | ID '(' listaArgumentos ')' {
+                    char *id = (char *)malloc((strlen($<ccval>1) + 1) * sizeof(char *));
+                    strcpy(id,$<ccval>1);
+                    int linea = yylineno;
+                    comprobarInvocacionFuncion(listaFunciones,listaParametrosAux,id,linea);
+                    listaParametrosAux = NULL;
+                } 
             | expresionPostFijo '.' ID
             | expresionPostFijo FLECHA ID
             | expresionPostFijo OPINCDEC
 
 ;
 listaArgumentos:  /*vacio*/
-            |expresionAsignacion
-            | listaArgumentos ',' expresionAsignacion
+            |expresionAsignacionBis 
+            | listaArgumentos ',' expresionAsignacionBis
 ;
-expresionPrimaria:     ID 
+expresionAsignacionBis: expresionAsignacion {
+                                        char *id = (char *)malloc((strlen($<ccval>1) + 1) * sizeof(char *));
+                                        strcpy(id,$<ccval>1);
+                                        variableAux = buscarVariable(listaVariables, id);
+                                        char *tipo = (char *)malloc((strlen(variableAux->tipoVar) + 1) * sizeof(char *));
+                                        if(variableAux == NULL){
+                                                strcpy(tipo,"undefined");
+                                        }
+                                        else{
+                                                strcpy(tipo,variableAux->tipoVar);
+
+                                        }
+                                        listaParametrosAux = agregarVariable(listaParametrosAux,id,tipo);
+                                        variableAux = NULL;
+                                        }
+;
+expresionPrimaria:     ID  {strcpy($<ccval>$,$<ccval>1);}
             | CENTERO {$<estructura>$.ival=$<estructura>1.ival; $<estructura>$.tipo=$<estructura>1.tipo;}
             | CREAL {$<estructura>$.dval=$<estructura>1.dval; $<estructura>$.tipo=$<estructura>1.tipo;}
             | LCADENA 
